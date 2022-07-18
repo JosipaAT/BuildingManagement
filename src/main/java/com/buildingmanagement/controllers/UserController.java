@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -68,6 +69,39 @@ public class UserController {
 
 	@Autowired
 	private InfoRepo infoRepo;
+
+	@GetMapping("/login")
+	public String login() {
+		return "login";
+	}
+	@GetMapping("/")
+	public String home(Principal principal) {
+		String email = principal.getName();
+		UserDetails details = userService.loadUserByUsername(email);
+		if (details != null && details.getAuthorities()
+				.stream()
+				.anyMatch(a -> a.getAuthority()
+						.equals("ADMIN"))) {
+			return "redirect:/admin/0";
+
+		}
+		if (details != null && details.getAuthorities()
+				.stream()
+				.anyMatch(a -> a.getAuthority()
+						.equals("BUILDMANAGER"))) {
+			return "redirect:/manager/0";
+
+		}
+		if (details != null && details.getAuthorities()
+				.stream()
+				.anyMatch(a -> a.getAuthority()
+						.equals("COOWNERREP"))) {
+			return "redirect:/coowner_rep";
+
+		}
+
+		return "redirect:/coowner";
+	}
 
 	@GetMapping("/admin/{page}")
 	public String homeAdmin(@PathVariable Integer page, Model model, String keyword) {
@@ -250,7 +284,7 @@ public class UserController {
 		return new ArrayList<>();
 	}
 
-	@PostMapping("/manager/unitReport/{unitId}")
+	/*@PostMapping("/manager/unitReport/{unitId}")
 	public void unitReport(HttpServletResponse response, @PathVariable Integer unitId) throws IOException {
 		response.setContentType("application/pdf");
 		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd:hh:mm:ss");
@@ -263,6 +297,38 @@ public class UserController {
 		List<Expense> expenses = this.expenseRepo.getAllExpenseOfUnit(unitId);
 		List<Income> incomes = this.incomeRepo.getAllIncomeOfUnit(unitId);
 		this.pdfGeneratorService.exportReportForUnit(response,expenses, incomes, unitId);
+	}*/
+
+	@PostMapping("/manager/unitReport/{unitId}")
+	public void getReport(HttpServletResponse response, @PathVariable("unitId") Integer unitId, @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
+						  @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate, Integer expenseTypeId) throws IOException {
+
+		Unit unit = unitRepo.findById(unitId).get();
+
+		List<Expense> filteredExpenses = new ArrayList<>();
+		for(Expense expense : unit.getExpenses()){
+			if(expenseTypeId == null || expense.getExpenseType().getExpenseTypeId().equals(expenseTypeId)){
+				if(startDate != null && expense.getDateOfReceipt().after(startDate)){
+					if(endDate != null && expense.getDateOfReceipt().before(endDate)){
+						filteredExpenses.add(expense);
+					}else{
+						filteredExpenses.add(expense);
+					}
+
+				}else{
+					filteredExpenses.add(expense);
+				}
+			}
+		}
+
+		response.setContentType("application/pdf");
+		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd:hh:mm:ss");
+		String currentDateTime = dateFormatter.format(new Date());
+
+		String headerKey = "Content-Disposition";
+		String headerValue = "attachment; filename=pdf_" + currentDateTime + ".pdf";
+		response.setHeader(headerKey, headerValue);
+		pdfGeneratorService.exportReportForExpenses(response, unit, filteredExpenses, startDate, endDate);
 	}
 
 	@PostMapping("/manager/buildReport/{buildComplexId}")
@@ -295,7 +361,7 @@ public class UserController {
 		this.pdfGeneratorService.exportReportForBuilding(response,totalExpense, totalIncome, buildComplexId);
 	}
 
-	@PostMapping("/manager/build-equipment-report/{buildComplexId}")
+	/*@PostMapping("/manager/build-equipment-report/{buildComplexId}")
 	public void buildReportEquipment(HttpServletResponse response, @PathVariable Integer buildComplexId) throws IOException {
 		response.setContentType("application/pdf");
 		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd:hh:mm:ss");
@@ -307,7 +373,7 @@ public class UserController {
 
 		BuildingComplex buildingComplex = this.buildComplexRepo.findById(buildComplexId).get();
 		this.pdfGeneratorService.exportReportForEquipment(response, buildingComplex);
-	}
+	}*/
 
 	@PostMapping("/coowner_rep/unitReport/{unitId}")
 	public void unitReportCoownerRep(HttpServletResponse response, @PathVariable Integer unitId) throws IOException {

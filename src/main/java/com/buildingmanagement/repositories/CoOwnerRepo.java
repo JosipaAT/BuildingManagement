@@ -10,4 +10,6 @@ import java.util.List;
 
 public interface CoOwnerRepo extends JpaRepository<CoOwner, Integer> {
     CoOwner findByUsername(String username);
+
+    CoOwner findByCoOwnerId(Integer coOwnerId);
 }

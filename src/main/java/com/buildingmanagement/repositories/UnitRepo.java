@@ -13,8 +13,8 @@ import java.util.List;
 
 public interface UnitRepo extends JpaRepository<Unit, Integer> {
 
-    @Query("SELECT u FROM Unit u WHERE u.floor.floorId = :floorId")
-    Page<Unit> getAllUnitOfFloor(@Param("floorId") Integer floorId, Pageable pageable);
+  //  @Query("SELECT u FROM Unit u WHERE u.floor.floorId = :floorId")
+    Page<Unit> findAllByFloor_floorId(@Param("floorId") Integer floorId, Pageable pageable);
 
     @Query("SELECT u FROM Unit u WHERE u.coOwner.coOwnerId = :coOwnerId")
     List<Unit> getAllUnitOfCoOwner(@Param("coOwnerId") Integer coOwnerId);

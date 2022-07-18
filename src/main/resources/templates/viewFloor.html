@@ -48,6 +48,7 @@ thead{
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
+            <span th:text="${address}"></span>
             <a class="navbar-brand" sec:authorize="hasAuthority('BUILDMANAGER')" th:href="@{/manager/0}">Home </a>
             <a class="navbar-brand" sec:authorize="hasAuthority('COOWNERREP')" th:href="@{/coowner_rep}">Home </a>
             <a class="navbar-brand" sec:authorize="hasAuthority('BUILDMANAGER')" th:href="@{/manager/addBuildComplexForm}">Add Building </a>

@@ -12,13 +12,12 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import com.buildingmanagement.services.impl.PDFGeneratorService.*;
 
-import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -117,6 +116,7 @@ public class BuildComplexController {
         return "viewBuilding";
     }
 
+
     @GetMapping("/manager/viewFloor/{floorId}/{page}")
     private String viewFloor( @PathVariable Integer floorId, @PathVariable Integer page , Model model, String keyword, Integer unitTypeId){
         Floor floor = this.floorRepo.findById(floorId).get();
@@ -130,7 +130,7 @@ public class BuildComplexController {
         Pageable pageable = PageRequest.of(page,5, sort);
         Page<Unit> units = null;
         if(keyword==null&&unitTypeId==null) {
-            units = this.unitRepo.getAllUnitOfFloor(floorId, pageable);
+            units = this.unitRepo.findAllByFloor_floorId(floorId, pageable);
         }
         else if(keyword!=null&&unitTypeId==null){
             units = this.unitRepo.searchUnitByKeyword(keyword, floorId, pageable);

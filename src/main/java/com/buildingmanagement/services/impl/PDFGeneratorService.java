@@ -1,31 +1,22 @@
 package com.buildingmanagement.services.impl;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.buildingmanagement.entities.BuildingComplex;
-import com.buildingmanagement.entities.Equipment;
-import com.buildingmanagement.entities.Expense;
-import com.buildingmanagement.entities.Income;
+import com.buildingmanagement.entities.*;
 import com.buildingmanagement.repositories.BuildComplexRepo;
 import com.buildingmanagement.repositories.UnitRepo;
-import com.lowagie.text.Document;
-import com.lowagie.text.Font;
-import com.lowagie.text.FontFactory;
-import com.lowagie.text.PageSize;
-import com.lowagie.text.Paragraph;
-import com.lowagie.text.Phrase;
+import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class PDFGeneratorService {
@@ -324,5 +315,128 @@ public class PDFGeneratorService {
 
         document.close();
     }
+
+    public void exportReportForExpenses(HttpServletResponse response,
+                                        Unit unit, List<Expense> filteredExpenses,
+                                        Date startDate, Date endDate) throws IOException {
+        Document document = new Document(PageSize.A4);
+        PdfWriter.getInstance(document, response.getOutputStream());
+
+        document.open();
+        Font fontTitle = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
+        fontTitle.setSize(18);
+
+
+        Paragraph paragraph = new Paragraph("Report for unit " + unit.getFloor(), fontTitle);
+        paragraph.setAlignment(Paragraph.ALIGN_CENTER);
+
+        Font fontNormal = FontFactory.getFont(FontFactory.HELVETICA);
+        fontNormal.setSize(12);
+
+        Font fontBold = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
+        fontBold.setSize(14);
+
+        Paragraph paragraph1 = new Paragraph("Building CoOwner Name", fontBold);
+        Paragraph paragraph2 = new Paragraph(unit.getCoOwner().getCoOwnerName(), fontNormal);
+        Paragraph paragraph5 = new Paragraph("Building Address", fontBold);
+        Paragraph paragraph6 = new Paragraph(unit.getBuildingComplex().getStreetName() + " " + unit.getBuildingComplex().getStreetNumber() + " " + unit.getBuildingComplex().getCity() + " " + unit.getBuildingComplex().getPostalCode(), fontNormal);
+
+        paragraph1.setAlignment(Paragraph.ALIGN_LEFT);
+        paragraph2.setAlignment(Paragraph.ALIGN_LEFT);
+        paragraph5.setAlignment(Paragraph.ALIGN_LEFT);
+        paragraph6.setAlignment(Paragraph.ALIGN_LEFT);
+
+        document.add(paragraph);
+        document.add(paragraph1);
+        document.add(paragraph2);
+        document.add(paragraph5);
+        document.add(paragraph6);
+
+
+        SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
+
+
+        if (startDate != null) {
+            Paragraph paragraph7 = new Paragraph("Period: " + formatter.format(startDate) + " - " + formatter.format(endDate), fontBold);
+            paragraph7.setAlignment(Paragraph.ALIGN_LEFT);
+            document.add(paragraph7);
+
+        }
+
+
+        PdfPTable table = new PdfPTable(6);
+        table.setHeaderRows(1);
+        table.setSpacingBefore(15);
+        table.setSpacingAfter(15);
+
+        PdfPCell numberCellHeader = new PdfPCell(new Phrase("No", fontBold));
+        numberCellHeader.setPadding(10);
+        table.addCell(numberCellHeader);
+
+        PdfPCell dateCreatedHeader = new PdfPCell(new Phrase("Date Created", fontBold));
+        dateCreatedHeader.setPadding(10);
+        table.addCell(dateCreatedHeader);
+
+        PdfPCell descriptionHeader = new PdfPCell(new Phrase("Description", fontBold));
+        descriptionHeader.setPadding(10);
+        table.addCell(descriptionHeader);
+
+        PdfPCell amountHeader = new PdfPCell(new Phrase("Amount", fontBold));
+        amountHeader.setPadding(10);
+        table.addCell(amountHeader);
+
+        PdfPCell expenseTypeHeader = new PdfPCell(new Phrase("Expense Type", fontBold));
+        expenseTypeHeader.setPadding(10);
+        table.addCell(expenseTypeHeader);
+
+        PdfPCell dueDateHeader = new PdfPCell(new Phrase("Due Date", fontBold));
+        dueDateHeader.setPadding(10);
+        table.addCell(dueDateHeader);
+
+        table.completeRow();
+
+        int number = 1;
+        Integer totalAmount = 0;
+
+        for (Expense expense : filteredExpenses) {
+
+            PdfPCell numberCell = new PdfPCell(new Phrase(number + "."));
+            numberCell.setPadding(10);
+            table.addCell(numberCell);
+
+            PdfPCell dateOfReceipt = new PdfPCell(new Phrase(formatter.format(expense.getDateOfReceipt())));
+            dateOfReceipt.setPadding(10);
+            table.addCell(dateOfReceipt);
+
+            PdfPCell description = new PdfPCell(new Phrase(expense.getDescription()));
+            description.setPadding(10);
+            table.addCell(description);
+
+            PdfPCell amount = new PdfPCell(new Phrase(expense.getAmount()));
+            amount.setPadding(10);
+            table.addCell(amount);
+
+            PdfPCell expenseType = new PdfPCell(new Phrase(expense.getExpenseType().getExpenseTypeName()));
+            expenseType.setPadding(10);
+            table.addCell(expenseType);
+
+            PdfPCell dueDate = new PdfPCell(new Phrase(formatter.format(expense.getDueDate())));
+            dueDate.setPadding(10);
+            table.addCell(dueDate);
+
+            table.completeRow();
+            number++;
+
+            totalAmount += expense.getAmount();
+        }
+        document.add(table);
+        Paragraph totalAmountP = new Paragraph("Total Amount: " + totalAmount, fontBold);
+        totalAmountP.setAlignment(Paragraph.ALIGN_LEFT);
+        document.add(totalAmountP);
+
+
+        document.close();
+    }
+
 }
 
