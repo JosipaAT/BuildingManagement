@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Registration Home</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+              integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    </head>
+
+    <style>
+html {
+  height: 100%;
+}
+body, .navbar{
+  margin:0;
+  padding:0;
+  font-family: sans-serif;
+  background: linear-gradient(#141e30, #243b55);
+}
+
+</style>
+
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" sec:authorize="hasAuthority('BUILDMANAGER')" th:href="@{/manager/0}">Home </a>
+            <a class="navbar-brand" sec:authorize="hasAuthority('COOWNERREP')" th:href="@{/coowner_rep}">Home </a>
+            <a class="navbar-brand" sec:authorize="hasAuthority('BUILDMANAGER')" th:href="@{/manager/addBuildComplexForm}">Add Building </a>
+            <a class="navbar-brand" th:href="@{/logout}">Logout</a>>
+        </div>
+    </div>
+</nav>
+
+<br>
+<br>
+<br>
+<br>
+<div class="container">
+    <form style="text-align: center;"  class="w-100" sec:authorize="hasAuthority('BUILDMANAGER')" th:action="@{/manager/addUnit/}+${floorId}+@{/}+${buildComplexId}" method="post" >
+
+        <span th:name="buildComplexId" th:value="${buildComplexId}"/>
+        <span th:name="floorId" th:value="${floorId}"/>
+
+        <div class="form-group">
+            <label style="color:white;" class="control-label" for="areaSqrMeter">Area Sqr Meter</label>
+            <input type="number" id="areaSqrMeter" style="width: 300px; margin: auto;" th:name="areaSqrMeter" th:value="${areaSqrMeter}" required
+                   autofocus="autofocus" class="form-control">
+        </div>
+
+        <div class="form-group">
+            <label style="color:white;" class="control-label" for="noOfTenants">No Of Tenants</label>
+            <input type="number" id="noOfTenants" style="width: 300px; margin: auto;" th:name="noOfTenants" th:value="${noOfTenants}"
+                   autofocus="autofocus" class="form-control">
+        </div>
+
+        <br/>
+        <label style="color:white;" >Select Unit Type</label>
+        <br/>
+        <select style="width: 300px; margin: auto;" class="form-control" id="unitTypeId" name="unitTypeId">
+            <option
+                    th:each="unitType: ${unitTypes}"
+                    th:text="${unitType.unitTypeName}"
+                    th:value="${unitType.unitTypeId}"
+                    th:name="${unitType.unitTypeId}">
+            </option>
+        </select>
+        <br/>
+        <br/>
+
+        <div>
+            <a style="color: white;"  th:href="@{/manager/viewFloor/}+${floorId}+@{/0}">
+                <button type="button" class="btn btn-danger">Cancel</button>
+            </a>
+            <button type="submit" class="btn btn-primary">Confirm Add</button>
+        </div>
+    </form>
+
+    <form style="text-align: center;" class="w-100" sec:authorize="hasAuthority('COOWNERREP')" th:action="@{/coowner_rep/addUnit/}+${floorId}+@{/}+${buildComplexId}" method="post" >
+
+        <span th:name="buildComplexId" th:value="${buildComplexId}"/>
+        <span th:name="floorId" th:value="${floorId}"/>
+
+        <div class="form-group">
+            <label style="color:white;" class="control-label" for="areaSqrMeter2">AreaSqrMeter</label>
+            <input type="number" id="areaSqrMeter2" style="width: 300px; margin: auto;" th:name="areaSqrMeter" th:value="${areaSqrMeter}" required
+                   autofocus="autofocus" class="form-control">
+        </div>
+
+        <div class="form-group">
+            <label style="color:white;" class="control-label" for="noOfTenants2">No Of Tenants</label>
+            <input type="number" id="noOfTenants2"  style="width: 300px; margin: auto;" th:name="noOfTenants" th:value="${noOfTenants}"
+                   autofocus="autofocus" class="form-control">
+        </div>
+
+        <div class="form-group">
+        <label style="color:white;" >Select Unit Type</label>
+        <select style="width: 300px; margin: auto;" class="form-control" id="unitTypeId2" name="unitTypeId">
+            <option
+                    th:each="unitType: ${unitTypes}"
+                    th:text="${unitType.unitTypeName}"
+                    th:value="${unitType.unitTypeId}"
+                    th:name="${unitType.unitTypeId}">
+            </option>
+        </select>
+        <br/>
+        </div>
+        <div>
+            <a style="color: white;"  th:href="@{/coowner_rep/viewFloor/}+${floorId}+@{/0}">
+                <button type="button" class="btn btn-danger">Cancel</button>
+            </a>
+            <button type="submit" class="btn btn-primary">Confirm Add</button>
+        </div>
+    </form>
+</div>
+
+</body>
+
+</html>

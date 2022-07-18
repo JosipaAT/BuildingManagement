@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Registration</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+
+<script>
+ function generatePass(){
+        var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$&^";
+        var pass = "";
+        for (var i=0;i<8;i++){
+            var randomNumber = Math.floor(Math.random() * chars.length);
+            pass += chars.substring(randomNumber, randomNumber+1 );
+        }
+     document.getElementById("password").value = pass
+}
+
+function getValue() {
+   var isChecked = document.getElementById('checkbox').checked;
+   var value = isChecked ? 1 : 0;
+   return value;
+}
+function myFunction() {
+  var checkbox = document.getElementById("checkbox");
+      if (checkbox.checked) {
+        document.getElementById("coOwnerName").disabled = true;
+        document.getElementById("contact").disabled = true;
+        document.getElementById("username").disabled = true;
+        document.getElementById("password").disabled = true;
+        document.getElementById("coOwnerId").disabled = false;
+    }
+    else {
+        document.getElementById("coOwnerName").disabled = false;
+        document.getElementById("contact").disabled = false;
+        document.getElementById("username").disabled = false;
+        document.getElementById("password").disabled = false;
+        document.getElementById("coOwnerId").disabled = true;
+    }
+}
+</script>
+
+<style>
+html {
+  height: 100%;
+}
+body, .navbar{
+  margin:0;
+  padding:0;
+  font-family: sans-serif;
+  background: linear-gradient(#141e30, #243b55);
+}
+
+.register-box {
+  position: absolute;
+  margin-top: 12px;
+  top: 50%;
+  left: 50%;
+  width:700px;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,.5);
+  box-sizing: border-box;
+  box-shadow: 0 15px 25px rgba(0,0,0,.6);
+  border-radius: 10px;
+}
+
+.register-box h2 {
+  color: #fff;
+  text-align: center;
+}
+
+
+</style>
+
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand"  th:href="@{/}">Home </a>
+      <a class="navbar-brand"  th:href="@{/logout}">Logout</a>
+    </div>
+  </div>
+</nav>
+<br>
+<br>
+<div class="container">
+  <div class="register-box">
+    <h2>Co-Owner</h2>
+    <div class="col-md-6 col-md-offset-3">
+
+      <form  th:action="@{/coowner_rep/addCoOwner/}+${unitId}" method="post" th:object="${coOwner}">
+        <div class="form-group">
+          <label style="color: white;" class="control-label" for="coOwnerName"> CoOwner Name </label >
+          <input id="coOwnerName" class="form-control"  th:field="*{coOwnerName}"  autofocus="autofocus" />
+        </div>
+
+        <div class="form-group">
+          <label style="color: white;" class="control-label" for="contact">Contact </label>
+          <input type="number" id="contact" class="form-control" th:field="*{contact}"  autofocus="autofocus" />
+        </div>
+
+        <div class="form-group">
+          <label style="color: white;" class="control-label" for="username"> Username <span><p style="color: red;">eg Apartment1</p></span></label>
+          <input id="username" class="form-control" th:field="*{username}"  autofocus="autofocus" />
+        </div>
+        <div class="form-group">
+          <button type="button" style="color: white; background-color: black" onclick="generatePass()">Generate Password</button>
+          <input type="password" id="password" class="form-control"  th:field="*{password}"  autofocus="autofocus"/>
+        </div>
+        <p class="text-center" style="color: red; "> Already Registered ?
+          <span>
+          <input type="checkbox" id="checkbox" onclick="myFunction() ">
+         </span>
+        </p>
+
+        <div class="form-group">
+        <label style="color:white;" >Select Co-Owner</label>
+        <select class="form-control" id="coOwnerId" name="coOwnerId"  disabled>
+          <option value="0" >Select</option>
+          <option
+                  th:each="coOwner: ${coOwners}"
+                  th:text="${coOwner.coOwnerName}"
+                  th:value="${coOwner.coOwnerId}">
+          </option>
+        </select>
+        </div>
+
+        <div class="form-group">
+          <a style="color: white;"  th:href="@{/coowner_rep/viewUnit/}+${unitId}+@{/0}+@{/0}">
+            <button type="button" class="btn btn-danger col-sm-offset-3">Cancel</button>
+          </a>
+          <button type="submit" class="btn btn-success col-offset-5">Save</button>
+        </div>
+
+      </form>
+    </div >
+  </div>
+
+</div>
+</body>
+
+</html>

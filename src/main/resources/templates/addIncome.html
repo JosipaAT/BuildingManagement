@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+
+    <head>
+        <meta charset="UTF-8">
+        <title>Registration Home</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+              integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    </head>
+
+    <style>
+html {
+  height: 100%;
+}
+body, .navbar{
+  margin:0;
+  padding:0;
+  font-family: sans-serif;
+  background: linear-gradient(#141e30, #243b55);
+}
+
+</style>
+
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" th:href="@{/manager/0}">Home </a>
+            <a class="navbar-brand" th:href="@{/manager/addBuildComplexForm}">Add Building </a>
+            <a class="navbar-brand" th:href="@{/logout}">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<br>
+<br>
+<br>
+<br>
+<div class="container">
+    <form style="text-align: center;" class="w-100" th:action="@{/manager/addIncome/}+${unitId}+@{/}+${buildComplexId}" method="post" >
+
+        <span th:name="buildComplexId" th:value="${buildComplexId}"/>
+        <span th:name="unitId" th:value="${unitId}"/>
+
+        <div class="form-group">
+            <label style="color:white;" class="control-label" for="dateOfPayment">Date Of Payment</label>
+            <input type="date" id="dateOfPayment" style="width: 300px; margin: auto;" th:name="dateOfPayment" th:value="${dateOfPayment}" required
+                   autofocus="autofocus" class="form-control">
+        </div>
+
+        <div class="form-group">
+            <label style="color:white;" class="control-label" for="description">Description</label>
+            <input type="text" id="description" style="width: 300px; margin: auto;" th:name="description" th:value="${description}" required
+                   autofocus="autofocus" class="form-control">
+        </div>
+
+        <div class="form-group">
+            <label style="color:white;" class="control-label" for="amount">Amount</label>
+            <input type="number" id="amount" style="width: 300px; margin: auto;" th:name="amount" th:value="${amount}" required
+                   autofocus="autofocus" class="form-control">
+        </div>
+
+        <div>
+            <a style="color: white;"  th:href="@{'/manager/viewUnit/'+${unitId}+'/0'+'/0'}">
+                <button type="button" class="btn btn-danger">Cancel</button>
+            </a>
+            <button type="submit" class="btn btn-primary">Confirm Add</button>
+        </div>
+    </form>
+</div>
+
+</body>
+
+</html>

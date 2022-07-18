@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Registration</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+<script>
+    function check(){
+    var chars1 = document.getElementById("streetName").value;
+    var chars2 = document.getElementById("city").value;
+     if (chars1.search(/[^a-zA-Z\s]+/) !=-1 || chars2.search(/[^a-zA-Z\s]+/) !=-1 ) {
+    alert("Only characters allowed in Street Name and City");
+    return false;
+    }
+    return true;
+   }
+
+</script>
+<style>
+html {
+  height: 100%;
+}
+body, .navbar{
+  margin:0;
+  padding:0;
+  font-family: sans-serif;
+  background: linear-gradient(#141e30, #243b55);
+}
+
+.register-box {
+  position: absolute;
+  margin-top: 12px;
+  top: 50%;
+  left: 50%;
+  width:700px;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,.5);
+  box-sizing: border-box;
+  box-shadow: 0 15px 25px rgba(0,0,0,.6);
+  border-radius: 10px;
+}
+
+.register-box h2 {
+  color: #fff;
+  text-align: center;
+}
+
+
+</style>
+
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand"  th:href="@{/}">Home </a>
+            <a class="navbar-brand"  th:href="@{/admin/addBuildManagerForm}">Add Manager </a>
+            <a class="navbar-brand"  th:href="@{/logout}">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<br>
+<br>
+<div class="container">
+    <div class="register-box">
+        <h2>Building Manager</h2>
+        <div class="col-md-6 col-md-offset-3">
+            <span th:name="buildManagerId" th:value="${buildManagerId}"/>
+            <form  onsubmit="return check()" th:action="@{/admin/updateBuildManager/}+${buildManagerId}" method="post">
+                <div class="form-group">
+                    <label style="color: white;" class="control-label" for="buildManagerName"> Building Manager Name </label >
+                    <input id="buildManagerName" class="form-control" th:name="buildManagerName" th:value="${buildManagerName}"
+                           autofocus="autofocus" />
+                </div>
+
+                <div class="form-group">
+                    <label style="color: white;" class="control-label" for="username">Username</label>
+                    <input type="text" id="username" class="form-control" th:name="username" th:value="${username}" autofocus="autofocus" />
+                </div>
+
+                <div class="form-group">
+                    <label style="color: white;" class="control-label" for="streetName">Street Name</label>
+                    <input  type="text" id="streetName" class="form-control" th:name="streetName" th:value="${streetName}"
+                           autofocus="autofocus" />
+                </div>
+                <div class="form-group">
+                    <label style="color: white;" class="control-label" for="streetNumber">Street Number</label>
+                    <input type="number" id="streetNumber" class="form-control" th:name="streetNumber" th:value="${streetNumber}"
+                           autofocus="autofocus" />
+                </div>
+                <div class="form-group">
+                    <label style="color: white;" class="control-label" for="city">City</label>
+                    <input type="text" id="city" class="form-control" th:name="city" th:value="${city}"
+                           autofocus="autofocus" />
+                </div>
+                <div class="form-group">
+                    <label style="color: white;" class="control-label" for="postalCode">Postal-Code</label>
+                    <input type="number" id="postalCode" class="form-control" th:name="postalCode" th:value="${postalCode}"
+                           autofocus="autofocus" />
+                </div>
+
+                <div class="form-group">
+                    <label style="color: white;" class="control-label" for="contact">Contact </label>
+                    <input type="number" id="contact" class="form-control" th:name="contact" th:value="${contact}"
+                           autofocus="autofocus" />
+                </div>
+
+                <div class="form-group">
+                    <a style="color: white;"  th:href="@{/}">
+                        <button type="button" class="btn btn-danger col-sm-offset-2">Cancel</button>
+                    </a>
+                    <button type="submit" class="btn btn-success ">Update</button>
+                    <a style="color: white;"  th:href="@{'/pdf/generate/'+ ${username} +'/'+ ${password} +'/'+ ${userType}}">
+                    <button style="margin-start:10%" type="button" class="btn btn-primary">Export</button>
+                    </a>
+                </div>
+
+            </form>
+        </div >
+    </div>
+
+</div>
+</body>
+
+</html>

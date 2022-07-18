@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+        <meta charset="UTF-8">
+        <title>Registration Home</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+              integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    </head>
+    <style>
+html {
+  height: 100%;
+}
+body{
+  margin:0;
+  padding:0;
+  font-family: sans-serif;
+  background: linear-gradient(#141e30, #243b55);
+  height: 100%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+.navbar{
+  margin:0;
+  padding:0;
+  font-family: sans-serif;
+  background: linear-gradient(#141e30, #243b55);
+}
+
+    tbody tr:nth-of-type(even) {
+   background-color: #34495e;
+}
+
+thead{
+
+ background: #2e8b57;
+}
+</style>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" th:href="@{/manager/0}">Home </a>
+            <a class="navbar-brand" th:href="@{/manager/addBuildComplexForm}">Add Building </a>
+            <a class="navbar-brand" th:href="@{/changePass}">Change Password</a>
+            <a class="navbar-brand" th:href="@{/logout}">Logout</a>
+        </div>
+    </div>
+</nav>
+<br/>
+<br/>
+<div class="container">
+    <br/>
+    <br/>
+    <h2 class="text-center" style="color:white"> Buildings</h2>
+    <br/>
+    <span style="float:left;">
+        <p style="color:white; ">Search By</p>
+                    <form th:action="@{/manager/0}" method="get">
+                        <input type="text" name="keyword" placeholder="CoOwnerRep Username..." >
+                        <br/>
+                        <button style="margin-bottom: 4%; " class="btn btn-success" type="submit">Go</button>
+                        <button style="margin-bottom: 4%; " class="btn btn-danger col-offset-5" type="submit">Reset</button>
+                    </form>
+    </span>
+    <div class="table-container" >
+        <table class="table table-bordered">
+            <thead>
+            <tr class="text-center">
+                <td style="color:white;"scope="col py-2">#</td>
+                <td style="color:white;"scope="col py-2">CoOwnerRep Username</td>
+                <td style="color:white;"scope="col py-2">Password</td>
+                <td style="color:white;" scope="col">Street Name</th>
+                <td style="color:white;" scope="col">Street Number</th>
+                <td style="color:white;" scope="col">City</th>
+                <td style="color:white;" scope="col">Postal-Code</th>
+                <td style="color:white;" scope="col">Actions</td>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            <tr class="text-center" th:each="buildComplex: ${buildComplexes}">
+                <td style="color:white;" scope="row" th:text="${buildComplex.buildComplexId}">1</td>
+                <td style="color:white;" scope="row" th:text="${buildComplex.username}">CoOwnerRep Username</td>
+                <td style="color:white;" scope="row" th:text="${buildComplex.password}">Password</td>
+                <td style="color:white;" th:text="${buildComplex.streetName}">Street Name</td>
+                <td style="color:white;" th:text="${buildComplex.streetNumber}">Street Number</td>
+                <td style="color:white;" th:text="${buildComplex.city}">City</td>
+                <td style="color:white;" th:text="${buildComplex.postalCode}">Postal-Code</td>
+                <td>
+                  <button style="background-color:red"><a style="color:white;" th:href="@{/manager/viewBuilding/}+${buildComplex.buildComplexId}">View</a></button>
+                  <button style="background-color:black"><a style="color:white;" th:href="@{/manager/addInfoForm/}+${buildComplex.buildComplexId}">Add Info</a></button>
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+        <nav th:if="${keyword==null}" aria-label="Page navigation example">
+            <ul class="pagination">
+                <li th:if="${currentPage != 0}" class="page-item"><a th:href="@{/manager/}+${currentPage-1}" class="page-link" href="#">Previous</a></li>
+                <li th:classappend="${currentPage==i-1?'active':''}" th:each="i : ${#numbers.sequence(1, totalPages)}" class="page-item"><a th:href="@{/manager/}+${i-1}" class="page-link" href="#"><span th:text="${i}"></span></a></li>
+                <li th:if="${currentPage+1 != totalPages}" class="page-item"><a th:href="@{'/manager/'+${currentPage+1}}" class="page-link" href="#">Next</a></li>
+            </ul>
+        </nav>
+        <nav th:if="${keyword!=null}" aria-label="Page navigation example">
+            <ul class="pagination">
+                <li th:if="${currentPage != 0}" class="page-item"><a th:href="@{'/manager/'+${currentPage-1}+'?keyword='+${keyword}}" class="page-link" href="#">Previous</a></li>
+                <li th:classappend="${currentPage==i-1?'active':''}" th:each="i : ${#numbers.sequence(1, totalPages)}" class="page-item"><a th:href="@{'/manager/'+${i-1}+'?keyword='+${keyword}}" class="page-link" href="#"><span th:text="${i}"></span></a></li>
+                <li th:if="${currentPage+1 != totalPages}" class="page-item"><a th:href="@{'/manager/'+${currentPage+1}+'?keyword='+${keyword}}" class="page-link" href="#">Next</a></li>
+            </ul>
+        </nav>
+    </div>
+
+</div>
+
+
+</body>
+
+</html>

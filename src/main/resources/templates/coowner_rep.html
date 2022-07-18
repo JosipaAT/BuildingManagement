@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+        <meta charset="UTF-8">
+        <title>Registration Home</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+              integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    </head>
+    <style>
+html {
+  height: 100%;
+}
+body{
+  margin:0;
+  padding:0;
+  font-family: sans-serif;
+  background: linear-gradient(#141e30, #243b55);
+  height: 100%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+.navbar{
+  margin:0;
+  padding:0;
+  font-family: sans-serif;
+  background: linear-gradient(#141e30, #243b55);
+}
+
+   tbody tr:nth-of-type(even) {
+   background-color: #34495e;
+}
+
+thead{
+
+ background: #2e8b57;
+}
+
+h2{
+ display: inline-block;
+ position: relative;
+ font-size: 1.8vw;
+ color: #01fe87;
+ -webkit-text-stroke: 0vw #383d52;
+ overflow: hidden;
+}
+
+h2::before{
+content: attr(data-text);
+position: absolute;
+top: 0;
+left: 0;
+width: 0;
+height: 100%;
+color: #01fe87;
+-webkit-text-stroke: 0vw #383d52;
+border-right: 2px solid #01fe87;
+overflow: hidden;
+animation: animate 6s linear infinite;
+}
+
+@keyframes animate
+{
+  0%, 10%, 100%
+  {
+  width: 0%;
+  }
+  70%, 90%
+  {
+  width:100%;
+  }
+}
+</style>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" th:href="@{/coowner_rep}">Home </a>
+            <a class="navbar-brand" th:href="@{/coowner_rep/postBulletin/}+${buildComplex.buildComplexId}">Post Bulletin</a>
+            <a class="navbar-brand" th:href="@{/changePass}">Change Password</a>
+            <a class="navbar-brand" th:href="@{/logout}">Logout</a>
+        </div>
+    </div>
+</nav>
+<br>
+<br>
+<div class="container">
+    <br/>
+    <h3 class="text-center" style="color:white"> Bulletin</h3>
+    <h2 th:utext="${bulletin}"/>
+    <br/>
+    <h3 class="text-center" style="color:white"> Building Details</h3>
+    <span style="float:left;">
+               <form th:action="@{/coowner_rep/buildReport/}+${buildComplex.buildComplexId}" method="post" >
+                   <p style="color:white; ">Print Report</p>
+                   <button style="margin-bottom: 5% " class="btn btn-danger" type="submit" >Print</button>
+               </form>
+           </span>
+    <br/>
+    <div class="table-container" >
+        <table class="table table-bordered">
+            <thead >
+            <tr class="text-center">
+                <td style="color:white;"scope="col py-2">#</td>
+                <td style="color:white;"scope="col py-2">Manager Name</td>
+                <td style="color:white;" scope="col">Street Name</th>
+                <td style="color:white;" scope="col">Street Number</th>
+                <td style="color:white;" scope="col">City</th>
+                <td style="color:white;" scope="col">Postal-Code</th>
+                <td style="color:white;" scope="col">No Of Floors</th>
+                <td style="color:white;" scope="col">Actions</td>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            <tr class="text-center">
+                <td style="color:white;" scope="row" th:text="${buildComplex.buildComplexId}">1</td>
+                <td style="color:white;" scope="row" th:text="${buildComplex.buildManager.buildManagerName}">Manager Name</td>
+                <td style="color:white;" th:text="${buildComplex.streetName}">Street Name</td>
+                <td style="color:white;" th:text="${buildComplex.streetNumber}">Street Number</td>
+                <td style="color:white;" th:text="${buildComplex.city}">City</td>
+                <td style="color:white;" th:text="${buildComplex.postalCode}">Postal-Code</td>
+                <td style="color:white;" th:text="${buildComplex.floors.size()}">No Of Floors</td>
+                <td>
+                    <button style="background-color:black"> <a style="color:white;" class="fw-bold" th:href="@{/coowner_rep/addFloorForm/}+${buildComplex.buildComplexId}">Add Floor</a></button>
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
+    <br/>
+    <br/>
+    <h3 class="text-center" style="color:white">Info</h3>
+    <span style="float:left;">
+        <p style="color:white; ">Search By</p>
+                    <form th:action="@{/coowner_rep}" method="get">
+                        <input type="text" name="keyword" placeholder="Service Name..." >
+                        <br/>
+                        <button style="margin-bottom: 4%; " class="btn btn-success" type="submit">Go</button>
+                        <button style="margin-bottom: 4%; " class="btn btn-danger col-offset-5" type="submit">Reset</button>
+                    </form>
+           </span>
+    <br/>
+    <div class="table-container" >
+        <table class="table table-bordered">
+            <thead>
+            <tr class="text-center">
+                <td style="color:white;"scope="col py-2">#</td>
+                <td style="color:white;"scope="col py-2">Service Name</td>
+                <td style="color:white;"scope="col py-2">Service Description</td>
+                <td style="color:white;" scope="col">Street Name</th>
+                <td style="color:white;" scope="col">Street Number</th>
+                <td style="color:white;" scope="col">City</th>
+                <td style="color:white;" scope="col">Postal-Code</th>
+                <td style="color:white;" scope="col">Contact</th>
+                <td style="color:white;" scope="col">Mail</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr class="text-center" th:each="info: ${infos}">
+                <td style="color:white;" scope="row" th:text="${info.infoId}">1</td>
+                <td style="color:white;" scope="row" th:text="${info.serviceName}">Service Name</td>
+                <td style="color:white;" scope="row" th:text="${info.serviceDescription}">Service Description</td>
+                <td style="color:white;" th:text="${info.streetName}">Street Name</td>
+                <td style="color:white;" th:text="${info.streetNumber}">Street Number</td>
+                <td style="color:white;" th:text="${info.city}">City</td>
+                <td style="color:white;" th:text="${info.postalCode}">Postal-Code</td>
+                <td style="color:white;" th:text="${info.contact}">Contact</td>
+                <td style="color:white;" th:text="${info.mail}">Mail</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <br/>
+    <br/>
+    <h3 class="text-center" style="color:white">Floors</h3>
+        <div class="table-container" >
+            <table class="table table-bordered">
+                <thead>
+                <tr class="text-center">
+                    <td style="color:white;"scope="col py-2">#</td>
+                    <td style="color:white;" scope="col">Floor Name</td>
+                    <td style="color:white;" scope="col">Actions</td>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <tr class="text-center" th:each="floor: ${floors}">
+                    <td style="color:white;" scope="row" th:text="${floor.floorId}">1</td>
+                    <td style="color:white;" th:text="${floor.floorName}">The name</td>
+                    <td>
+                        <button style="background-color:red">  <a style="color:white;" class="fw-bold" th:href="@{/coowner_rep/viewFloor/}+${floor.floorId}+@{/0}">View</a></button>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+</div>
+</body>
+</html>

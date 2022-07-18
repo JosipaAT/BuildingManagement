@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+        <meta charset="UTF-8">
+        <title>Registration Home</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+              integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    </head>
+    <style>
+html {
+  height: 100%;
+}
+body{
+  margin:0;
+  padding:0;
+  font-family: sans-serif;
+  background: linear-gradient(#141e30, #243b55);
+  height: 100%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+.navbar{
+  margin:0;
+  padding:0;
+  font-family: sans-serif;
+  background: linear-gradient(#141e30, #243b55);
+}
+</style>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" th:href="@{/manager/0}">Home </a>
+            <a class="navbar-brand" th:href="@{/logout}">Logout</a>
+        </div>
+    </div>
+</nav>
+<br>
+<br>
+<br>
+<br>
+<div class="container">
+    <form  style="text-align: center;" class="w-100" th:action="@{'/manager/updateInfo/'+${infoId}}" method="post">
+           <div class="form-group">
+              <label style="color:white;" class="control-label" for="serviceName">Service Name</label>
+               <input type="text" id="serviceName" style="width: 300px; margin: auto;"  th:name="serviceName" th:value="${serviceName}" required
+                   autofocus="autofocus" class="form-control">
+           </div>
+           <div class="form-group">
+               <label style="color:white;" class="control-label" for="serviceDescription">Service Description</label>
+               <input type="text" id="serviceDescription" style="width: 300px; margin: auto;"  th:name="serviceDescription" th:value="${serviceDescription}" required
+                   autofocus="autofocus" class="form-control">
+           </div>
+            <div class="form-group">
+                <label style="color: white;" class="control-label" for="streetName"> Street Name</label>
+                <input type="text" id="streetName" class="form-control" style="width: 300px; margin: auto;"  th:name="streetName" th:value="${streetName}" required autofocus="autofocus" />
+            </div>
+
+            <div class="form-group">
+                <label style="color: white;" class="control-label" for="streetNumber"> Street Number</label>
+                <input type="number" id="streetNumber" class="form-control" style="width: 300px; margin: auto;" th:name="streetNumber" th:value="${streetNumber}" required autofocus="autofocus" />
+            </div>
+            <div class="form-group">
+                <label style="color: white;" class="control-label" for="city">City</label>
+                <input type="text" id="city" class="form-control" style="width: 300px; margin: auto;" th:name="city" th:value="${city}" required autofocus="autofocus" />
+            </div>
+            <div class="form-group">
+                <label style="color: white;" class="control-label" for="postalCode">Postal-Code</label>
+                <input type="number" id="postalCode" class="form-control" style="width: 300px; margin: auto;"  th:name="postalCode" th:value="${postalCode}" required autofocus="autofocus" />
+            </div>
+
+            <div class="form-group">
+                <label style="color: white;" class="control-label" for="contact">Contact </label>
+                <input type="number" id="contact" class="form-control" style="width: 300px; margin: auto;" th:name="contact" th:value="${contact}" required autofocus="autofocus" />
+            </div>
+
+            <div class="form-group">
+                <label style="color: white;" class="control-label" for="mail">Email</label>
+                <input type="email" id="mail" class="form-control" style="width: 300px; margin: auto;" th:name="mail" th:value="${mail}" required autofocus="autofocus" />
+            </div>
+
+        <div>
+            <a style="color: white;"  th:href="@{/}">
+                <button type="button" class="btn btn-danger">Cancel</button>
+            </a>
+            <button type="submit" class="btn btn-success ">Save</button>
+        </div>
+        <br/>
+        <br/>
+    </form>
+</div>
+
+</body>
+
+</html>

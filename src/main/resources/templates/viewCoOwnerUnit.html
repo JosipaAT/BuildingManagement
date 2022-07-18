@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3" xmlns:color="http://www.w3.org/1999/xhtml"
+      xmlns:margin-inline-start="http://www.w3.org/1999/xhtml" xmlns:margin-inline-end="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Registration Home</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+
+<style>
+html {
+  height: 100%;
+}
+body{
+  margin:0;
+  padding:0;
+  font-family: sans-serif;
+  background: linear-gradient(#141e30, #243b55);
+  height: 100%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+.navbar{
+  margin:0;
+  padding:0;
+  font-family: sans-serif;
+  background: linear-gradient(#141e30, #243b55);
+}
+  .row {
+        color: white;
+        padding: 10px;
+        font-family: Sans-Serif;
+    }
+
+    tbody tr:nth-of-type(even) {
+   background-color: #34495e;
+}
+
+thead{
+
+ background: #2e8b57;
+}
+
+</style>
+
+<body>
+
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand"  th:href="@{/coowner}">Home </a>
+            <a class="navbar-brand" th:href="@{/logout}">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<br>
+<br>
+
+<div class="container" style="height: 100vh;">
+    <br/>
+    <h3 class="text-center" style="color:white;"> Unit Details</h3>
+    <br/>
+    <div class="table-container" >
+        <table class="table table-bordered">
+            <thead>
+            <tr class="text-center">
+                <td style="color:white;"scope="col py-2">#</td>
+                <td style="color:white;" scope="col">Area Sqr Meter</td>
+                <td style="color:white;" scope="col">No of Tenants</td>
+                <td style="color:white;" scope="col">Unit Type</td>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            <tr class="text-center">
+                <td style="color:white;" scope="row" th:text="${unit.unitId}">1</td>
+                <td style="color:white;" th:text="${unit.areaSqrMeter}">Area Sqr Meter</td>
+                <td style="color:white;" th:text="${unit.noOfTenants}">No of Tenants</td>
+                <td style="color:white;" th:text="${unit.unitType.unitTypeName}">Unit Type</td>
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
+    <br/>
+    <br/>
+    <h3 class="text-center" style="color:white;">Expenses</h3>
+    <div class="table-container" >
+        <table class="table table-bordered">
+            <thead>
+            <tr class="text-center">
+                <td style="color:white;"scope="col py-2">#</td>
+                <td style="color:white;" scope="col">Description</td>
+                <td style="color:white;" scope="col">Amount</td>
+                <td style="color:white;" scope="col">Expense Type</td>
+                <td style="color:white;" scope="col">Date Of Receipt</td>
+                <td style="color:white;" scope="col">Due Date</td>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr class="text-center" th:each="expense: ${expenses}">
+                <td style="color:white;" scope="row" th:text="${expense.expenseId}">1</td>
+                <td style="color:white;" th:text="${expense.description}">Description</td>
+                <td style="color:white;" th:text="${expense.amount}">Amount</td>
+                <td style="color:white;" th:text="${expense.expenseType.expenseTypeName}">Expense Type</td>
+                <td style="color:white;" th:text="${#dates.format(expense.dateOfReceipt, 'dd/MM/yyyy')}">Date Of Receipt</td>
+                <td style="color:white;" th:text="${#dates.format(expense.dueDate, 'dd/MM/yyyy')}">Due Date</td>
+
+            </tr>
+
+            </tbody>
+        </table>
+    </div>
+    <br/>
+    <br/>
+    <h3 class="text-center" style="color:white;">Payment Details</h3>
+        <div class="table-container" >
+            <table class="table table-bordered">
+                <thead>
+                <tr class="text-center">
+                    <td style="color:white;"scope="col py-2">#</td>
+                    <td style="color:white;" scope="col">Date Of Payment</td>
+                    <td style="color:white;" scope="col">Amount Paid</td>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr class="text-center" th:each="income: ${incomes}">
+                    <td style="color:white;" scope="row" th:text="${income.incomeId}">1</td>
+                    <td style="color:white;" th:text="${#dates.format(income.dateOfPayment, 'dd/MM/yyyy')}">Date Of Payment</td>
+                    <td style="color:white;" th:text="${income.amount}">Amount Paid</td>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+</div>
+</body>
+</html>
