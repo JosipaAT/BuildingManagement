@@ -327,8 +327,10 @@ public class PDFGeneratorService {
         fontTitle.setSize(18);
 
 
-        Paragraph paragraph = new Paragraph("Report for unit " + unit.getFloor(), fontTitle);
+        Paragraph paragraph = new Paragraph("Report for unit " + unit.getFloor().getFloorName(), fontTitle);
         paragraph.setAlignment(Paragraph.ALIGN_CENTER);
+        document.add(paragraph);
+
 
         Font fontNormal = FontFactory.getFont(FontFactory.HELVETICA);
         fontNormal.setSize(12);
@@ -336,19 +338,21 @@ public class PDFGeneratorService {
         Font fontBold = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
         fontBold.setSize(14);
 
-        Paragraph paragraph1 = new Paragraph("Building CoOwner Name", fontBold);
-        Paragraph paragraph2 = new Paragraph(unit.getCoOwner().getCoOwnerName(), fontNormal);
+        if(unit.getCoOwner() != null) {
+            Paragraph paragraph1 = new Paragraph("Building CoOwner Name", fontBold);
+            Paragraph paragraph2 = new Paragraph(unit.getCoOwner().getCoOwnerName(), fontNormal);
+            paragraph1.setAlignment(Paragraph.ALIGN_LEFT);
+            paragraph2.setAlignment(Paragraph.ALIGN_LEFT);
+            document.add(paragraph1);
+            document.add(paragraph2);
+        }
         Paragraph paragraph5 = new Paragraph("Building Address", fontBold);
         Paragraph paragraph6 = new Paragraph(unit.getBuildingComplex().getStreetName() + " " + unit.getBuildingComplex().getStreetNumber() + " " + unit.getBuildingComplex().getCity() + " " + unit.getBuildingComplex().getPostalCode(), fontNormal);
 
-        paragraph1.setAlignment(Paragraph.ALIGN_LEFT);
-        paragraph2.setAlignment(Paragraph.ALIGN_LEFT);
         paragraph5.setAlignment(Paragraph.ALIGN_LEFT);
         paragraph6.setAlignment(Paragraph.ALIGN_LEFT);
 
-        document.add(paragraph);
-        document.add(paragraph1);
-        document.add(paragraph2);
+
         document.add(paragraph5);
         document.add(paragraph6);
 

@@ -182,6 +182,8 @@ public class BuildComplexController {
                 model.addAttribute("endDate1",simpleDateFormat.format(endDate1));
             }
         }
+        List<ExpenseType> expenseTypes = this.expenseTypeRepo.findAll();
+        model.addAttribute("expenseTypes", expenseTypes);
         model.addAttribute("currentPage1",page1);
         model.addAttribute("currentPage2",page2);
         model.addAttribute("totalPages1", expenses.getTotalPages() );

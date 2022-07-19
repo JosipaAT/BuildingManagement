@@ -300,7 +300,8 @@ public class UserController {
 	}*/
 
 	@PostMapping("/manager/unitReport/{unitId}")
-	public void getReport(HttpServletResponse response, @PathVariable("unitId") Integer unitId, @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
+	public void getExpenseReport(HttpServletResponse response, @PathVariable("unitId") Integer unitId,
+		@DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
 						  @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate, Integer expenseTypeId) throws IOException {
 
 		Unit unit = unitRepo.findById(unitId).get();
