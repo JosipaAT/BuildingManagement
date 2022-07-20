@@ -28,6 +28,23 @@
     }
     return true;
    }
+       submitAndBack('formId');
+    return true;
+}
+
+function submitAndBack(formId) {
+    let formDoc = document.getElementById(formId);
+    formDoc.submit();
+    sleep(1000).then(function () {
+        document.location.reload();
+    });
+}
+
+function sleep(milliseconds) {
+    return new Promise(function (resolve) {
+        setTimeout(resolve, milliseconds);
+    });
+}
 </script>
 
 <style>

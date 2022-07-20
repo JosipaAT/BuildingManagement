@@ -22,7 +22,12 @@ public class Income {
     private Unit unit;
 
     @ManyToOne
+    private ExpenseType expenseType;
+
+    @ManyToOne
     private BuildingComplex buildingComplex;
+
+
 
     public Integer getIncomeId() {
         return incomeId;
@@ -71,4 +76,13 @@ public class Income {
     public void setBuildingComplex(BuildingComplex buildingComplex) {
         this.buildingComplex = buildingComplex;
     }
+
+    public ExpenseType getExpenseType() {
+        return expenseType;
+    }
+
+    public void setExpenseType(ExpenseType expenseType) {
+        this.expenseType = expenseType;
+    }
+
 }

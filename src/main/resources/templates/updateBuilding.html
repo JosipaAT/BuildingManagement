@@ -7,32 +7,27 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 </head>
+
+
 <script>
- function generatePass(){
-        var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$&^";
-        var pass = "";
-        for (var i=0;i<8;i++){
-            var randomNumber = Math.floor(Math.random() * chars.length);
-            pass += chars.substring(randomNumber, randomNumber+1 );
-        }
-     document.getElementById("password").value = pass
-}
-   function check() {
+
+    function check(){
     var chars1 = document.getElementById("streetName").value;
     var chars2 = document.getElementById("city").value;
-    if (chars1.search(/[^a-zčćđšžA-ZČĆĐŠŽ\s]+/) != -1 || chars2.search(/[^a-zčćđšžA-ZČĆĐŠŽ\s]+/) != -1) {
-        alert("Only characters allowed in Street Name and City");
-        return false;
+    if (chars1.search(/[^a-zčćđšžA-ZČĆĐŠŽ\s]+/) !=-1 || chars2.search(/[^a-zčćđšžA-ZČĆĐŠŽ\s]+/) !=-1 ) {
+    alert("Only characters allowed in Street Name and City");
+    return false;
     }
-
-    submitAndBack('formId');
+    return true;
+   }
+       submitAndBack('formId');
     return true;
 }
 
 function submitAndBack(formId) {
     let formDoc = document.getElementById(formId);
     formDoc.submit();
-    sleep(5000).then(function () {
+    sleep(1000).then(function () {
         document.location.reload();
     });
 }
@@ -67,9 +62,9 @@ body{
 .register-box {
   position: absolute;
   margin-top: 12px;
-  top: 60%;
+  top: 50%;
   left: 50%;
-  width:600px;
+  width:700px;
   transform: translate(-50%, -50%);
   background: rgba(0,0,0,.5);
   box-sizing: border-box;
@@ -84,29 +79,28 @@ body{
 
 
 </style>
+
 <body>
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
-            <a class="navbar-brand"  th:href="@{/}">Home </a>
-            <a class="navbar-brand"  th:href="@{/admin/addBuildManagerForm}">Add Manager </a>
-            <a class="navbar-brand"  th:href="@{/logout}">Logout</a>
+            <a class="navbar-brand" href="#" th:href="@{/}">Home </a>
+            <a class="navbar-brand" href="#" th:href="@{/manager/addBuildComplexForm}">Add Building</a>
+            <a class="navbar-brand" href="#" th:href="@{/logout}">Logout</a>
         </div>
     </div>
 </nav>
+
 <br>
 <br>
 <div class="container">
-
     <div class="register-box">
-        <h2>Building Manager</h2>
+        <h2>Building Complex</h2>
         <div class="col-md-6 col-md-offset-3">
-            <form onsubmit="return check()" id="formId" th:action="@{/admin/addBuildManager}" method="post" th:object="${buildingManager}">
+            <form onsubmit="return check()" th:action="@{/manager/updateBuilding/}+${buildComplexId}" method="post">
                 <div class="form-group">
-                    <label style="color: white;" class="control-label" for="buildManagerName"> Building Manager Name </label >
-                    <input id="buildManagerName" class="form-control" th:field="*{buildManagerName}" required autofocus="autofocus" />
+                    <span th:name="buildManagerId" th:value="${buildComplexId}"/>
                 </div>
-
                 <div class="form-group">
                     <label style="color: white;" class="control-label" for="streetName"> Street Name</label>
                     <input type="text" id="streetName" class="form-control" th:field="*{streetName}" required autofocus="autofocus" />
@@ -126,25 +120,23 @@ body{
                 </div>
 
                 <div class="form-group">
-                    <label style="color: white;" class="control-label" for="contact">Contact </label>
-                    <input type="number" id="contact" class="form-control" th:field="*{contact}" required autofocus="autofocus" />
-                </div>
-
-                <div class="form-group">
-                    <label style="color: white;" class="control-label" for="username">Username</label>
+                    <label style="color: white;" class="control-label" for="username">Co-Owner Username <span>  <p style="color: red;">Enter street + number eg UpperStreet22</p></span></label>
                     <input id="username" class="form-control" th:field="*{username}" required autofocus="autofocus" />
                 </div>
 
                 <div class="form-group">
-                    <button type="button" style="color: white; background-color: black" onclick="generatePass()">Generate Password</button>
+                    <button type="button" style="color: white; background-color: black" onclick="generatePass()">Generate Co-Owner Password</button>
                     <input type="password" id="password" class="form-control"  th:field="*{password}"   required autofocus="autofocus"/>
                 </div>
 
                 <div class="form-group">
                     <a style="color: white;"  th:href="@{/}">
-                        <button type="button" class="btn btn-danger col-sm-offset-3">Cancel</button>
+                        <button type="button" class="btn btn-danger col-sm-offset-2">Cancel</button>
                     </a>
-                    <button type="submit" class="btn btn-success col-offset-5">Save</button>
+                    <button type="submit" class="btn btn-success ">Update</button>
+                    <a style="color: white;"  th:href="@{'/pdf/generate/'+ ${username} +'/'+ ${password} +'/'+ ${userType}}">
+                        <button style="margin-start:10%" type="button" class="btn btn-primary">Export</button>
+                    </a>
                 </div>
 
             </form>

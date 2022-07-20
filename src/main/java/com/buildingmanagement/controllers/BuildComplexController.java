@@ -314,20 +314,24 @@ public class BuildComplexController {
     private String addIncomeForm(Model model,@PathVariable Integer unitId, @PathVariable Integer buildComplexId){
         model.addAttribute("unitId");
         model.addAttribute("buildComplexId");
+        model.addAttribute("expenseTypes", expenseTypeRepo.findAll());
         return "addIncome";
     }
 
     @PostMapping("/manager/addIncome/{unitId}/{buildComplexId}")
     public String addIncome(@RequestParam Integer amount, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateOfPayment,
-                             @RequestParam String description, @PathVariable Integer unitId, @PathVariable Integer buildComplexId) {
+                             @RequestParam String description, @PathVariable Integer unitId, @PathVariable Integer buildComplexId,
+                            @RequestParam Integer expenseTypeId) {
         Income income = new Income();
         BuildingComplex buildingComplex = this.buildComplexRepo.findById(buildComplexId).get();
         Unit unit = this.unitRepo.findById(unitId).get();
+        ExpenseType expenseType = expenseTypeRepo.getById(expenseTypeId);
         income.setUnit(unit);
         income.setBuildingComplex(buildingComplex);
         income.setDateOfPayment(dateOfPayment);
         income.setDescription(description);
         income.setAmount(amount);
+        income.setExpenseType(expenseType);
         this.incomeRepo.save(income);
         return "redirect:/manager/viewUnit/"+unitId+"/"+0+"/"+0;
     }

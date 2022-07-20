@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+import com.buildingmanagement.entities.Role;
 import com.buildingmanagement.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,7 +14,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.buildingmanagement.entities.Role;
 import com.buildingmanagement.entities.User;
 import com.buildingmanagement.entities.UserRegistration;
 import com.buildingmanagement.repositories.UserRepository;

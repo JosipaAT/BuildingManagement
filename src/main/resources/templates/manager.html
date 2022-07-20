@@ -30,6 +30,7 @@ body{
     tbody tr:nth-of-type(even) {
    background-color: #34495e;
 }
+.hidetext { -webkit-text-security: disc; /* Default */ }
 
 thead{
 
@@ -83,7 +84,7 @@ thead{
             <tr class="text-center" th:each="buildComplex: ${buildComplexes}">
                 <td style="color:white;" scope="row" th:text="${buildComplex.buildComplexId}">1</td>
                 <td style="color:white;" scope="row" th:text="${buildComplex.username}">CoOwnerRep Username</td>
-                <td style="color:white;" scope="row" th:text="${buildComplex.password}">Password</td>
+                <td style="color:white;" scope="row" th:text="${buildComplex.password}" class="hidetext">Password</td>
                 <td style="color:white;" th:text="${buildComplex.streetName}">Street Name</td>
                 <td style="color:white;" th:text="${buildComplex.streetNumber}">Street Number</td>
                 <td style="color:white;" th:text="${buildComplex.city}">City</td>

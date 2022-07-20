@@ -95,6 +95,9 @@ thead{
                     <button style="background-color:black"><a style="color:white;" class="fw-bold" th:href="@{/manager/addExpenseForm/}+${unit.unitId}+@{/}+${buildComplexId}">Add Expense</a></button>
                     <button style="background-color:black"><a style="color:white;" class="fw-bold" th:href="@{/manager/addIncomeForm/}+${unit.unitId}+@{/}+${buildComplexId}">Add Income</a></button>
                 </td>
+<!--                <td>-->
+<!--                    <button style="background-color:blue"><a style="color:white;" class="fw-bold" th:href="@{/manager/addCoOwner/}+${unit.unitID}+@{/}+${buildComplexId}">Add CoOwner</a></button>-->
+<!--                </td>-->
             </tr>
 
             </tbody>
@@ -116,6 +119,7 @@ thead{
                    <input type="date" name="endDate" placeholder="End Date">
                     <label style="color:white;" >Select Expense Type</label>
                     <select class="form-control" id="expenseTypeId" name="expenseTypeId">
+                        <option>  </option>
                         <option
                                 th:each="expenseType: ${expenseTypes}"
                                 th:text="${expenseType.expenseTypeName}"
@@ -226,6 +230,7 @@ thead{
                     <td style="color:white;" scope="col">Date of Payment</td>
                     <td style="color:white;" scope="col">Description</td>
                     <td style="color:white;" scope="col">Amount</td>
+                    <td style="color:white;" scope="col">Expense Type</td>
                 </tr>
                 </thead>
 
@@ -236,6 +241,7 @@ thead{
                     <td style="color:white;" th:text="${#dates.format(income.dateOfPayment, 'dd/MM/yyyy')}">Date of Payment</td>
                     <td style="color:white;" th:text="${income.description}">Description</td>
                     <td style="color:white;" th:text="${income.amount}">Amount</td>
+                    <td style="color:white;" th:text="${income.expenseType.expenseTypeName}">Expense Type</td>>
                 </tr>
 
                 </tbody>
@@ -336,6 +342,7 @@ thead{
                     <td style="color:white;" scope="col">Date of Payment</td>
                     <td style="color:white;" scope="col">Description</td>
                     <td style="color:white;" scope="col">Amount</td>
+                    <td style="color:white;" scope="col">Expense Type</td>
                 </tr>
                 </thead>
 
@@ -346,6 +353,7 @@ thead{
                     <td style="color:white;" th:text="${#dates.format(income.dateOfPayment, 'dd/MM/yyyy')}">Date of Payment</td>
                     <td style="color:white;" th:text="${income.description}">Description</td>
                     <td style="color:white;" th:text="${income.amount}">Amount</td>
+                    <td style="color:white;" th:text="${expense.expenseType.expenseTypeName}">Expense Type</td>
                 </tr>
 
                 </tbody>

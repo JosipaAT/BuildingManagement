@@ -71,9 +71,10 @@ public class BuildManagerController {
     public String updateBuildManager(@PathVariable Integer buildManagerId, @RequestParam(required = false) String buildManagerName,
                                      @RequestParam(required = false) Integer contact, @RequestParam(required = false) String streetName,
                                      @RequestParam(required = false) Integer streetNumber, @RequestParam(required = false) String city,
-                                     @RequestParam(required = false) Integer postalCode) {
+                                     @RequestParam(required = false) Integer postalCode, @RequestParam(required = false) String username) {
      BuildingManager buildingManager = this.buildingManagerRepo.findById(buildManagerId).get();
      buildingManager.setBuildManagerName(buildManagerName);
+     buildingManager.setUsername(username);
      buildingManager.setStreetName(streetName);
      buildingManager.setStreetNumber(streetNumber);
      buildingManager.setCity(city);

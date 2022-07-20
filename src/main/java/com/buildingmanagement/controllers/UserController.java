@@ -362,19 +362,19 @@ public class UserController {
 		this.pdfGeneratorService.exportReportForBuilding(response,totalExpense, totalIncome, buildComplexId);
 	}
 
-	/*@PostMapping("/manager/build-equipment-report/{buildComplexId}")
-	public void buildReportEquipment(HttpServletResponse response, @PathVariable Integer buildComplexId) throws IOException {
-		response.setContentType("application/pdf");
-		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd:hh:mm:ss");
-		String currentDateTime = dateFormatter.format(new Date());
-
-		String headerKey = "Content-Disposition";
-		String headerValue = "attachment; filename=pdf_" + currentDateTime + ".pdf";
-		response.setHeader(headerKey, headerValue);
-
-		BuildingComplex buildingComplex = this.buildComplexRepo.findById(buildComplexId).get();
-		this.pdfGeneratorService.exportReportForEquipment(response, buildingComplex);
-	}*/
+//	@PostMapping("/manager/build-equipment-report/{buildComplexId}")
+//	public void buildReportEquipment(HttpServletResponse response, @PathVariable Integer buildComplexId) throws IOException {
+//		response.setContentType("application/pdf");
+//		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd:hh:mm:ss");
+//		String currentDateTime = dateFormatter.format(new Date());
+//
+//		String headerKey = "Content-Disposition";
+//		String headerValue = "attachment; filename=pdf_" + currentDateTime + ".pdf";
+//		response.setHeader(headerKey, headerValue);
+//
+//		BuildingComplex buildingComplex = this.buildComplexRepo.findById(buildComplexId).get();
+//		this.pdfGeneratorService.exportReportForEquipment(response, buildingComplex);
+//	}
 
 	@PostMapping("/coowner_rep/unitReport/{unitId}")
 	public void unitReportCoownerRep(HttpServletResponse response, @PathVariable Integer unitId) throws IOException {

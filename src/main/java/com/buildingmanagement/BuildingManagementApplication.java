@@ -1,8 +1,5 @@
 package com.buildingmanagement;
 
-import com.buildingmanagement.entities.CoOwner;
-import com.buildingmanagement.entities.Role;
-import com.buildingmanagement.entities.User;
 import com.buildingmanagement.entities.UserRegistration;
 import com.buildingmanagement.repositories.CoOwnerRepo;
 import com.buildingmanagement.repositories.UserRepository;
@@ -12,8 +9,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import java.util.Arrays;
 
 @SpringBootApplication
 public class BuildingManagementApplication  implements CommandLineRunner {
@@ -36,10 +31,10 @@ public class BuildingManagementApplication  implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		//UserRegistration userRegistration = new UserRegistration();
-        //userRegistration.setEmail("admin@gmail.com");
-	    //userRegistration.setPassword("adminuser");
-	    //this.userServiceImpl.save(userRegistration);
+//		UserRegistration userRegistration = new UserRegistration();
+//        userRegistration.setEmail("admin@bm.com");
+//	    userRegistration.setPassword("admin");
+//		this.userServiceImpl.save(userRegistration);
 
 	}
 }

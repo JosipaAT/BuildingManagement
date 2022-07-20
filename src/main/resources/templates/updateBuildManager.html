@@ -8,15 +8,33 @@
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 </head>
 <script>
-    function check(){
+ function check() {
     var chars1 = document.getElementById("streetName").value;
     var chars2 = document.getElementById("city").value;
-     if (chars1.search(/[^a-zA-Z\s]+/) !=-1 || chars2.search(/[^a-zA-Z\s]+/) !=-1 ) {
-    alert("Only characters allowed in Street Name and City");
-    return false;
+    if (chars1.search(/[^a-zčćđšžA-ZČĆĐŠŽ\s]+/) != -1 || chars2.search(/[^a-zčćđšžA-ZČĆĐŠŽ\s]+/) != -1) {
+        alert("Only characters allowed in Street Name and City");
+        return false;
     }
     return true;
    }
+
+      submitAndBack('formId');
+    return true;
+}
+
+function submitAndBack(formId) {
+    let formDoc = document.getElementById(formId);
+    formDoc.submit();
+    sleep(1000).then(function () {
+        document.location.reload();
+    });
+}
+
+function sleep(milliseconds) {
+    return new Promise(function (resolve) {
+        setTimeout(resolve, milliseconds);
+    });
+}
 
 </script>
 <style>
@@ -78,7 +96,8 @@ body, .navbar{
 
                 <div class="form-group">
                     <label style="color: white;" class="control-label" for="username">Username</label>
-                    <input type="text" id="username" class="form-control" th:name="username" th:value="${username}" autofocus="autofocus" />
+                    <input type="text" id="username" class="form-control" th:name="username" th:value="${username}"
+                           autofocus="autofocus" />
                 </div>
 
                 <div class="form-group">

@@ -1,7 +1,6 @@
 package com.buildingmanagement.services.impl;
 
 import com.buildingmanagement.entities.*;
-import com.buildingmanagement.repositories.BuildComplexRepo;
 import com.buildingmanagement.repositories.CoOwnerRepo;
 import com.buildingmanagement.repositories.UnitRepo;
 import com.buildingmanagement.repositories.UserRepository;

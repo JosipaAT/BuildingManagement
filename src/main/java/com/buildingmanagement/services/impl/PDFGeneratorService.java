@@ -2,6 +2,7 @@ package com.buildingmanagement.services.impl;
 
 import com.buildingmanagement.entities.*;
 import com.buildingmanagement.repositories.BuildComplexRepo;
+import com.buildingmanagement.repositories.IncomeRepo;
 import com.buildingmanagement.repositories.UnitRepo;
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfPCell;
@@ -26,6 +27,9 @@ public class PDFGeneratorService {
 
     @Autowired
     private BuildComplexRepo buildComplexRepo;
+
+    @Autowired
+    private IncomeRepo incomeRepo;
 
     public void export(HttpServletResponse response, String username, String password, String userType) throws IOException {
         Document document = new Document(PageSize.A4);
@@ -151,8 +155,12 @@ public class PDFGeneratorService {
         Paragraph paragraph4 = new Paragraph(this.buildComplexRepo.findById(buildComplexId)
                 .get()
                 .getUsername(), fontParagraph);
-        Paragraph paragraph5 = new Paragraph("Building Address", fontParagraph2);
+        Paragraph paragraph5 = new Paragraph("Password", fontParagraph2);
         Paragraph paragraph6 = new Paragraph(this.buildComplexRepo.findById(buildComplexId)
+                .get()
+                .getPassword(),fontParagraph);
+        Paragraph paragraph7 = new Paragraph("Building Address", fontParagraph2);
+        Paragraph paragraph8 = new Paragraph(this.buildComplexRepo.findById(buildComplexId)
                 .get()
                 .getStreetName() + " " + this.buildComplexRepo.findById(buildComplexId)
                 .get()
@@ -161,20 +169,20 @@ public class PDFGeneratorService {
                 .getCity() + " " + this.buildComplexRepo.findById(buildComplexId)
                 .get()
                 .getPostalCode(), fontParagraph);
-        Paragraph paragraph7 = new Paragraph("No Of Floors", fontParagraph2);
-        Paragraph paragraph8 = new Paragraph(String.valueOf(this.buildComplexRepo.findById(buildComplexId)
+        Paragraph paragraph9 = new Paragraph("No Of Floors", fontParagraph2);
+        Paragraph paragraph10 = new Paragraph(String.valueOf(this.buildComplexRepo.findById(buildComplexId)
                 .get()
                 .getFloors()
                 .size()), fontParagraph);
-        Paragraph paragraph9 = new Paragraph("No Of Units", fontParagraph2);
-        Paragraph paragraph10 = new Paragraph(String.valueOf(this.buildComplexRepo.findById(buildComplexId)
+        Paragraph paragraph11 = new Paragraph("No Of Units", fontParagraph2);
+        Paragraph paragraph12 = new Paragraph(String.valueOf(this.buildComplexRepo.findById(buildComplexId)
                 .get()
                 .getUnits()
                 .size()), fontParagraph);
-        Paragraph paragraph11 = new Paragraph("Total Expenses: ", fontParagraph2);
-        Paragraph paragraph12 = new Paragraph(String.valueOf(totalExpense), fontParagraph);
-        Paragraph paragraph13 = new Paragraph("Total Income:", fontParagraph2);
-        Paragraph paragraph14 = new Paragraph(String.valueOf(totalIncome), fontParagraph);
+        Paragraph paragraph13 = new Paragraph("Total Expenses: ", fontParagraph2);
+        Paragraph paragraph14 = new Paragraph(String.valueOf(totalExpense), fontParagraph);
+        Paragraph paragraph15 = new Paragraph("Total Income:", fontParagraph2);
+        Paragraph paragraph16 = new Paragraph(String.valueOf(totalIncome), fontParagraph);
         paragraph1.setAlignment(Paragraph.ALIGN_LEFT);
         paragraph2.setAlignment(Paragraph.ALIGN_LEFT);
         paragraph3.setAlignment(Paragraph.ALIGN_LEFT);
@@ -189,6 +197,8 @@ public class PDFGeneratorService {
         paragraph12.setAlignment(Paragraph.ALIGN_LEFT);
         paragraph13.setAlignment(Paragraph.ALIGN_LEFT);
         paragraph14.setAlignment(Paragraph.ALIGN_LEFT);
+        paragraph15.setAlignment(Paragraph.ALIGN_LEFT);
+        paragraph16.setAlignment(Paragraph.ALIGN_LEFT);
 
         document.add(paragraph);
         document.add(paragraph1);
@@ -205,19 +215,21 @@ public class PDFGeneratorService {
         document.add(paragraph12);
         document.add(paragraph13);
         document.add(paragraph14);
+        document.add(paragraph15);
+        document.add(paragraph16);
         document.close();
     }
 
-    public void exportReportForEquipment(HttpServletResponse response, BuildingComplex buildingComplex) throws IOException {
+    public void exportReportForExpenses(HttpServletResponse response, Unit unit, List<Expense> filteredExpenses, Date startDate, Date endDate) throws IOException {
         Document document = new Document(PageSize.A4);
         PdfWriter.getInstance(document, response.getOutputStream());
 
         document.open();
         Font fontTitle = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
         fontTitle.setSize(18);
-
         Paragraph paragraph = new Paragraph("Report for buildingComplexId " + buildingComplex.getBuildComplexId(), fontTitle);
         paragraph.setAlignment(Paragraph.ALIGN_CENTER);
+        document.add(paragraph);
 
         Font fontNormal = FontFactory.getFont(FontFactory.HELVETICA);
         fontNormal.setSize(12);
@@ -327,7 +339,7 @@ public class PDFGeneratorService {
         fontTitle.setSize(18);
 
 
-        Paragraph paragraph = new Paragraph("Report for unit " + unit.getFloor().getFloorName(), fontTitle);
+        Paragraph paragraph = new Paragraph("Report for unit "  + unit.getUnitId() + " on floor " + unit.getFloor().getFloorName(), fontTitle);
         paragraph.setAlignment(Paragraph.ALIGN_CENTER);
         document.add(paragraph);
 
@@ -367,8 +379,10 @@ public class PDFGeneratorService {
 
         }
 
-
+        Map<ExpenseType, List<Expense>> expenseTypesByExpenses = filteredExpenses.stream().collect(Collectors.groupingBy( Expense::getExpenseType));
+        
         PdfPTable table = new PdfPTable(6);
+        table.setWidthPercentage(100);
         table.setHeaderRows(1);
         table.setSpacingBefore(15);
         table.setSpacingAfter(15);
@@ -405,27 +419,27 @@ public class PDFGeneratorService {
         for (Expense expense : filteredExpenses) {
 
             PdfPCell numberCell = new PdfPCell(new Phrase(number + "."));
-            numberCell.setPadding(10);
+            numberCell.setPadding(6);
             table.addCell(numberCell);
 
             PdfPCell dateOfReceipt = new PdfPCell(new Phrase(formatter.format(expense.getDateOfReceipt())));
-            dateOfReceipt.setPadding(10);
+            dateOfReceipt.setPadding(6);
             table.addCell(dateOfReceipt);
 
             PdfPCell description = new PdfPCell(new Phrase(expense.getDescription()));
-            description.setPadding(10);
+            description.setPadding(6);
             table.addCell(description);
 
-            PdfPCell amount = new PdfPCell(new Phrase(expense.getAmount()));
-            amount.setPadding(10);
+            PdfPCell amount = new PdfPCell(new Phrase(String.valueOf(expense.getAmount())));
+            amount.setPadding(6);
             table.addCell(amount);
 
             PdfPCell expenseType = new PdfPCell(new Phrase(expense.getExpenseType().getExpenseTypeName()));
-            expenseType.setPadding(10);
+            expenseType.setPadding(6);
             table.addCell(expenseType);
 
             PdfPCell dueDate = new PdfPCell(new Phrase(formatter.format(expense.getDueDate())));
-            dueDate.setPadding(10);
+            dueDate.setPadding(6);
             table.addCell(dueDate);
 
             table.completeRow();

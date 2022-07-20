@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-    <head>
-        <meta charset="UTF-8">
-        <title>Registration Home</title>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-              integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <title>add Expense</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
 <script>
 function myFunction1() {
   var checkbox = document.getElementById("checkbox1");
@@ -37,8 +37,9 @@ function myFunction2() {
         document.getElementById("rentAmount").disabled = true;
     }
 }
+
 </script>
-    <style>
+<style>
 html {
   height: 100%;
 }
@@ -58,6 +59,7 @@ body{
   background: linear-gradient(#141e30, #243b55);
 }
 
+
 </style>
 
 <body>
@@ -76,32 +78,36 @@ body{
 <br>
 <br>
 <div class="container">
-    <form style="text-align: center;" class="w-100" th:action="@{/manager/addExpense/}+${unitId}+@{/}+${buildComplexId}" method="post" >
+    <form style="text-align: center;" class="w-100" th:action="@{/manager/addExpense/}+${unitId}+@{/}+${buildComplexId}"
+          method="post">
 
         <span th:name="buildComplexId" th:value="${buildComplexId}"/>
         <span th:name="unitId" th:value="${unitId}"/>
 
         <div class="form-group">
             <label style="color:white;" class="control-label" for="dueDate">Due Date</label>
-            <input type="date" id="dueDate" style="width: 300px; margin: auto;"  th:name="dueDate" th:value="${dueDate}" required
+            <input type="date" id="dueDate" style="width: 300px; margin: auto;" th:name="dueDate" th:value="${dueDate}"
+                   required
                    autofocus="autofocus" class="form-control">
         </div>
 
         <div class="form-group">
             <label style="color:white;" class="control-label" for="description">Description</label>
-            <input type="text" id="description" style="width: 300px; margin: auto;" th:name="description" th:value="${description}" required
+            <input type="text" id="description" style="width: 300px; margin: auto;" th:name="description"
+                   th:value="${description}" required
                    autofocus="autofocus" class="form-control">
         </div>
 
         <div class="form-group">
             <label style="color:white;" class="control-label" for="rate">Rate(/KW, /M^3(Ltr), /M^2)</label>
-            <input type="number" id="rate" style="width: 300px; margin: auto;"  th:name="rate" th:value="${rate}"
+            <input type="number" id="rate" style="width: 300px; margin: auto;" th:name="rate" th:value="${rate}"
                    autofocus="autofocus" class="form-control">
         </div>
 
         <div class="form-group">
             <label style="color:white;" class="control-label" for="consumed">Consumed(KW, M^3(Ltr))</label>
-            <input type="number" id="consumed" style="width: 300px; margin: auto;"  th:name="consumed" th:value="${consumed}"
+            <input type="number" id="consumed" style="width: 300px; margin: auto;" th:name="consumed"
+                   th:value="${consumed}"
                    autofocus="autofocus" class="form-control">
         </div>
         <p class="text-center" style="color: red; ">Upkeep?
@@ -111,7 +117,8 @@ body{
         </p>
         <div class="form-group">
             <label style="color:white;" class="control-label" for="areaSqrMeter">AreaSqrMeter</label>
-            <input type="number" id="areaSqrMeter" style="width: 300px; margin: auto;" th:name="areaSqrMeter" th:value="${areaSqrMeter}"
+            <input type="number" id="areaSqrMeter" style="width: 300px; margin: auto;" th:name="areaSqrMeter"
+                   th:value="${areaSqrMeter}"
                    autofocus="autofocus" class="form-control" disabled>
         </div>
 
@@ -122,24 +129,25 @@ body{
         </p>
         <div class="form-group">
             <label style="color:white;" class="control-label" for="rentAmount">Rent Amount</label>
-            <input type="number" id="rentAmount" style="width: 300px; margin: auto;"  th:name="rentAmount" value="0"
+            <input type="number" id="rentAmount" style="width: 300px; margin: auto;" th:name="rentAmount" value="0"
                    autofocus="autofocus" class="form-control" disabled>
         </div>
 
         <div class="form-group">
-        <label style="color:white;" >Select Expense Type</label>
-        <select class="form-control" style="width: 300px; margin: auto;" id="expenseTypeId" name="expenseTypeId">
-            <option
-                th:each="expenseType: ${expenseTypes}"
-                th:text="${expenseType.expenseTypeName}"
-                th:value="${expenseType.expenseTypeId}"
-                th:name="${expenseType.expenseTypeId}">
-            </option>
-        </select>
+            <label style="color:white;">Select Expense Type</label>
+            <select class="form-control" style="width: 300px; margin: auto;" id="expenseTypeId" name="expenseTypeId">
+                <option> -- select an expense -- </option>
+                <option
+                        th:each="expenseType: ${expenseTypes}"
+                        th:text="${expenseType.expenseTypeName}"
+                        th:value="${expenseType.expenseTypeId}"
+                        th:name="${expenseType.expenseTypeId}">
+                </option>
+            </select>
         </div>
 
         <div>
-            <a style="color: white;"  th:href="@{/manager/viewUnit/}+${unitId}">
+            <a style="color: white;" th:href="@{/manager/viewUnit/}+${unitId}">
                 <button type="button" class="btn btn-danger">Cancel</button>
             </a>
             <button type="submit" class="btn btn-primary">Confirm Add</button>
