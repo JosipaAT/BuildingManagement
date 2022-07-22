@@ -11,6 +11,14 @@
 </head>
 
 <style>
+
+.address
+{
+float: right;
+color: white;
+font-size: 30px;
+font-weight: bold;
+}
 html {
   height: 100%;
 }
@@ -90,6 +98,7 @@ animation: animate 6s linear infinite;
             <a class="navbar-brand" th:href="@{/changePass}">Change Password</a>
             <a class="navbar-brand" th:href="@{/logout}">Logout</a>
         </div>
+        <p> <span class="address" th:text="${address}"></span></p>
     </div>
 </nav>
 

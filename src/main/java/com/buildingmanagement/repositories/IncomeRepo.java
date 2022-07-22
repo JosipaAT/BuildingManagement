@@ -25,4 +25,6 @@ public interface IncomeRepo extends JpaRepository<Income, Integer> {
 
     @Query("SELECT i FROM Income i WHERE i.dateOfPayment BETWEEN :startDate AND :endDate AND i.unit.unitId = :unitId")
     List<Income> getIncomeOfPeriod(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("unitId") Integer unitId);
+
+    List<Income> findAllByExpenseType_expenseTypeName(String expenseTypeName);
 }

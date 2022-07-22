@@ -6,6 +6,7 @@
     <title>Registration</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/e3521964a4.js" crossorigin="anonymous"></script>
 </head>
 <script>
  function check() {
@@ -25,7 +26,7 @@
 function submitAndBack(formId) {
     let formDoc = document.getElementById(formId);
     formDoc.submit();
-    sleep(1000).then(function () {
+    sleep(4000).then(function () {
         document.location.reload();
     });
 }
@@ -87,7 +88,7 @@ body, .navbar{
         <h2>Building Manager</h2>
         <div class="col-md-6 col-md-offset-3">
             <span th:name="buildManagerId" th:value="${buildManagerId}"/>
-            <form  onsubmit="return check()" th:action="@{/admin/updateBuildManager/}+${buildManagerId}" method="post">
+            <form  onsubmit="return check()" id="formId" th:action="@{/admin/updateBuildManager/}+${buildManagerId}" method="post">
                 <div class="form-group">
                     <label style="color: white;" class="control-label" for="buildManagerName"> Building Manager Name </label >
                     <input id="buildManagerName" class="form-control" th:name="buildManagerName" th:value="${buildManagerName}"
@@ -129,9 +130,9 @@ body, .navbar{
 
                 <div class="form-group">
                     <a style="color: white;"  th:href="@{/}">
-                        <button type="button" class="btn btn-danger col-sm-offset-2">Cancel</button>
+                        <button type="button" class="btn btn-info col-sm-offset-2">Cancel</button>
                     </a>
-                    <button type="submit" class="btn btn-success ">Update</button>
+                    <button type="submit" class="btn btn-info col-offset-5 ">Update</button>
                     <a style="color: white;"  th:href="@{'/pdf/generate/'+ ${username} +'/'+ ${password} +'/'+ ${userType}}">
                     <button style="margin-start:10%" type="button" class="btn btn-primary">Export</button>
                     </a>

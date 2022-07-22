@@ -11,6 +11,14 @@
     </head>
 
     <style>
+
+.address
+{
+float: right;
+color: white;
+font-size: 30px;
+font-weight: bold;
+}
 html {
   height: 100%;
 }
@@ -33,6 +41,7 @@ body, .navbar{
             <a class="navbar-brand" sec:authorize="hasAuthority('BUILDMANAGER')" th:href="@{/manager/addBuildComplexForm}">Add Building </a>
             <a class="navbar-brand" th:href="@{/logout}">Logout</a>
         </div>
+        <p> <span class="address" th:text="${address}"></span></p>
     </div>
 </nav>
 <br>
@@ -49,7 +58,7 @@ body, .navbar{
         </div>
         <div>
             <a style="color: white;"  th:href="@{/manager/viewFloor/}+${floorId}+@{/0}">
-                <button type="button" class="btn btn-danger">Cancel</button>
+                <button type="button" class="btn btn-info col-offset-5">Cancel</button>
             </a>
             <button type="submit" class="btn btn-primary">Update</button>
         </div>
@@ -64,9 +73,9 @@ body, .navbar{
 
         <div>
             <a style="color: white;"  th:href="@{/coowner_rep/viewFloor/}+${floorId}+@{/0}">
-                <button type="button" class="btn btn-danger">Cancel</button>
+                <button type="button" class="btn btn-info col-offset-5">Cancel</button>
             </a>
-            <button type="submit" class="btn btn-primary">Update</button>
+            <button type="submit" class="btn btn-info col-offset-5">Update</button>
         </div>
     </form>
 </div>

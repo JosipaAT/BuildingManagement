@@ -70,9 +70,9 @@ body, .navbar{
         </div>
 
         <div class="form-group">
-            <label style="color:white;">Select Expense Type</label>
+            <label style="color:white;">Select Expense Type: </label>
             <select class="form-control" style="width: 300px; margin: auto;" id="expenseTypeId" name="expenseTypeId">
-                <option> -- select an expense -- </option>
+                <option>  </option>
                 <option
                         th:each="expenseType: ${expenseTypes}"
                         th:text="${expenseType.expenseTypeName}"
@@ -84,7 +84,7 @@ body, .navbar{
 
         <div>
             <a style="color: white;" th:href="@{'/manager/viewUnit/'+${unitId}+'/0'+'/0'}">
-                <button type="button" class="btn btn-danger">Cancel</button>
+                <button type="button" class="btn btn-info col-offset-5">Cancel</button>
             </a>
             <button type="submit" class="btn btn-primary">Confirm Add</button>
         </div>

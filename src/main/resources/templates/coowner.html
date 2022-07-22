@@ -118,7 +118,7 @@ animation: animate 6s linear infinite;
                 <td style="color:white;" th:text="${unit.noOfTenants}">No Of Tenants</td>
                 <td style="color:white;" th:text="${unit.unitType.unitTypeName}">Unit Type</td>
                 <td>
-                    <button style="background-color:red">  <a style="color:white;" class="fw-bold" th:href="@{/coOwner/viewCoOwnerUnit/}+${unit.unitId}">View</a></button>
+                    <button type="button" class="btn btn-info col-offset-5">  <a style="color:white;" class="fw-bold" th:href="@{/coOwner/viewCoOwnerUnit/}+${unit.unitId}">View</a></button>
                 </td>
             </tr>
 
@@ -133,8 +133,8 @@ animation: animate 6s linear infinite;
                     <form th:action="@{/coowner}" method="get">
                         <input type="text" name="keyword" placeholder="Service Name..." >
                         <br/>
-                        <button style="margin-bottom: 4%; " class="btn btn-success" type="submit">Go</button>
-                        <button style="margin-bottom: 4%; " class="btn btn-danger col-offset-5" type="submit">Reset</button>
+                        <button style="margin-bottom: 4%; " class="btn btn-info col-offset-5" type="submit">Go</button>
+                        <button style="margin-bottom: 4%; " class="btn btn-info col-offset-5" type="submit">Reset</button>
                     </form>
            </span>
     <br/>
@@ -149,6 +149,7 @@ animation: animate 6s linear infinite;
                 <td style="color:white;" scope="col">Street Number</th>
                 <td style="color:white;" scope="col">City</th>
                 <td style="color:white;" scope="col">Postal-Code</th>
+                <td style="color:white;" scope="col">IBAN</th>
                 <td style="color:white;" scope="col">Contact</th>
                 <td style="color:white;" scope="col">Mail</th>
             </tr>
@@ -162,7 +163,8 @@ animation: animate 6s linear infinite;
                 <td style="color:white;" th:text="${info.streetName}">Street Name</td>
                 <td style="color:white;" th:text="${info.streetNumber}">Street Number</td>
                 <td style="color:white;" th:text="${info.city}">City</td>
-                <td style="color:white;" th:text="${info.postalCode}">Postal-Code</td>
+                <td style="color:white;" th:text="${info.postalCode}">Postal Code</td>
+                <td style="color:white;" th:text="${info.iban}">IBAN</td>
                 <td style="color:white;" th:text="${info.contact}">Contact</td>
                 <td style="color:white;" th:text="${info.mail}">Mail</td>
             </tr>

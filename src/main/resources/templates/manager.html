@@ -6,6 +6,7 @@
         <title>Registration Home</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
               integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <script src="https://kit.fontawesome.com/e3521964a4.js" crossorigin="anonymous"></script>
     </head>
     <style>
 html {
@@ -60,8 +61,8 @@ thead{
                     <form th:action="@{/manager/0}" method="get">
                         <input type="text" name="keyword" placeholder="CoOwnerRep Username..." >
                         <br/>
-                        <button style="margin-bottom: 4%; " class="btn btn-success" type="submit">Go</button>
-                        <button style="margin-bottom: 4%; " class="btn btn-danger col-offset-5" type="submit">Reset</button>
+                        <button style="margin-bottom: 4%; " class="btn btn-info col-offset-5" type="submit">Go</button>
+                        <button style="margin-bottom: 4%; " class="btn btn-info col-offset-5" type="submit">Reset</button>
                     </form>
     </span>
     <div class="table-container" >
@@ -90,8 +91,8 @@ thead{
                 <td style="color:white;" th:text="${buildComplex.city}">City</td>
                 <td style="color:white;" th:text="${buildComplex.postalCode}">Postal-Code</td>
                 <td>
-                  <button style="background-color:red"><a style="color:white;" th:href="@{/manager/viewBuilding/}+${buildComplex.buildComplexId}">View</a></button>
-                  <button style="background-color:black"><a style="color:white;" th:href="@{/manager/addInfoForm/}+${buildComplex.buildComplexId}">Add Info</a></button>
+                    <button type="button" class="btn btn-info col-offset-5"><a style="color:white;" th:href="@{/manager/viewBuilding/}+${buildComplex.buildComplexId}">View</a></button>
+                    <button type="button" class="btn btn-primary"><a style="color:white;" th:href="@{/manager/addInfoForm/}+${buildComplex.buildComplexId}">Add Info</a></button>
                 </td>
             </tr>
 

@@ -17,6 +17,7 @@ public class Info {
     private Integer postalCode;
     private Integer contact;
     private String mail;
+    private String iban;
 
     @ManyToOne
     private BuildingComplex buildingComplex;
@@ -99,5 +100,13 @@ public class Info {
 
     public void setBuildingComplex(BuildingComplex buildingComplex) {
         this.buildingComplex = buildingComplex;
+    }
+
+    public String getIban() {
+        return iban;
+    }
+
+    public void setIban(String iban) {
+        this.iban = iban;
     }
 }

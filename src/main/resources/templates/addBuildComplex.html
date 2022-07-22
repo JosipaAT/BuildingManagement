@@ -35,7 +35,7 @@
 function submitAndBack(formId) {
     let formDoc = document.getElementById(formId);
     formDoc.submit();
-    sleep(1000).then(function () {
+    sleep(4000).then(function () {
         document.location.reload();
     });
 }
@@ -105,7 +105,7 @@ body{
   <div class="register-box">
     <h2>Building Complex</h2>
     <div class="col-md-6 col-md-offset-3">
-      <form onsubmit="return check()" th:action="@{/manager/addBuildComplex/}+${buildManagerId}" method="post" th:object="${buildComplex}">
+      <form onsubmit="return check()" id="formId" th:action="@{/manager/addBuildComplex/}+${buildManagerId}" method="post" th:object="${buildComplex}">
         <div class="form-group">
           <span th:name="buildManagerId" th:value="${buildManagerId}" hidden/>
         </div>
@@ -133,15 +133,15 @@ body{
         </div>
 
         <div class="form-group">
-          <button type="button" style="color: white; background-color: black" onclick="generatePass()">Generate Co-Owner Password</button>
+          <button type="button" class="btn btn-primary" style="color: white"; onclick="generatePass()">Generate Co-Owner Password</button>
           <input type="password" id="password" class="form-control"  th:field="*{password}"   required autofocus="autofocus"/>
         </div>
 
         <div class="form-group">
           <a style="color: white;"  th:href="@{/}">
-            <button type="button" class="btn btn-danger col-sm-offset-3">Cancel</button>
+            <button type="button" class="btn btn-info col-sm-offset-3">Cancel</button>
           </a>
-          <button type="submit" class="btn btn-success col-offset-5">Save</button>
+          <button type="submit" class="btn btn-info col-offset-5">Save</button>
         </div>
 
       </form>

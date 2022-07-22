@@ -57,8 +57,8 @@ thead{
                     <form th:action="@{/admin/0}" method="get">
                         <input type="text" name="keyword" placeholder="Manager Name..." >
                         <br/>
-                        <button style="margin-bottom: 4%; " class="btn btn-success" type="submit">Go</button>
-                        <button style="margin-bottom: 4%; " class="btn btn-danger col-offset-5" type="submit">Reset</button>
+                        <button style="margin-bottom: 4%; " class="btn btn-info col-offset-5" type="submit">Go</button>
+                        <button style="margin-bottom: 4%; " class="btn btn-info col-offset-5" type="submit">Reset</button>
                     </form>
     </span>
     <div class="table-container" >
@@ -89,7 +89,7 @@ thead{
                 <td style="color:white;" th:text="${manager.postalCode}">Postal-Code</td>
                 <td style="color:white;" th:text="${manager.contact}">Contact</td>
                 <td>
-                    <button style="background-color:red"> <a style="color:white;" class="fw-bold" th:href="@{/admin/updateBuildManager/}+${manager.buildManagerId}">Update</a></button>
+                    <button type="button" class="btn btn-info col-offset-5"> <a style="color:white;" class="fw-bold" th:href="@{/admin/updateBuildManager/}+${manager.buildManagerId}">Update</a></>
                 </td>
             </tr>
 

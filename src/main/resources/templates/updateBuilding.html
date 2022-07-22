@@ -27,7 +27,7 @@
 function submitAndBack(formId) {
     let formDoc = document.getElementById(formId);
     formDoc.submit();
-    sleep(1000).then(function () {
+    sleep(4000).then(function () {
         document.location.reload();
     });
 }
@@ -77,6 +77,13 @@ body{
   text-align: center;
 }
 
+.address
+{
+float: right;
+color: white;
+font-size: 30px;
+font-weight: bold;
+}
 
 </style>
 
@@ -88,6 +95,7 @@ body{
             <a class="navbar-brand" href="#" th:href="@{/manager/addBuildComplexForm}">Add Building</a>
             <a class="navbar-brand" href="#" th:href="@{/logout}">Logout</a>
         </div>
+        <p> <span class="address" th:text="${address}"></span></p>
     </div>
 </nav>
 
@@ -97,7 +105,7 @@ body{
     <div class="register-box">
         <h2>Building Complex</h2>
         <div class="col-md-6 col-md-offset-3">
-            <form onsubmit="return check()" th:action="@{/manager/updateBuilding/}+${buildComplexId}" method="post">
+            <form onsubmit="return check()" id="formId" th:action="@{/manager/updateBuilding/}+${buildComplexId}" method="post">
                 <div class="form-group">
                     <span th:name="buildManagerId" th:value="${buildComplexId}"/>
                 </div>
@@ -125,15 +133,15 @@ body{
                 </div>
 
                 <div class="form-group">
-                    <button type="button" style="color: white; background-color: black" onclick="generatePass()">Generate Co-Owner Password</button>
+                    <button type="button" class="btn btn-primary" style="color: white; " onclick="generatePass()">Generate Co-Owner Password</button>
                     <input type="password" id="password" class="form-control"  th:field="*{password}"   required autofocus="autofocus"/>
                 </div>
 
                 <div class="form-group">
                     <a style="color: white;"  th:href="@{/}">
-                        <button type="button" class="btn btn-danger col-sm-offset-2">Cancel</button>
+                        <button type="button" class="btn btn-info col-sm-offset-2">Cancel</button>
                     </a>
-                    <button type="submit" class="btn btn-success ">Update</button>
+                    <button type="submit" class="btn btn-info col-offset-5 ">Update</button>
                     <a style="color: white;"  th:href="@{'/pdf/generate/'+ ${username} +'/'+ ${password} +'/'+ ${userType}}">
                         <button style="margin-start:10%" type="button" class="btn btn-primary">Export</button>
                     </a>

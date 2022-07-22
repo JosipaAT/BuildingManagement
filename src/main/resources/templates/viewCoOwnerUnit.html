@@ -11,6 +11,15 @@
 </head>
 
 <style>
+
+.address
+{
+float: right;
+color: white;
+font-size: 30px;
+font-weight: bold;
+}
+
 html {
   height: 100%;
 }
@@ -54,6 +63,7 @@ thead{
             <a class="navbar-brand"  th:href="@{/coowner}">Home </a>
             <a class="navbar-brand" th:href="@{/logout}">Logout</a>
         </div>
+        <p> <span class="address" th:text="${address}"></span></p>
     </div>
 </nav>
 
