@@ -18,6 +18,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import static org.hibernate.sql.InFragment.NULL;
+
 @Controller
 public class CoOwnerController {
 
@@ -51,6 +53,7 @@ public class CoOwnerController {
     @GetMapping("/coowner_rep/addCoOwnerForm/{unitId}")
     private String addCoOwnerForm(Model model, @PathVariable Integer unitId) {
         model.addAttribute("unitId", unitId);
+
         List<CoOwner> coOwners = this.coOwnerRepo.findAll();
         model.addAttribute("coOwners", coOwners);
         return "addCoOwner";
@@ -75,19 +78,57 @@ public class CoOwnerController {
 
     }
 
+    //    update coowner
+
+    @GetMapping("/coowner_rep/updateCoOwnerForm/{coOwnerId}")
+    private String updateCoOwnerForm(Model model, @PathVariable Integer coOwnerId) {
+//        model.addAttribute("unitId", this.coOwnerRepo.getById(unitId));
+        model.addAttribute("coOwnerId", coOwnerId);
+        model.addAttribute("coOwnerId", this.coOwnerRepo.getById(coOwnerId).getCoOwnerId());
+        model.addAttribute("username", this.coOwnerRepo.findById(coOwnerId).get().getUsername());
+
+//        model.addAttribute("coOwnerId", this.coOwnerRepo.getById(coOwnerId));
+//        model.addAttribute("username", this.coOwnerRepo.getById(coOwnerId).getUsername());
+        model.addAttribute("userType", "CoOwner");
+        model.addAttribute("name", this.coOwnerRepo.getById(coOwnerId).getCoOwnerName());
+        model.addAttribute("contact", this.coOwnerRepo.getById(coOwnerId).getContact());
+        model.addAttribute("password", this.coOwnerRepo.getById(coOwnerId).getPassword());
+        return "updateCoOwnerForm";
+    }
+
+
+    @PostMapping("/coowner_rep/updateCoOwnerForm/{coOwnerId}")
+    public String updateCoOwner(@ModelAttribute("coOwner") CoOwner coOwner, @PathVariable Integer coOwnerId,
+                                      @RequestParam(required = false) String name,
+                                      @RequestParam (required = false) String Contact, @RequestParam (required = false) String username) {
+
+        CoOwner coOwner1 = this.coOwnerRepo.findByCoOwnerId(coOwnerId);
+        coOwner1.setCoOwnerName(name);
+        coOwner1.setUsername(username);
+        coOwner1.setContact(coOwner1.getContact());
+        this.coOwnerService.update(coOwnerId, coOwner);
+        String userType = "CoOwner";
+        return "redirect:/pdf/generate/" + username + "/" + coOwner1.getPassword() + "/" + userType;
+
+    }
+
+//    add floor
+
     @GetMapping("/coowner_rep/addFloorForm/{buildComplexId}")
     private String addFloorForm(Model model, Principal principal, @PathVariable Integer buildComplexId) {
         model.addAttribute("buildComplexId");
+        model.addAttribute("address", buildComplexRepo.getById(buildComplexId).getStreetName() + " " + buildComplexRepo.getById(buildComplexId).getStreetNumber() + ", " + buildComplexRepo.getById(buildComplexId).getCity());
         return "addFloor";
     }
 
     @PostMapping("/coowner_rep/addFloor/{buildComplexId}")
-    public String addFloor(@RequestParam String floorName, @PathVariable Integer buildComplexId) {
+    public String addFloor(@RequestParam String floorName, @PathVariable Integer buildComplexId, Model model) {
         Floor floor = new Floor();
         BuildingComplex buildingComplex = this.buildComplexRepo.findById(buildComplexId).get();
         floor.setBuildingComplex(buildingComplex);
         floor.setFloorName(floorName);
         this.floorRepo.save(floor);
+
         return "redirect:/coowner_rep";
     }
 
@@ -117,17 +158,19 @@ public class CoOwnerController {
         model.addAttribute("totalPages", units.getTotalPages());
         model.addAttribute("unitTypeId", unitTypeId);
 
-        // metoda prima coowner_repID
+        // gore desno adresa
         model.addAttribute("address", floor.getBuildingComplex().getStreetName() + " " + floor.getBuildingComplex().getStreetNumber() + ", " + floor.getBuildingComplex().getCity());
         return "viewFloor";
     }
 
     @GetMapping("/coowner_rep/addUnitForm/{floorId}/{buildComplexId}")
-    private String addUnitForm(Model model, @PathVariable Integer floorId, @PathVariable Integer buildComplexId) {
+    private String addUnitForm(Model model, @PathVariable Integer floorId, @PathVariable Integer buildComplexId, Floor floor) {
         model.addAttribute("floorId");
         model.addAttribute("buildComplexId");
         List<UnitType> unitTypes = this.unitTypeRepo.findAll();
         model.addAttribute("unitTypes", unitTypes);
+        BuildingComplex kat = this.buildComplexRepo.findById(buildComplexId).get();
+        model.addAttribute("address", floorRepo.getById(floorId).getFloorName() + " - " + kat.getStreetName() + " " + kat.getStreetNumber() + ", " + kat.getCity());
         return "addUnit";
     }
 
@@ -150,6 +193,7 @@ public class CoOwnerController {
     private String addEquipmentForm(Model model, @PathVariable Integer floorId, @PathVariable Integer buildComplexId) {
         model.addAttribute("floorId");
         model.addAttribute("buildComplexId");
+        model.addAttribute("address", floorRepo.getById(floorId).getFloorName() + " - " + buildComplexRepo.getById(buildComplexId).getStreetName() + " " + buildComplexRepo.getById(buildComplexId).getStreetNumber() + ", " + buildComplexRepo.getById(buildComplexId).getCity());
         return "addEquipment";
     }
 
@@ -171,6 +215,7 @@ public class CoOwnerController {
         model.addAttribute("equipmentId");
         model.addAttribute("floorId", this.equipmentRepo.findById(equipmentId).get().getFloor().getFloorId());
         model.addAttribute("equipmentName", this.equipmentRepo.findById(equipmentId).get().getEquipmentName());
+        model.addAttribute("address", equipmentRepo.getById(equipmentId).getFloor().getFloorName() + " - " + equipmentRepo.getById(equipmentId).getBuildingComplex().getStreetName() + " " + equipmentRepo.getById(equipmentId).getBuildingComplex().getStreetNumber() + ", " + equipmentRepo.getById(equipmentId).getBuildingComplex().getCity());
         return "updateEquipment";
     }
 
@@ -232,13 +277,32 @@ public class CoOwnerController {
         model.addAttribute("buildComplexId", floor.getBuildingComplex().getBuildComplexId());
         CoOwner coOwner = this.unitRepo.findById(unitId).get().getCoOwner();
         model.addAttribute("coOwner", coOwner);
+        model.addAttribute("kat", floor.getFloorName());
+        // metoda prima coowner_repID za prikaz podatke koje zgrade pregledajemo
+        model.addAttribute("address", floor.getFloorName() + " - " + floor.getBuildingComplex().getStreetName() + " " + floor.getBuildingComplex().getStreetNumber() + ", " + floor.getBuildingComplex().getCity());
+
         return "viewUnit";
     }
 
     @GetMapping("/coowner_rep/updateUnit/{unitId}")
     public String updateUnitForm(@PathVariable Integer unitId, Model model) {
+        Unit unit = this.unitRepo.findById(unitId).get();
+        Integer floorId = unit.getFloor().getFloorId();
+        model.addAttribute("floorId", floorId);
+        model.addAttribute("unitTypes", unitTypeRepo.findAll());
+        model.addAttribute("coOwners", coOwnerRepo.findAll());
         model.addAttribute("noOfTenants", unitRepo.findById(unitId).get().getNoOfTenants());
+
         model.addAttribute("floorId", unitRepo.findById(unitId).get().getFloor().getFloorId());
+//        model.addAttribute("vlasnik", unitRepo.getById(unitId).getCoOwner().getCoOwnerName());
+//        model.addAttribute("kat", unitRepo.getById(unitId).getFloor().getFloorName());
+        if (unitRepo.getById(unitId).getCoOwner() != null) {
+            model.addAttribute("address", unitRepo.getById(unitId).getCoOwner().getCoOwnerName() + ", " + unitRepo.getById(unitId).getFloor().getFloorName() + " - " + unitRepo.getById(unitId).getBuildingComplex().getStreetName() + " " + unitRepo.getById(unitId).getBuildingComplex().getStreetNumber() + ", " + unitRepo.getById(unitId).getBuildingComplex().getCity());
+        }
+        else
+        {
+            model.addAttribute("address", unitRepo.getById(unitId).getFloor().getFloorName() + " - " + unitRepo.getById(unitId).getBuildingComplex().getStreetName() + " " + unitRepo.getById(unitId).getBuildingComplex().getStreetNumber() + ", " + unitRepo.getById(unitId).getBuildingComplex().getCity());
+        }
         return "updateUnit";
     }
 
@@ -246,6 +310,8 @@ public class CoOwnerController {
     public String updateUnit(@PathVariable Integer unitId, @RequestParam("noOfTenants") Integer noOfTenants) {
         Unit unit = this.unitRepo.findById(unitId).get();
         unit.setNoOfTenants(noOfTenants);
+        unit.setCoOwner(unit.getCoOwner());
+        unit.setUnitType(unit.getUnitType());
         this.unitRepo.save(unit);
         return "redirect:/coowner_rep/viewFloor/" + unit.getFloor().getFloorId() + "/" + 0;
     }
@@ -253,6 +319,7 @@ public class CoOwnerController {
     @GetMapping("/coowner_rep/postBulletin/{buildComplexId}")
     public String postBulletinForm(Model model, @PathVariable Integer buildComplexId) {
         model.addAttribute("buildComplexId", buildComplexId);
+        model.addAttribute("address", buildComplexRepo.findById(buildComplexId).get().getStreetName() + " " + buildComplexRepo.findById(buildComplexId).get().getStreetNumber() + ", " + buildComplexRepo.findById(buildComplexId).get().getCity());
         return "postBulletin";
     }
 
@@ -261,6 +328,7 @@ public class CoOwnerController {
         BuildingComplex buildingComplex = this.buildComplexRepo.findById(buildComplexId).get();
         buildingComplex.setBulletin(bulletin);
         this.buildComplexRepo.save(buildingComplex);
+
         return "redirect:/";
     }
 }

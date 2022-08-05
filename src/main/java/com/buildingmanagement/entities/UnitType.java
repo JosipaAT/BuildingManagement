@@ -2,7 +2,9 @@ package com.buildingmanagement.entities;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table
@@ -40,4 +42,15 @@ public class UnitType {
     public void setUnits(List<Unit> units) {
         this.units = units;
     }
+
+    public Set<UtilitiesPrice> getUtilitiesPrices() {
+        return utilitiesPrices;
+    }
+
+    public void setUtilitiesPrices(Set<UtilitiesPrice> utilitiesPrices) {
+        this.utilitiesPrices = utilitiesPrices;
+    }
+
+    @OneToMany(mappedBy = "unitType", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<UtilitiesPrice> utilitiesPrices = new HashSet<>();
 }

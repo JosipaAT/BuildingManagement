@@ -61,4 +61,9 @@ public class CoOwnerServiceImpl implements CoOwnerService {
         return coOwner;
     }
 
+    @Override
+    public void update(Integer coOwnerId, CoOwner coOwner) {
+
+    }
+
 }

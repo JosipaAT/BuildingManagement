@@ -21,7 +21,8 @@ public class Expense{
     private Date dueDate;
 
     private String description;
-    private Integer amount;
+    private Float amount;
+    private String unitOfMeasurement;
 
     @ManyToOne
     private ExpenseType expenseType;
@@ -64,11 +65,11 @@ public class Expense{
         this.description = description;
     }
 
-    public Integer getAmount() {
+    public Float getAmount() {
         return amount;
     }
 
-    public void setAmount(Integer amount) {
+    public void setAmount(Float amount) {
         this.amount = amount;
     }
 
@@ -94,5 +95,13 @@ public class Expense{
 
     public void setBuildingComplex(BuildingComplex buildingComplex) {
         this.buildingComplex = buildingComplex;
+    }
+
+    public String getUnitOfMeasurement() {
+        return unitOfMeasurement;
+    }
+
+    public void setUnitOfMeasurement(String unitOfMeasurement) {
+        this.unitOfMeasurement = unitOfMeasurement;
     }
 }

@@ -78,4 +78,6 @@ public class CoOwner {
     public void setUnits(List<Unit> units) {
         this.units = units;
     }
+
+
 }

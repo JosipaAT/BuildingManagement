@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.thymeleaf.org
+        http://www.thymeleaf.org/thymeleaf-extras-springsecurity5 ">
 <head>
     <meta charset="UTF-8">
-    <title>add Expense</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <title>Add Expense</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <script>
 function myFunction1() {
@@ -47,7 +49,7 @@ body{
   margin:0;
   padding:0;
   font-family: sans-serif;
-  background: linear-gradient(#141e30, #243b55);
+  background: linear-gradient(#0275d8,#f7f7f7);
   height: 100%;
   background-repeat: no-repeat;
   background-attachment: fixed;
@@ -55,8 +57,24 @@ body{
 .navbar{
   margin:0;
   padding:0;
+  color:white;
+  font-weight: bold;
   font-family: sans-serif;
-  background: linear-gradient(#141e30, #243b55);
+  background: linear-gradient (#0275d8, #0275d8);
+}
+.address
+{
+float: right;
+color: white;
+font-size: 25px;
+font-weight: bold;
+}
+
+.navbar-brand{
+color: white;
+font-size: 30px;
+font-weight: bold;
+
 }
 
 
@@ -71,6 +89,7 @@ body{
             <a class="navbar-brand" th:href="@{/manager/addBuildComplexForm}">Add Building </a>
             <a class="navbar-brand" th:href="@{/logout}">Logout</a>
         </div>
+        <p> <span class="address" th:text="${address}"></span></p>
     </div>
 </nav>
 
@@ -85,77 +104,77 @@ body{
         <span th:name="unitId" th:value="${unitId}"/>
 
         <div class="form-group">
-            <label style="color:white;" class="control-label" for="dueDate">Due Date</label>
+            <label style="color:black;" class="control-label" for="dueDate">Due Date</label>
             <input type="date" id="dueDate" style="width: 300px; margin: auto;" th:name="dueDate" th:value="${dueDate}"
                    required
                    autofocus="autofocus" class="form-control">
         </div>
 
         <div class="form-group">
-            <label style="color:white;" class="control-label" for="description">Description</label>
+<!--            <label style="color:white;" class="control-label" for="description">Description</label>-->
             <input type="text" id="description" style="width: 300px; margin: auto;" th:name="description"
                    th:value="${description}" required
-                   autofocus="autofocus" class="form-control">
+                   autofocus="autofocus" class="form-control" placeholder="Expense Description">
         </div>
 
-        <div class="form-group">
-            <label style="color:white;" class="control-label" for="rate">Rate(/KW, /M^3(Ltr), /M^2)</label>
-            <input type="number" id="rate" style="width: 300px; margin: auto;" th:name="rate" th:value="${rate}"
-                   autofocus="autofocus" class="form-control">
-        </div>
+<!--        <div class="form-group">-->
+<!--            <label style="color:black;" class="control-label" for="rate">Rate(/KW, /M^3(Ltr), /M^2)</label>-->
+<!--            <input type="number" id="rate" style="width: 300px; margin: auto;" th:name="rate" th:value="${rate}"-->
+<!--                   autofocus="autofocus" class="form-control">-->
+<!--        </div>-->
 
         <div class="form-group">
-            <label style="color:white;" class="control-label" for="consumed">Consumed(KW, M^3(Ltr))</label>
+            <label style="color:black;" class="control-label" for="consumed">Consumed(KW, M^3(Ltr))</label>
             <input type="number" id="consumed" style="width: 300px; margin: auto;" th:name="consumed"
                    th:value="${consumed}"
                    autofocus="autofocus" class="form-control">
         </div>
-        <p class="text-center" style="color: red; ">Upkeep?
+        <p class="text-center" style="color: black; ">Upkeep?
             <span>
              <input type="checkbox" id="checkbox1" onclick="myFunction1() ">
             </span>
         </p>
         <div class="form-group">
-            <label style="color:white;" class="control-label" for="areaSqrMeter">AreaSqrMeter</label>
+            <label style="color:black;" class="control-label" for="areaSqrMeter">Unit Area in Square Meters: </label>
             <input type="number" id="areaSqrMeter" style="width: 300px; margin: auto;" th:name="areaSqrMeter"
                    th:value="${areaSqrMeter}"
                    autofocus="autofocus" class="form-control" disabled>
         </div>
 
-        <p class="text-center" style="color: red; ">Rent?
+        <p class="text-center" style="color: black; ">Rent?
             <span>
              <input type="checkbox" id="checkbox2" onclick="myFunction2() ">
             </span>
         </p>
         <div class="form-group">
-            <label style="color:white;" class="control-label" for="rentAmount">Rent Amount</label>
+<!--            <label style="color:white;" class="control-label" for="rentAmount">Rent Amount</label>-->
             <input type="number" id="rentAmount" style="width: 300px; margin: auto;" th:name="rentAmount" value="0"
-                   autofocus="autofocus" class="form-control" disabled>
+                   autofocus="autofocus" class="form-control" disabled placeholder="Rent Amount">
         </div>
 
         <div class="form-group">
-            <label style="color:white;">Select Expense Type: </label>
-            <select class="form-control" style="width: 300px; margin: auto;" id="expenseTypeId" name="expenseTypeId">
-                <option>  </option>
+<!--            <label style="color:white;">Select Expense Type: </label>-->
+            <select class="form-control" style="width: 300px; margin: auto;" id="utilitiesPriceId" name="utilitiesPriceId">
+                <option> Select Expense Type and Price: </option>
                 <option
-                        th:each="expenseType: ${expenseTypes}"
-                        th:text="${expenseType.expenseTypeName}"
-                        th:value="${expenseType.expenseTypeId}"
-                        th:name="${expenseType.expenseTypeId}">
+                        th:each="utilitiesPrice: ${utilitiesPrices}"
+                        th:text="${utilitiesPrice.expenseType.expenseTypeName} + ' | ' + ${utilitiesPrice.unitType.unitTypeName} + ' | ' + ${utilitiesPrice.price}"
+                        th:value="${utilitiesPrice.utilitiesPriceId}"
+                        th:name="${utilitiesPrice.utilitiesPriceId}">
                 </option>
             </select>
         </div>
 
         <div>
             <a style="color: white;" th:href="@{/manager/viewUnit/}+${unitId}+'/0'+'/0'">
-                <button type="button" class="btn btn-info col-offset-5">Cancel</button>
+                <button type="button" class="btn btn-primary col-offset-5">Cancel</button>
             </a>
-            <button type="submit" class="btn btn-primary">Confirm Add</button>
+            <button type="submit" class="btn btn-info">Confirm Add</button>
         </div>
     </form>
     <br/>
 </div>
 
 </body>
-
+<br><br>
 </html>

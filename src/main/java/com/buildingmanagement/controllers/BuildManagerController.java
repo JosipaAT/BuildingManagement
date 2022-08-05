@@ -44,7 +44,7 @@ public class BuildManagerController {
     }
 
     @PostMapping("/admin/addBuildManager")
-    public String registerUserAccount(@ModelAttribute("buildingManager")  BuildingManager buildingManager ) {
+    public String registerUserAccount(@ModelAttribute("buildingManager")  BuildingManager buildingManager, Model model) {
         this.buildingManagerService.addBuildManager(buildingManager);
         String username = buildingManager.getUsername();
         String password =  buildingManager.getPassword();

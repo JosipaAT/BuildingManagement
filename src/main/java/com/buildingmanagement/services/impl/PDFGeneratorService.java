@@ -2,6 +2,7 @@ package com.buildingmanagement.services.impl;
 
 import com.buildingmanagement.entities.*;
 import com.buildingmanagement.repositories.BuildComplexRepo;
+import com.buildingmanagement.repositories.ExpenseRepo;
 import com.buildingmanagement.repositories.IncomeRepo;
 import com.buildingmanagement.repositories.UnitRepo;
 import com.lowagie.text.*;
@@ -15,6 +16,9 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +36,9 @@ public class PDFGeneratorService {
     @Autowired
     private IncomeRepo incomeRepo;
 
+    @Autowired
+    private ExpenseRepo expenseRepo;
+
     public void export(HttpServletResponse response, String username, String password, String userType) throws IOException {
         Document document = new Document(PageSize.A4);
         PdfWriter.getInstance(document, response.getOutputStream());
@@ -42,6 +49,8 @@ public class PDFGeneratorService {
 
         Paragraph paragraph = new Paragraph("Login Credentials for " + userType, fontTitle);
         paragraph.setAlignment(Paragraph.ALIGN_CENTER);
+        Paragraph paragraph1 = new Paragraph(" ", fontTitle);
+        paragraph1.setAlignment(Paragraph.ALIGN_CENTER);
 
         Font fontParagraph = FontFactory.getFont(FontFactory.TIMES_ROMAN, BaseFont.CP1250, 16);
         fontParagraph.setSize(12);
@@ -49,20 +58,21 @@ public class PDFGeneratorService {
         Font fontParagraph2 = FontFactory.getFont(FontFactory.TIMES_ROMAN, BaseFont.CP1250, 16);
         fontParagraph2.setSize(14);
 
-        Paragraph paragraph1 = new Paragraph("Username", fontParagraph2);
-        Paragraph paragraph2 = new Paragraph(username, fontParagraph);
-        Paragraph paragraph3 = new Paragraph("Password", fontParagraph2);
-        Paragraph paragraph4 = new Paragraph(password, fontParagraph);
-        paragraph1.setAlignment(Paragraph.ALIGN_LEFT);
+        Paragraph paragraph2 = new Paragraph("Username: " + username, fontParagraph2);
+        Paragraph paragraph3 = new Paragraph("   ", fontParagraph);
+        Paragraph paragraph4 = new Paragraph("Password: " + password, fontParagraph2);
+        Paragraph paragraph5 = new Paragraph("   ", fontParagraph);
         paragraph2.setAlignment(Paragraph.ALIGN_LEFT);
         paragraph3.setAlignment(Paragraph.ALIGN_LEFT);
         paragraph4.setAlignment(Paragraph.ALIGN_LEFT);
+        paragraph5.setAlignment(Paragraph.ALIGN_LEFT);
 
         document.add(paragraph);
         document.add(paragraph1);
         document.add(paragraph2);
         document.add(paragraph3);
         document.add(paragraph4);
+        document.add(paragraph5);
         document.close();
     }
 
@@ -146,7 +156,8 @@ public class PDFGeneratorService {
         Font fontTitle = FontFactory.getFont(FontFactory.TIMES_ROMAN, BaseFont.CP1250, 16);
         fontTitle.setSize(18);
 
-        Paragraph paragraph = new Paragraph("Report for buildingComplexId: " + buildComplexId, fontTitle);
+//        Paragraph paragraph = new Paragraph("Report for buildingComplexId: " + buildComplexId, fontTitle);
+        Paragraph paragraph = new Paragraph("Basic Building Info ", fontTitle);
         paragraph.setAlignment(Paragraph.ALIGN_CENTER);
 
         Font fontParagraph = FontFactory.getFont(FontFactory.TIMES_ROMAN, BaseFont.CP1250, 16);
@@ -160,14 +171,14 @@ public class PDFGeneratorService {
                 .get()
                 .getBuildManager()
                 .getBuildManagerName(), fontParagraph);
-        Paragraph paragraph3 = new Paragraph("Co-Owner-Rep Name", fontParagraph2);
+        Paragraph paragraph3 = new Paragraph("Building Username", fontParagraph2);
         Paragraph paragraph4 = new Paragraph(this.buildComplexRepo.findById(buildComplexId)
                 .get()
                 .getUsername(), fontParagraph);
         Paragraph paragraph5 = new Paragraph("Password", fontParagraph2);
         Paragraph paragraph6 = new Paragraph(this.buildComplexRepo.findById(buildComplexId)
                 .get()
-                .getPassword(),fontParagraph);
+                .getPassword(), fontParagraph);
         Paragraph paragraph7 = new Paragraph("Building Address", fontParagraph2);
         Paragraph paragraph8 = new Paragraph(this.buildComplexRepo.findById(buildComplexId)
                 .get()
@@ -188,9 +199,9 @@ public class PDFGeneratorService {
                 .get()
                 .getUnits()
                 .size()), fontParagraph);
-        Paragraph paragraph13 = new Paragraph("Total Expenses: ", fontParagraph2);
+        Paragraph paragraph13 = new Paragraph("Total Expenses Combined: ", fontParagraph2);
         Paragraph paragraph14 = new Paragraph(String.valueOf(totalExpense), fontParagraph);
-        Paragraph paragraph15 = new Paragraph("Total Income:", fontParagraph2);
+        Paragraph paragraph15 = new Paragraph("Total Income Combined:", fontParagraph2);
         Paragraph paragraph16 = new Paragraph(String.valueOf(totalIncome), fontParagraph);
         paragraph1.setAlignment(Paragraph.ALIGN_LEFT);
         paragraph2.setAlignment(Paragraph.ALIGN_LEFT);
@@ -229,7 +240,8 @@ public class PDFGeneratorService {
         document.close();
     }
 
-    public void exportReportForExpenses(HttpServletResponse response, Unit unit, List<Expense> filteredExpenses, List<Income> filteredIncomes, Date startDate, Date endDate) throws IOException {
+    //report za sve troskove u razdoblju
+    public void exportReportForExpenses(HttpServletResponse response, Unit unit, List<Expense> filteredExpenses, Date startDate, Date endDate) throws IOException {
         Document document = new Document(PageSize.A4);
         PdfWriter.getInstance(document, response.getOutputStream());
 
@@ -237,7 +249,7 @@ public class PDFGeneratorService {
         Font fontTitle = FontFactory.getFont(FontFactory.TIMES_ROMAN, BaseFont.CP1250, 16);
         fontTitle.setSize(18);
 
-        Paragraph paragraph = new Paragraph("Report for unit " +unit.getUnitId() + " on floor " + unit.getFloor()
+        Paragraph paragraph = new Paragraph("Report for unit " + unit.getUnitId() + " on floor " + unit.getFloor()
                 .getFloorName(), fontTitle);
         paragraph.setAlignment(Paragraph.ALIGN_CENTER);
         document.add(paragraph);
@@ -300,57 +312,58 @@ public class PDFGeneratorService {
             numberCellHeader.setPadding(10);
             tableExpenses.addCell(numberCellHeader);
 
-            PdfPCell dateCreatedHeader = new PdfPCell(new Phrase("Date Created", fontBold));
-            dateCreatedHeader.setPadding(10);
-            tableExpenses.addCell(dateCreatedHeader);
-
             PdfPCell descriptionHeader = new PdfPCell(new Phrase("Description", fontBold));
             descriptionHeader.setPadding(10);
             tableExpenses.addCell(descriptionHeader);
-
-            PdfPCell amountHeader = new PdfPCell(new Phrase("Amount", fontBold));
-            amountHeader.setPadding(10);
-            tableExpenses.addCell(amountHeader);
 
             PdfPCell expenseTypeHeader = new PdfPCell(new Phrase("Expense Type", fontBold));
             expenseTypeHeader.setPadding(10);
             tableExpenses.addCell(expenseTypeHeader);
 
+            PdfPCell dateCreatedHeader = new PdfPCell(new Phrase("Date Created", fontBold));
+            dateCreatedHeader.setPadding(10);
+            tableExpenses.addCell(dateCreatedHeader);
+
             PdfPCell dueDateHeader = new PdfPCell(new Phrase("Due Date", fontBold));
             dueDateHeader.setPadding(10);
             tableExpenses.addCell(dueDateHeader);
 
+            PdfPCell amountHeader = new PdfPCell(new Phrase("Amount in KN", fontBold));
+            amountHeader.setPadding(10);
+            tableExpenses.addCell(amountHeader);
+
+
             tableExpenses.completeRow();
 
             int number = 1;
-            Integer totalAmount = 0;
+            Float totalAmount = Float.valueOf(0);
 
-            for (Expense expense : filteredExpenses) {
+            for (Expense expense : entry.getValue()) {
 
                 PdfPCell numberCell = new PdfPCell(new Phrase(number + "."));
                 numberCell.setPadding(10);
                 tableExpenses.addCell(numberCell);
 
-                PdfPCell dateOfReceipt = new PdfPCell(new Phrase(formatter.format(expense.getDateOfReceipt())));
-                dateOfReceipt.setPadding(10);
-                tableExpenses.addCell(dateOfReceipt);
-
                 PdfPCell description = new PdfPCell(new Phrase(expense.getDescription()));
                 description.setPadding(10);
                 tableExpenses.addCell(description);
-
-                PdfPCell amount = new PdfPCell(new Phrase(String.valueOf(expense.getAmount())));
-                amount.setPadding(10);
-                tableExpenses.addCell(amount);
 
                 PdfPCell expenseType = new PdfPCell(new Phrase(expense.getExpenseType()
                         .getExpenseTypeName()));
                 expenseType.setPadding(10);
                 tableExpenses.addCell(expenseType);
 
+                PdfPCell dateOfReceipt = new PdfPCell(new Phrase(formatter.format(expense.getDateOfReceipt())));
+                dateOfReceipt.setPadding(10);
+                tableExpenses.addCell(dateOfReceipt);
+
                 PdfPCell dueDate = new PdfPCell(new Phrase(formatter.format(expense.getDueDate())));
                 dueDate.setPadding(10);
                 tableExpenses.addCell(dueDate);
+
+                PdfPCell amount = new PdfPCell(new Phrase(String.valueOf(expense.getAmount())));
+                amount.setPadding(10);
+                tableExpenses.addCell(amount);
 
                 tableExpenses.completeRow();
                 number++;
@@ -367,39 +380,41 @@ public class PDFGeneratorService {
             tableIncome.setSpacingAfter(15);
 
             tableIncome.addCell(numberCellHeader);
-            tableIncome.addCell(dateCreatedHeader);
             tableIncome.addCell(descriptionHeader);
-            tableIncome.addCell(amountHeader);
             tableIncome.addCell(expenseTypeHeader);
+            tableIncome.addCell(dateCreatedHeader);
+            tableIncome.addCell(amountHeader);
+
 
             tableIncome.completeRow();
 
             int numberIncome = 1;
-            Integer totalAmountIncome = 0;
+            Float totalAmountIncome = Float.valueOf(0);
 
-            List<Income> incomes = incomeRepo.findAllByExpenseType_expenseTypeName(entry.getKey().getExpenseTypeName());
+            List<Income> incomes = incomeRepo.findAllByExpenseType_expenseTypeNameAndBuildingComplex_buildComplexIdAndUnit_unitId(entry.getKey().getExpenseTypeName(), unit.getBuildingComplex().getBuildComplexId(), unit.getUnitId());
 
-            for (Income income : filteredIncomes) {
+
+            for (Income income : incomes) {
 
                 PdfPCell numberCell = new PdfPCell(new Phrase(numberIncome + "."));
                 numberCell.setPadding(10);
                 tableIncome.addCell(numberCell);
 
-                PdfPCell dateOfReceipt = new PdfPCell(new Phrase(formatter.format(income.getDateOfPayment())));
-                dateOfReceipt.setPadding(10);
-                tableIncome.addCell(dateOfReceipt);
-
                 PdfPCell description = new PdfPCell(new Phrase(income.getDescription()));
                 description.setPadding(10);
                 tableIncome.addCell(description);
 
-                PdfPCell amount = new PdfPCell(new Phrase(String.valueOf(income.getAmount())));
-                amount.setPadding(10);
-                tableIncome.addCell(amount);
-
                 PdfPCell expenseType = new PdfPCell(new Phrase(income.getExpenseType().getExpenseTypeName()));
                 expenseType.setPadding(10);
                 tableIncome.addCell(expenseType);
+
+                PdfPCell dateOfReceipt = new PdfPCell(new Phrase(formatter.format(income.getDateOfPayment())));
+                dateOfReceipt.setPadding(10);
+                tableIncome.addCell(dateOfReceipt);
+
+                PdfPCell amount = new PdfPCell(new Phrase(String.valueOf(income.getAmount())));
+                amount.setPadding(10);
+                tableIncome.addCell(amount);
 
                 tableIncome.completeRow();
                 numberIncome++;
@@ -409,15 +424,17 @@ public class PDFGeneratorService {
             document.add(tableIncome);
 
 
-            Paragraph totalAmountIncomeP = new Paragraph("Total Amount Income: " + totalAmountIncome, fontBold);
-            totalAmountIncomeP.setAlignment(Paragraph.ALIGN_LEFT);
-            document.add(totalAmountIncomeP);
-
-            Paragraph totalAmountExpenseP = new Paragraph("Total Amount Expense: " + totalAmount, fontBold);
+            Paragraph totalAmountExpenseP = new Paragraph("Total Amount Expense: " + totalAmount + " KN", fontBold);
             totalAmountExpenseP.setAlignment(Paragraph.ALIGN_LEFT);
             document.add(totalAmountExpenseP);
 
-            Paragraph totalAmountSubstitution = new Paragraph("Amount to pay: " + (totalAmount - totalAmountIncome), fontBold);
+
+            Paragraph totalAmountIncomeP = new Paragraph("Total Amount Income: " + totalAmountIncome + " KN", fontBold);
+            totalAmountIncomeP.setAlignment(Paragraph.ALIGN_LEFT);
+            document.add(totalAmountIncomeP);
+
+
+            Paragraph totalAmountSubstitution = new Paragraph("Amount to pay: " + (totalAmount - totalAmountIncome) + " KN", fontBold);
             totalAmountSubstitution.setAlignment(Paragraph.ALIGN_LEFT);
             document.add(totalAmountSubstitution);
 
@@ -435,7 +452,8 @@ public class PDFGeneratorService {
         Font fontTitle = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
         fontTitle.setSize(18);
 
-        Paragraph paragraph = new Paragraph("Report for buildingComplexId " + buildingComplex.getBuildComplexId(), fontTitle);
+//        Paragraph paragraph = new Paragraph("Report for buildingComplexId " + buildingComplex.getBuildComplexId(), fontTitle);
+        Paragraph paragraph = new Paragraph("All Equipment Report ", fontTitle);
         paragraph.setAlignment(Paragraph.ALIGN_CENTER);
 
         Font fontNormal = FontFactory.getFont(FontFactory.HELVETICA);
@@ -447,7 +465,7 @@ public class PDFGeneratorService {
         Paragraph paragraph1 = new Paragraph("Building Manager Name", fontBold);
         Paragraph paragraph2 = new Paragraph(buildingComplex.getBuildManager()
                 .getBuildManagerName(), fontNormal);
-        Paragraph paragraph3 = new Paragraph("Co-Owner-Rep Name", fontBold);
+        Paragraph paragraph3 = new Paragraph("Building Username", fontBold);
         Paragraph paragraph4 = new Paragraph(buildingComplex.getUsername(), fontNormal);
         Paragraph paragraph5 = new Paragraph("Building Address", fontBold);
         Paragraph paragraph6 = new Paragraph(buildingComplex.getStreetName() + " " + buildingComplex.getStreetNumber() + " " + buildingComplex.getCity() + " " + buildingComplex.getPostalCode(), fontNormal);
@@ -535,5 +553,224 @@ public class PDFGeneratorService {
 
         document.close();
     }
+
+    public void exportBuildingExpenseReport(HttpServletResponse response, Integer buildComplexId, Date startDate, Date endDate) throws IOException {
+        Document document = new Document(PageSize.A4);
+        PdfWriter.getInstance(document, response.getOutputStream());
+
+        BuildingComplex buildingComplex = buildComplexRepo.getById(buildComplexId);
+
+        document.open();
+        Font fontTitle = FontFactory.getFont(FontFactory.TIMES_ROMAN, BaseFont.CP1250, 16);
+        fontTitle.setSize(18);
+
+        Paragraph paragraph = new Paragraph("Report for building "
+                , fontTitle);
+        paragraph.setAlignment(Paragraph.ALIGN_CENTER);
+        document.add(paragraph);
+
+        Font fontNormal = FontFactory.getFont(FontFactory.TIMES_ROMAN, BaseFont.CP1250, 12);
+        fontNormal.setSize(12);
+
+        Font fontBold = FontFactory.getFont(FontFactory.HELVETICA_BOLD, BaseFont.CP1250, 14);
+        fontBold.setSize(14);
+
+        Paragraph paragraph5 = new Paragraph("Building Address", fontBold);
+        Paragraph paragraph6 = new Paragraph(buildingComplex
+                .getStreetName() + " " + buildingComplex
+                .getStreetNumber() + " " + buildingComplex
+                .getCity() + " " + buildingComplex
+                .getPostalCode(), fontNormal);
+
+        paragraph5.setAlignment(Paragraph.ALIGN_LEFT);
+        paragraph6.setAlignment(Paragraph.ALIGN_LEFT);
+
+        document.add(paragraph5);
+        document.add(paragraph6);
+
+        SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
+
+
+        LocalDate startOfTheYear = LocalDate.of(LocalDate.now().getYear(), 1, 1);
+
+        List<Expense> expensesPreviousPeriod = expenseRepo.findByExpenseType_expenseTypeNameInAndDateOfReceiptAfterAndDateOfReceiptBefore(
+                Arrays.asList("EquipmentService", "Maintenance"), convertLocalDateToDate(startOfTheYear), startDate);
+        Double previousExpenseSum = expensesPreviousPeriod.stream().mapToDouble(Expense::getAmount).sum();
+
+
+        List<Income> incomesPreviousPeriod = incomeRepo.findByExpenseType_expenseTypeNameInAndDateOfPaymentAfterAndDateOfPaymentBefore(
+                Arrays.asList("UpKeep"), convertLocalDateToDate(startOfTheYear), startDate);
+        Double previousIncomeSum = incomesPreviousPeriod.stream().mapToDouble(Income::getAmount).sum();
+
+        Double previousTotal = previousIncomeSum - previousExpenseSum;
+
+        Paragraph paragraph7 = new Paragraph("Saldo: :" + previousTotal, fontBold);
+        paragraph7.setAlignment(Paragraph.ALIGN_LEFT);
+        document.add(paragraph7);
+
+
+        // current expenses
+        List<Expense> expensesPeriod = expenseRepo.findByExpenseType_expenseTypeNameInAndDateOfReceiptAfterAndDateOfReceiptBefore(
+                Arrays.asList("EquipmentService", "Maintenance"), startDate, endDate);
+        Double expenseSum = expensesPeriod.stream().mapToDouble(Expense::getAmount).sum();
+
+
+        List<Income> incomesPeriod = incomeRepo.findByExpenseType_expenseTypeNameInAndDateOfPaymentAfterAndDateOfPaymentBefore(
+                Arrays.asList("UpKeep"), startDate, endDate);
+        Double incomeSum = incomesPeriod.stream().mapToDouble(Income::getAmount).sum();
+
+
+        Paragraph expenseTypeParagraph = new Paragraph("Expenses: ");
+        expenseTypeParagraph.setAlignment(Paragraph.ALIGN_LEFT);
+        document.add(expenseTypeParagraph);
+
+
+        PdfPTable tableExpenses = new PdfPTable(6);
+        tableExpenses.setWidthPercentage(100);
+        tableExpenses.setHeaderRows(1);
+        tableExpenses.setSpacingBefore(15);
+        tableExpenses.setSpacingAfter(15);
+
+        PdfPCell numberCellHeader = new PdfPCell(new Phrase("No", fontBold));
+        numberCellHeader.setPadding(10);
+        tableExpenses.addCell(numberCellHeader);
+
+        PdfPCell descriptionHeader = new PdfPCell(new Phrase("Description", fontBold));
+        descriptionHeader.setPadding(10);
+        tableExpenses.addCell(descriptionHeader);
+
+        PdfPCell expenseTypeHeader = new PdfPCell(new Phrase("Expense Type", fontBold));
+        expenseTypeHeader.setPadding(10);
+        tableExpenses.addCell(expenseTypeHeader);
+
+        PdfPCell dateCreatedHeader = new PdfPCell(new Phrase("Date Created", fontBold));
+        dateCreatedHeader.setPadding(10);
+        tableExpenses.addCell(dateCreatedHeader);
+
+        PdfPCell dueDateHeader = new PdfPCell(new Phrase("Due Date", fontBold));
+        dueDateHeader.setPadding(10);
+        tableExpenses.addCell(dueDateHeader);
+
+        PdfPCell amountHeader = new PdfPCell(new Phrase("Amount in KN", fontBold));
+        amountHeader.setPadding(10);
+        tableExpenses.addCell(amountHeader);
+
+
+        tableExpenses.completeRow();
+
+        int number = 1;
+        Float totalAmount = Float.valueOf(0);
+
+        for (Expense expense : expensesPeriod) {
+
+            PdfPCell numberCell = new PdfPCell(new Phrase(number + "."));
+            numberCell.setPadding(10);
+            tableExpenses.addCell(numberCell);
+
+            PdfPCell description = new PdfPCell(new Phrase(expense.getDescription()));
+            description.setPadding(10);
+            tableExpenses.addCell(description);
+
+            PdfPCell expenseType = new PdfPCell(new Phrase(expense.getExpenseType()
+                    .getExpenseTypeName()));
+            expenseType.setPadding(10);
+            tableExpenses.addCell(expenseType);
+
+            PdfPCell dateOfReceipt = new PdfPCell(new Phrase(formatter.format(expense.getDateOfReceipt())));
+            dateOfReceipt.setPadding(10);
+            tableExpenses.addCell(dateOfReceipt);
+
+            PdfPCell dueDate = new PdfPCell(new Phrase(formatter.format(expense.getDueDate())));
+            dueDate.setPadding(10);
+            tableExpenses.addCell(dueDate);
+
+            PdfPCell amount = new PdfPCell(new Phrase(String.valueOf(expense.getAmount())));
+            amount.setPadding(10);
+            tableExpenses.addCell(amount);
+
+            tableExpenses.completeRow();
+            number++;
+
+            totalAmount += expense.getAmount();
+        }
+        document.add(tableExpenses);
+
+        // INCOME
+        PdfPTable tableIncome = new PdfPTable(6);
+        tableIncome.setWidthPercentage(100);
+        tableIncome.setHeaderRows(1);
+        tableIncome.setSpacingBefore(15);
+        tableIncome.setSpacingAfter(15);
+
+
+        PdfPCell userHeader = new PdfPCell(new Phrase("User", fontBold));
+        userHeader.setPadding(10);
+        tableExpenses.addCell(userHeader);
+
+        tableIncome.addCell(numberCellHeader);
+        tableIncome.addCell(descriptionHeader);
+        tableIncome.addCell(expenseTypeHeader);
+        tableIncome.addCell(dateCreatedHeader);
+        tableIncome.addCell(amountHeader);
+        tableIncome.addCell(userHeader);
+
+
+        tableIncome.completeRow();
+
+        int numberIncome = 1;
+        Float totalAmountIncome = Float.valueOf(0);
+
+
+        for (Income income : incomesPeriod) {
+
+            PdfPCell numberCell = new PdfPCell(new Phrase(numberIncome + "."));
+            numberCell.setPadding(10);
+            tableIncome.addCell(numberCell);
+
+            PdfPCell description = new PdfPCell(new Phrase(income.getDescription()));
+            description.setPadding(10);
+            tableIncome.addCell(description);
+
+            PdfPCell expenseType = new PdfPCell(new Phrase(income.getExpenseType().getExpenseTypeName()));
+            expenseType.setPadding(10);
+            tableIncome.addCell(expenseType);
+
+            PdfPCell dateOfReceipt = new PdfPCell(new Phrase(formatter.format(income.getDateOfPayment())));
+            dateOfReceipt.setPadding(10);
+            tableIncome.addCell(dateOfReceipt);
+
+            PdfPCell amount = new PdfPCell(new Phrase(String.valueOf(income.getAmount())));
+            amount.setPadding(10);
+            tableIncome.addCell(amount);
+
+            PdfPCell user = new PdfPCell(new Phrase(income.getUnit().getCoOwner().getCoOwnerName()));
+            user.setPadding(10);
+            tableIncome.addCell(user);
+
+            tableIncome.completeRow();
+            numberIncome++;
+
+            totalAmountIncome += income.getAmount();
+        }
+        document.add(tableIncome);
+
+
+        Paragraph totalAmountExpenseP = new Paragraph("Total Amount Expense: " + totalAmount + " KN", fontBold);
+        totalAmountExpenseP.setAlignment(Paragraph.ALIGN_LEFT);
+        document.add(totalAmountExpenseP);
+
+
+        Paragraph totalAmountIncomeP = new Paragraph("Total Amount Income: " + totalAmountIncome + " KN", fontBold);
+        totalAmountIncomeP.setAlignment(Paragraph.ALIGN_LEFT);
+        document.add(totalAmountIncomeP);
+
+        document.close();
+    }
+
+
+    private Date convertLocalDateToDate(LocalDate date){
+        return Date.from(date.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+    }
+
 }
 

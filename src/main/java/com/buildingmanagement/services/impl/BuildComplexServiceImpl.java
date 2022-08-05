@@ -50,4 +50,9 @@ public class BuildComplexServiceImpl implements BuildComplexService {
 
         return buildingComplex;
     }
+
+    @Override
+    public void update(Integer buildComplexId, BuildingComplex buildComplex) {
+
+    }
 }

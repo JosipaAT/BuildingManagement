@@ -66,7 +66,7 @@ thead{
 {
 float: right;
 color: white;
-font-size: 30px;
+font-size: 25px;
 font-weight: bold;
 }
 
@@ -77,6 +77,8 @@ font-weight: bold;
 
 }
 
+
+
 </style>
 <body>
 <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -84,10 +86,11 @@ font-weight: bold;
         <div class="navbar-header">
             <a class="navbar-brand" sec:authorize="hasAuthority('BUILDMANAGER')" th:href="@{/manager/0}">Home </a>
             <a class="navbar-brand" sec:authorize="hasAuthority('COOWNERREP')" th:href="@{/coowner_rep}">Home </a>
-            <a class="navbar-brand" sec:authorize="hasAuthority('BUILDMANAGER')" th:href="@{/manager/addBuildComplexForm}">Add Building </a>
+            <a class="navbar-brand" sec:authorize="hasAuthority('BUILDMANAGER')"
+               th:href="@{/manager/addBuildComplexForm}">Add Building </a>
             <a class="navbar-brand" th:href="@{/logout}">Logout</a>
         </div>
-        <p> <span class="address" th:text="${address}"></span></p>
+        <p><span class="address" th:text="${address}"></span></p>
     </div>
 </nav>
 <br>
@@ -96,8 +99,20 @@ font-weight: bold;
     <br/>
     <h3 class="text-center" style="color:black;"> Unit Details</h3>
     <div class="d-flex justify-content-end">
-        <button type="button" class="btn btn-info col-offset-5" th:if="${unit.coOwner==null}" sec:authorize="hasAuthority('COOWNERREP')"><a style="color:white;" th:href="@{/coowner_rep/addCoOwnerForm/}+${unit.unitId}">Add CoOwner</a></button>
-        <button type="button" class="btn btn-info col-offset-5" th:if="${unit.coOwner}" sec:authorize="hasAuthority('COOWNERREP')"><a style="color:white;" th:href="@{/coowner_rep/addCoOwnerForm/}+${unit.unitId}">Update CoOwner</a></button>
+        <button type="button" class="btn btn-info col-offset-5" th:if="${unit.coOwner==null}"
+                sec:authorize="hasAuthority('COOWNERREP')"><a style="color:white;"
+                                                              th:href="@{/coowner_rep/addCoOwnerForm/}+${unit.unitId}">Add
+            CoOwner</a></button>
+        <button type="button" class="btn btn-primary col-offset-5" th:if="${unit.coOwner}"
+                sec:authorize="hasAuthority('COOWNERREP')"><a style="color:white;"
+                                                              th:href="@{/coowner_rep/addCoOwnerForm/}+${unit.unitId}">Add
+            new
+            CoOwner</a></button>
+        <button type="button" class="btn btn-info col-offset-5" th:if="${unit.coOwner}"
+                sec:authorize="hasAuthority('COOWNERREP')"><a style="color:white;"
+                                                              th:href="@{/coowner_rep/updateCoOwnerForm/}+${coOwner.coOwnerId}">Update
+            Existing
+            CoOwner</a></button>
     </div>
     <br/>
     <div class="table-container">
@@ -124,35 +139,47 @@ font-weight: bold;
                 <td style="color:black;" th:text="${unit.areaSqrMeter}">Area Sqr Meter</td>
                 <td style="color:black;" th:text="${unitTypeName}">Unit Type</td>
                 <td sec:authorize="hasAuthority('BUILDMANAGER')">
-                    <button type="button" class="btn btn-info col-offset-5" sec:authorize="hasAuthority('BUILDMANAGER')"><a style="color:white;" class="fw-bold" th:href="@{/manager/updateUnit/}+${unit.unitId}">Update</a></button>
-                    <button type="button" class="btn btn-info col-offset-5" sec:authorize="hasAuthority('COOWNERREP')"><a style="color:white;" class="fw-bold" th:href="@{/coowner_rep/updateUnit/}+${unit.unitId}">Update</a></button>
-                    <button type="button" class="btn btn-primary"><a style="color:white;" class="fw-bold" th:href="@{/manager/addExpenseForm/}+${unit.unitId}+@{/}+${buildComplexId}">Add Expense</a></button>
-                    <button type="button" class="btn btn-primary"><a style="color:white;" class="fw-bold" th:href="@{/manager/addIncomeForm/}+${unit.unitId}+@{/}+${buildComplexId}">Add Income</a></button>
+                    <button type="button" class="btn btn-info col-offset-5"
+                            sec:authorize="hasAuthority('BUILDMANAGER')"><a style="color:white;" class="fw-bold"
+                                                                            th:href="@{/manager/updateUnit/}+${unit.unitId}">Update</a>
+                    </button>
+                    <button type="button" class="btn btn-info col-offset-5"
+                            sec:authorize="hasAuthority('COOWNERREP')"><a style="color:white;" class="fw-bold"
+                                                                          th:href="@{/coowner_rep/updateUnit/}+${unit.unitId}">Update</a>
+                    </button>
+                    <button type="button" class="btn btn-primary"><a style="color:white;" class="fw-bold"
+                                                                     th:href="@{/manager/addExpenseForm/}+${unit.unitId}+@{/}+${buildComplexId}">Add
+                        Expense</a></button>
+                    <button type="button" class="btn btn-info"><a style="color:white;" class="fw-bold"
+                                                                  th:href="@{/manager/addIncomeForm/}+${unit.unitId}+@{/}+${buildComplexId}">Add
+                        Income</a></button>
                 </td>
-<!--                <td>-->
-<!--                    <button style="background-color:blue"><a style="color:white;" class="fw-bold" th:href="@{/manager/addCoOwner/}+${unit.unitID}+@{/}+${buildComplexId}">Add CoOwner</a></button>-->
-<!--                </td>-->
+                <!--                <td>-->
+                <!--                    <button style="background-color:blue"><a style="color:white;" class="fw-bold" th:href="@{/manager/addCoOwner/}+${unit.unitID}+@{/}+${buildComplexId}">Add CoOwner</a></button>-->
+                <!--                </td>-->
             </tr>
 
             </tbody>
         </table>
     </div>
+
     <div sec:authorize="hasAuthority('BUILDMANAGER')">
            <span style="float:left;">
-                 <p style="color:black; ">Search for a period</p>
+            <h3 class="text-left" sec:authorize="hasAuthority('BUILDMANAGER')" style="color:black;">Expense list</h3>
+                 <p style="color:black; ">Search for an Expense List in a Time Period</p>
                     <form th:action="@{/manager/viewUnit/}+${unit.unitId}+@{/0}+@{/0}" method="get">
                         <input type="date" name="startDate1" placeholder="Start Date">
                         <input type="date" name="endDate1" placeholder="End Date">
-                        <button class="btn btn-info col-offset-5 col-offset-5" type="submit">Go</button>
+                        <button class="btn btn-primary col-offset-5 col-offset-5" type="submit">Go</button>
                         <button class="btn btn-info col-offset-5 col-offset-5" type="submit">Reset</button>
                     </form>
            </span>
         <span style="float:right;">
                <form th:action="@{/manager/unitReport/}+${unit.unitId}" method="post">
-                   <label style="color:black;" >Select Time Period for Expense Report:</label> <br>
+                   <label style="color:black;">Select Time Period for Expense Report:</label> <br>
                     <input type="date" name="startDate" placeholder="Start Date">
                    <input type="date" name="endDate" placeholder="End Date"> <br> <br>
-                    <label style="color:black;" >Select Expense Type:</label> <br>
+                    <label style="color:black;">Select Expense Type:</label> <br>
                     <select class="form-control" id="expenseTypeId" name="expenseTypeId">
                         <option>  </option>
                         <option
@@ -161,8 +188,8 @@ font-weight: bold;
                                 th:value="${expenseType.expenseTypeId}"
                                 th:name="${expenseType.expenseTypeId}">
                          </option>
-                     </select> <br>
-                   <button class="btn btn-info col-offset-5" type="submit">Print Report</button> <br>
+                   </select> <br>
+                   <button class="btn btn-info col-offset-5" type="submit">Print Report</button> <br> <br>
                </form>
            </span>
         <br/>
@@ -170,19 +197,34 @@ font-weight: bold;
         <br/>
         <br/>
     </div>
+
     <div sec:authorize="hasAuthority('COOWNERREP')">
            <span style="float:left;">
-                 <p style="color:black; ">Search for a period</p>
+               <h3 class="text-left" sec:authorize="hasAuthority('COOWNERREP')" style="color:black;">Expense list</h3>
+                 <p style="color:black; ">Search for an Expense List in a Time Period</p>
                     <form th:action="@{/coowner_rep/viewUnit/}+${unit.unitId}+@{/0}+@{/0}" method="get">
                         <input type="date" name="startDate1" placeholder="Start Date">
                         <input type="date" name="endDate1" placeholder="End Date">
-                        <button class="btn btn-info col-offset-5" type="submit">Go</button>
+                        <button class="btn btn-primary col-offset-5" type="submit">Go</button>
                           <button class="btn btn-info col-offset-5" type="submit">Reset</button>
                     </form>
            </span>
         <span style="float:right;">
                <form th:action="@{/coowner_rep/unitReport/}+${unit.unitId}" method="post">
-                   <button class="btn btn-info col-offset-5" type="submit">Print Report</button>
+                   <label style="color:black;">Select Time Period for Expense Report:</label> <br>
+                    <input type="date" name="startDate" placeholder="Start Date">
+                   <input type="date" name="endDate" placeholder="End Date"> <br> <br>
+                    <label style="color:black;">Select Expense Type:</label> <br>
+                    <select class="form-control" id="expenseTypeId2" name="expenseTypeId">
+                        <option>  </option>
+                        <option
+                                th:each="expenseType: ${expenseTypes}"
+                                th:text="${expenseType.expenseTypeName}"
+                                th:value="${expenseType.expenseTypeId}"
+                                th:name="${expenseType.expenseTypeId}">
+                         </option>
+                   </select> <br>
+                   <button class="btn btn-info col-offset-5" type="submit">Print Report</button> <br> <br>
                </form>
            </span>
         <br/>
@@ -190,29 +232,35 @@ font-weight: bold;
         <br/>
         <br/>
     </div>
-    <h3 class="text-center" sec:authorize="hasAuthority('BUILDMANAGER')" style="color:black;">Expense list</h3>
+
     <div sec:authorize="hasAuthority('BUILDMANAGER')">
         <div class="table-container">
             <table class="table table-bordered">
                 <thead>
                 <tr class="text-center">
                     <td style="color:black;" scope="col py-2">#</td>
-                    <td style="color:black;" scope="col py-2">Date Created</td>
                     <td style="color:black;" scope="col">Description</td>
-                    <td style="color:black;" scope="col">Amount</td>
                     <td style="color:black;" scope="col">Expense Type</td>
+                    <td style="color:black;" scope="col py-2">Date Created</td>
                     <td style="color:black;" scope="col">Due Date</td>
+                    <td style="color:black;" scope="col">Amount in KN</td>
+
+
                 </tr>
                 </thead>
 
                 <tbody>
                 <tr class="text-center" th:each="expense: ${expenses}">
                     <td style="color:black;" scope="row" th:text="${expense.expenseId}">1</td>
-                    <td style="color:black;" th:text="${#dates.format(expense.dateOfReceipt, 'dd/MM/yyyy')}">Date Created</td>
                     <td style="color:black;" th:text="${expense.description}">Description</td>
-                    <td style="color:black;" th:text="${expense.amount}" th:value="${expense.amount}">Amount</td>
                     <td style="color:black;" th:text="${expense.expenseType.expenseTypeName}">Expense Type</td>
+                    <td style="color:black;" th:text="${#dates.format(expense.dateOfReceipt, 'dd/MM/yyyy')}">Date
+                        Created
+                    </td>
                     <td style="color:black;" th:text="${#dates.format(expense.dueDate, 'dd/MM/yyyy')}">Due Date</td>
+                    <td style="color:black;" th:text="${expense.amount}" th:value="${expense.amount}">Amount in KN</td>
+
+
                 </tr>
                 </tbody>
 
@@ -220,31 +268,44 @@ font-weight: bold;
             <div sec:authorize="hasAuthority('BUILDMANAGER')">
                 <nav th:if="${startDate1==null||endDate1==null}" aria-label="Page navigation example">
                     <ul class="pagination">
-                        <li th:if="${currentPage1 != 0}" class="page-item"><a th:href="@{'/manager/viewUnit/'+${unit.unitId}+'/'+${currentPage1-1}+'/0'}" class="page-link" href="#">Previous</a></li>
-                        <li th:if="${totalPages1!=0}" th:classappend="${currentPage1==i-1?'active':''}" th:each="i : ${#numbers.sequence(1, totalPages1)}" class="page-item"><a th:href="@{'/manager/viewUnit/'+${unit.unitId}+'/'+${i-1}+'/0'}" class="page-link"
-                                                                                                                                                                                href="#"><span th:text="${i}"></span></a></li>
-                        <li th:if="${currentPage1+1 != totalPages1&&totalPages1!=0}" class="page-item"><a th:href="@{'/manager/viewUnit/'+${unit.unitId}+'/'+${currentPage1+1}+'/0'}" class="page-link" href="#">Next</a></li>
+                        <li th:if="${currentPage1 != 0}" class="page-item"><a
+                                th:href="@{'/manager/viewUnit/'+${unit.unitId}+'/'+${currentPage1-1}+'/0'}"
+                                class="page-link" href="#">Previous</a></li>
+                        <li th:if="${totalPages1!=0}" th:classappend="${currentPage1==i-1?'active':''}"
+                            th:each="i : ${#numbers.sequence(1, totalPages1)}" class="page-item"><a
+                                th:href="@{'/manager/viewUnit/'+${unit.unitId}+'/'+${i-1}+'/0'}" class="page-link"
+                                href="#"><span th:text="${i}"></span></a></li>
+                        <li th:if="${currentPage1+1 != totalPages1&&totalPages1!=0}" class="page-item"><a
+                                th:href="@{'/manager/viewUnit/'+${unit.unitId}+'/'+${currentPage1+1}+'/0'}"
+                                class="page-link" href="#">Next</a></li>
                     </ul>
                 </nav>
                 <nav th:if="${startDate1!=null&&endDate1!=null}" aria-label="Page navigation example">
                     <ul class="pagination">
-                        <li th:if="${currentPage1 != 0}" class="page-item"><a th:href="@{'/manager/viewUnit/'+${unit.unitId}+'/'+${currentPage1-1}+'/0'+'?startDate1='+${startDate1}+'&endDate1='+${endDate1}}" class="page-link" href="#">Previous</a></li>
-                        <li th:if="${totalPages1!=0}" th:classappend="${currentPage1==i-1?'active':''}" th:each="i : ${#numbers.sequence(1, totalPages1)}" class="page-item"><a
-                                th:href="@{'/manager/viewUnit/'+${unit.unitId}+'/'+${i-1}+'/0'+'?startDate1='+${startDate1}+'&endDate1='+${endDate1}}" class="page-link" href="#"><span th:text="${i}"></span></a></li>
-                        <li th:if="${currentPage1+1 != totalPages1&&totalPages1!=0}" class="page-item"><a th:href="@{'/manager/viewUnit/'+${unit.unitId}+'/'+${currentPage1+1}+'/0'+'?startDate1='+${startDate1}+'&endDate1='+${endDate1}}" class="page-link"
-                                                                                                          href="#">Next</a></li>
+                        <li th:if="${currentPage1 != 0}" class="page-item"><a
+                                th:href="@{'/manager/viewUnit/'+${unit.unitId}+'/'+${currentPage1-1}+'/0'+'?startDate1='+${startDate1}+'&endDate1='+${endDate1}}"
+                                class="page-link" href="#">Previous</a></li>
+                        <li th:if="${totalPages1!=0}" th:classappend="${currentPage1==i-1?'active':''}"
+                            th:each="i : ${#numbers.sequence(1, totalPages1)}" class="page-item"><a
+                                th:href="@{'/manager/viewUnit/'+${unit.unitId}+'/'+${i-1}+'/0'+'?startDate1='+${startDate1}+'&endDate1='+${endDate1}}"
+                                class="page-link" href="#"><span th:text="${i}"></span></a></li>
+                        <li th:if="${currentPage1+1 != totalPages1&&totalPages1!=0}" class="page-item"><a
+                                th:href="@{'/manager/viewUnit/'+${unit.unitId}+'/'+${currentPage1+1}+'/0'+'?startDate1='+${startDate1}+'&endDate1='+${endDate1}}"
+                                class="page-link"
+                                href="#">Next</a></li>
                     </ul>
                 </nav>
             </div>
         </div>
     </div>
     <div sec:authorize="hasAuthority('BUILDMANAGER')">
-           <span style="float:left;">
-                 <p style="color:black; ">Search for a period</p>
+        <h3 class="text-left" sec:authorize="hasAuthority('BUILDMANAGER')" style="color:black;">Income list</h3>
+        <span style="float:left;">
+                 <p style="color:black; ">Search for an Income List in a Time Period</p>
                     <form th:action="@{'/manager/viewUnit/'+${unit.unitId}+'/0'+'/0'}" method="get">
                         <input type="date" name="startDate2" placeholder="Start Date">
                         <input type="date" name="endDate2" placeholder="End Date">
-                        <button class="btn btn-info col-offset-5" type="submit">Go</button>
+                        <button class="btn btn-primary col-offset-5" type="submit">Go</button>
                         <button class="btn btn-info col-offset-5" type="submit">Reset</button>
                     </form>
            </span>
@@ -253,17 +314,18 @@ font-weight: bold;
         <br>
         <br>
     </div>
-    <h3 class="text-center" sec:authorize="hasAuthority('BUILDMANAGER')" style="color:black;">Income list</h3>>
+
     <div sec:authorize="hasAuthority('BUILDMANAGER')">
         <div class="table-container">
             <table class="table table-bordered">
                 <thead>
                 <tr class="text-center">
                     <td style="color:black;" scope="col py-2">#</td>
-                    <td style="color:black;" scope="col">Date of Payment</td>
                     <td style="color:black;" scope="col">Description</td>
-                    <td style="color:black;" scope="col">Amount</td>
                     <td style="color:black;" scope="col">Expense Type</td>
+                    <td style="color:black;" scope="col">Date of Payment</td>
+                    <td style="color:black;" scope="col">Amount in KN</td>
+
                 </tr>
                 </thead>
 
@@ -271,10 +333,13 @@ font-weight: bold;
 
                 <tr class="text-center" th:each="income: ${incomes}">
                     <td style="color:black;" scope="row" th:text="${income.incomeId}">1</td>
-                    <td style="color:black;" th:text="${#dates.format(income.dateOfPayment, 'dd/MM/yyyy')}">Date of Payment</td>
                     <td style="color:black;" th:text="${income.description}">Description</td>
-                    <td style="color:black;" th:text="${income.amount}">Amount</td>
-                    <td style="color:black;" th:text="${income.expenseType.expenseTypeName}">Expense Type</td>>
+                    <td style="color:black;" th:text="${income.expenseType.expenseTypeName}">Expense Type</td>
+                    <td style="color:black;" th:text="${#dates.format(income.dateOfPayment, 'dd/MM/yyyy')}">Date of
+                        Payment
+                    </td>
+                    <td style="color:black;" th:text="${income.amount}">Amount in KN</td>
+
                 </tr>
 
                 </tbody>
@@ -282,47 +347,63 @@ font-weight: bold;
             <div sec:authorize="hasAuthority('BUILDMANAGER')">
                 <nav th:if="${startDate2==null||endDate2==null}" aria-label="Page navigation example">
                     <ul class="pagination">
-                        <li th:if="${currentPage2 != 0}" class="page-item"><a th:href="@{'/manager/viewUnit/'+${unit.unitId}+'/0'+'/'+${currentPage2-1}}" class="page-link" href="#">Previous</a></li>
-                        <li th:if="${totalPages2!=0}" th:classappend="${currentPage2==i-1?'active':''}" th:each="i : ${#numbers.sequence(1, totalPages2)}" class="page-item"><a th:href="@{'/manager/viewUnit/'+${unit.unitId}+'/0'+'/'+${i-1}}" class="page-link"
-                                                                                                                                                                                href="#"><span th:text="${i}"></span></a></li>
-                        <li th:if="${currentPage2+1 != totalPages2&&totalPages2!=0}" class="page-item"><a th:href="@{'/manager/viewUnit/'+${unit.unitId}+'/0'+'/'+${currentPage2+1}}" class="page-link" href="#">Next</a></li>
+                        <li th:if="${currentPage2 != 0}" class="page-item"><a
+                                th:href="@{'/manager/viewUnit/'+${unit.unitId}+'/0'+'/'+${currentPage2-1}}"
+                                class="page-link" href="#">Previous</a></li>
+                        <li th:if="${totalPages2!=0}" th:classappend="${currentPage2==i-1?'active':''}"
+                            th:each="i : ${#numbers.sequence(1, totalPages2)}" class="page-item"><a
+                                th:href="@{'/manager/viewUnit/'+${unit.unitId}+'/0'+'/'+${i-1}}" class="page-link"
+                                href="#"><span th:text="${i}"></span></a></li>
+                        <li th:if="${currentPage2+1 != totalPages2&&totalPages2!=0}" class="page-item"><a
+                                th:href="@{'/manager/viewUnit/'+${unit.unitId}+'/0'+'/'+${currentPage2+1}}"
+                                class="page-link" href="#">Next</a></li>
                     </ul>
                 </nav>
                 <nav th:if="${startDate2!=null||endDate2!=null}" aria-label="Page navigation example">
                     <ul class="pagination">
-                        <li th:if="${currentPage2 != 0}" class="page-item"><a th:href="@{'/manager/viewUnit/'+${unit.unitId}+'/0'+'/'+${currentPage2-1}+'?startDate2='+${startDate2}+'&endDate2='+${endDate2}}" class="page-link" href="#">Previous</a></li>
-                        <li th:if="${totalPages2!=0}" th:classappend="${currentPage2==i-1?'active':''}" th:each="i : ${#numbers.sequence(1, totalPages2)}" class="page-item"><a
-                                th:href="@{'/manager/viewUnit/'+${unit.unitId}+'/0'+'/'+${i-1}+'?startDate2='+${startDate2}+'&endDate2='+${endDate2}}" class="page-link" href="#"><span th:text="${i}"></span></a></li>
-                        <li th:if="${currentPage2+1 != totalPages2&&totalPages2!=0}" class="page-item"><a th:href="@{'/manager/viewUnit/'+${unit.unitId}+'/0'+'/'+${currentPage2+1}+'?startDate2='+${startDate2}+'&endDate2='+${endDate2}}" class="page-link"
-                                                                                                          href="#">Next</a></li>
+                        <li th:if="${currentPage2 != 0}" class="page-item"><a
+                                th:href="@{'/manager/viewUnit/'+${unit.unitId}+'/0'+'/'+${currentPage2-1}+'?startDate2='+${startDate2}+'&endDate2='+${endDate2}}"
+                                class="page-link" href="#">Previous</a></li>
+                        <li th:if="${totalPages2!=0}" th:classappend="${currentPage2==i-1?'active':''}"
+                            th:each="i : ${#numbers.sequence(1, totalPages2)}" class="page-item"><a
+                                th:href="@{'/manager/viewUnit/'+${unit.unitId}+'/0'+'/'+${i-1}+'?startDate2='+${startDate2}+'&endDate2='+${endDate2}}"
+                                class="page-link" href="#"><span th:text="${i}"></span></a></li>
+                        <li th:if="${currentPage2+1 != totalPages2&&totalPages2!=0}" class="page-item"><a
+                                th:href="@{'/manager/viewUnit/'+${unit.unitId}+'/0'+'/'+${currentPage2+1}+'?startDate2='+${startDate2}+'&endDate2='+${endDate2}}"
+                                class="page-link"
+                                href="#">Next</a></li>
                     </ul>
                 </nav>
             </div>
         </div>
     </div>
-    <h3 class="text-center" sec:authorize="hasAuthority('COOWNERREP')" style="color:white;">Expense list</h3>
+
     <div sec:authorize="hasAuthority('COOWNERREP')">
         <div class="table-container">
             <table class="table table-bordered">
                 <thead>
                 <tr class="text-center">
                     <td style="color:black;" scope="col py-2">#</td>
-                    <td style="color:black;" scope="col py-2">Date Created</td>
                     <td style="color:black;" scope="col">Description</td>
-                    <td style="color:black;" scope="col">Amount</td>
                     <td style="color:black;" scope="col">Expense Type</td>
+                    <td style="color:black;" scope="col py-2">Date Created</td>
                     <td style="color:black;" scope="col">Due Date</td>
+                    <td style="color:black;" scope="col">Amount in KN</td>
+
+
                 </tr>
                 </thead>
 
                 <tbody>
                 <tr class="text-center" th:each="expense: ${expenses}">
                     <td style="color:black;" scope="row" th:text="${expense.expenseId}">1</td>
-                    <td style="color:black;" th:text="${#dates.format(expense.dateOfReceipt, 'dd/MM/yyyy')}">Date Created</td>
                     <td style="color:black;" th:text="${expense.description}">Description</td>
-                    <td style="color:black;" th:text="${expense.amount}">Amount</td>
                     <td style="color:black;" th:text="${expense.expenseType.expenseTypeName}">Expense Type</td>
+                    <td style="color:black;" th:text="${#dates.format(expense.dateOfReceipt, 'dd/MM/yyyy')}">Date
+                        Created
+                    </td>
                     <td style="color:black;" th:text="${#dates.format(expense.dueDate, 'dd/MM/yyyy')}">Due Date</td>
+                    <td style="color:black;" th:text="${expense.amount}">Amount in KN</td>
 
                 </tr>
 
@@ -332,31 +413,44 @@ font-weight: bold;
             <div sec:authorize="hasAuthority('COOWNERREP')">
                 <nav th:if="${startDate1==null||endDate1==null}" aria-label="Page navigation example">
                     <ul class="pagination">
-                        <li th:if="${currentPage1 != 0}" class="page-item"><a th:href="@{'/coowner_rep/viewUnit/'+${unit.unitId}+'/'+${currentPage1-1}+'/0'}" class="page-link" href="#">Previous</a></li>
-                        <li th:if="${totalPages1!=0}" th:classappend="${currentPage1==i-1?'active':''}" th:each="i : ${#numbers.sequence(1, totalPages1)}" class="page-item"><a th:href="@{'/coowner_rep/viewUnit/'+${unit.unitId}+'/'+${i-1}+'/0'}"
-                                                                                                                                                                                class="page-link" href="#"><span th:text="${i}"></span></a></li>
-                        <li th:if="${currentPage1+1 != totalPages1&&totalPages1!=0}" class="page-item"><a th:href="@{'/coowner_rep/viewUnit/'+${unit.unitId} +'/'+${currentPage1+1}+'/0'}" class="page-link" href="#">Next</a></li>
+                        <li th:if="${currentPage1 != 0}" class="page-item"><a
+                                th:href="@{'/coowner_rep/viewUnit/'+${unit.unitId}+'/'+${currentPage1-1}+'/0'}"
+                                class="page-link" href="#">Previous</a></li>
+                        <li th:if="${totalPages1!=0}" th:classappend="${currentPage1==i-1?'active':''}"
+                            th:each="i : ${#numbers.sequence(1, totalPages1)}" class="page-item"><a
+                                th:href="@{'/coowner_rep/viewUnit/'+${unit.unitId}+'/'+${i-1}+'/0'}"
+                                class="page-link" href="#"><span th:text="${i}"></span></a></li>
+                        <li th:if="${currentPage1+1 != totalPages1&&totalPages1!=0}" class="page-item"><a
+                                th:href="@{'/coowner_rep/viewUnit/'+${unit.unitId} +'/'+${currentPage1+1}+'/0'}"
+                                class="page-link" href="#">Next</a></li>
                     </ul>
                 </nav>
                 <nav th:if="${startDate1!=null||endDate1!=null}" aria-label="Page navigation example">
                     <ul class="pagination">
-                        <li th:if="${currentPage1 != 0}" class="page-item"><a th:href="@{'/coowner_rep/viewUnit/'+${unit.unitId}'+'/'+${currentPage1-1}+'/0'+'?startDate1='+${startDate1}+'&endDate1='+${endDate1}}" class="page-link" href="#">Previous</a></li>
-                        <li th:if="${totalPages1!=0}" th:classappend="${currentPage1==i-1?'active':''}" th:each="i : ${#numbers.sequence(1, totalPages1)}" class="page-item"><a
-                                th:href="@{'/coowner_rep/viewUnit/'+${unit.unitId}+'/'+${i-1}+'/0'+'?startDate1='+${startDate1}+'&endDate1='+${endDate1}}" class="page-link" href="#"><span th:text="${i}"></span></a></li>
-                        <li th:if="${currentPage1+1 != totalPages1&&totalPages1!=0}" class="page-item"><a th:href="@{'/coowner_rep/viewUnit/'+${unit.unitId}+'/'+${currentPage1+1}+'/0'+'?startDate1='+${startDate1}+'&endDate1='+${endDate1}}" class="page-link"
-                                                                                                          href="#">Next</a></li>
+                        <li th:if="${currentPage1 != 0}" class="page-item"><a
+                                th:href="@{'/coowner_rep/viewUnit/'+${unit.unitId}'+'/'+${currentPage1-1}+'/0'+'?startDate1='+${startDate1}+'&endDate1='+${endDate1}}"
+                                class="page-link" href="#">Previous</a></li>
+                        <li th:if="${totalPages1!=0}" th:classappend="${currentPage1==i-1?'active':''}"
+                            th:each="i : ${#numbers.sequence(1, totalPages1)}" class="page-item"><a
+                                th:href="@{'/coowner_rep/viewUnit/'+${unit.unitId}+'/'+${i-1}+'/0'+'?startDate1='+${startDate1}+'&endDate1='+${endDate1}}"
+                                class="page-link" href="#"><span th:text="${i}"></span></a></li>
+                        <li th:if="${currentPage1+1 != totalPages1&&totalPages1!=0}" class="page-item"><a
+                                th:href="@{'/coowner_rep/viewUnit/'+${unit.unitId}+'/'+${currentPage1+1}+'/0'+'?startDate1='+${startDate1}+'&endDate1='+${endDate1}}"
+                                class="page-link"
+                                href="#">Next</a></li>
                     </ul>
                 </nav>
             </div>
         </div>
     </div>
     <div sec:authorize="hasAuthority('COOWNERREP')">
-           <span style="float:left;">
-                 <p style="color:black; ">Search for a period</p>
+        <h3 class="text-left" sec:authorize="hasAuthority('COOWNERREP')" style="color:black;">Income list</h3>
+        <span style="float:left;">
+                 <p style="color:black; ">Search for an Income List in a Time Period</p>
                     <form th:action="@{'/coowner_rep/viewUnit/'+${unit.unitId}+'/0'+'/0'}" method="get">
                         <input type="date" name="startDate2" placeholder="Start Date">
                         <input type="date" name="endDate2" placeholder="End Date">
-                        <button class="btn btn-info col-offset-5" type="submit">Go</button>
+                        <button class="btn btn-primary col-offset-5" type="submit">Go</button>
                           <button class="btn btn-info col-offset-5" type="submit">Reset</button>
                     </form>
            </span>
@@ -365,17 +459,17 @@ font-weight: bold;
         <br/>
         <br/>
     </div>
-    <h3 class="text-center" sec:authorize="hasAuthority('COOWNERREP')" style="color:white;">Incomes</h3>>
     <div sec:authorize="hasAuthority('COOWNERREP')">
         <div class="table-container">
             <table class="table table-bordered">
                 <thead>
                 <tr class="text-center">
                     <td style="color:black;" scope="col py-2">#</td>
-                    <td style="color:black;" scope="col">Date of Payment</td>
                     <td style="color:black;" scope="col">Description</td>
-                    <td style="color:black;" scope="col">Amount</td>
                     <td style="color:black;" scope="col">Expense Type</td>
+                    <td style="color:black;" scope="col">Date of Payment</td>
+                    <td style="color:black;" scope="col">Amount in KN</td>
+
                 </tr>
                 </thead>
 
@@ -383,33 +477,50 @@ font-weight: bold;
 
                 <tr class="text-center" th:each="income: ${incomes}">
                     <td style="color:black;" scope="row" th:text="${income.incomeId}">1</td>
-                    <td style="color:black;" th:text="${#dates.format(income.dateOfPayment, 'dd/MM/yyyy')}">Date of Payment</td>
                     <td style="color:black;" th:text="${income.description}">Description</td>
-                    <td style="color:black;" th:text="${income.amount}">Amount</td>
-                    <td style="color:black;" th:text="${expense.expenseType.expenseTypeName}">Expense Type</td>
-                </tr>
+                    <td style="color:black;" th:text="${income.expenseType.expenseTypeName}">Expense Type</td>
+                    <td style="color:black;" th:text="${#dates.format(income.dateOfPayment, 'dd/MM/yyyy')}">Date of
+                        Payment
+                    </td>
+                    <td style="color:black;" th:text="${income.amount}">Amount in KN</td>
 
+                </tr>
                 </tbody>
             </table>
-
+            <br>
+            <br>
             <div sec:authorize="hasAuthority('COOWNERREP')">
                 <nav th:if="${startDate2==null||endDate2==null}" aria-label="Page navigation example">
                     <ul class="pagination">
-                        <li th:if="${currentPage2 != 0}" class="page-item"><a th:href="@{'/coowner_rep/viewUnit/'+${unit.unitId}+'/0'+'/'+${currentPage2-1}}" class="page-link" href="#">Previous</a></li>
-                        <li th:if="${totalPages2!=0}" th:classappend="${currentPage2==i-1?'active':''}" th:each="i : ${#numbers.sequence(1, totalPages2)}" class="page-item"><a th:href="@{'/coowner_rep/viewUnit/'+${unit.unitId}+'/0'+'/'+${i-1}}"
-                                                                                                                                                                                class="page-link" href="#"><span th:text="${i}"></span></a></li>
-                        <li th:if="${currentPage2+1 != totalPages2&&totalPages2!=0}" class="page-item"><a th:href="@{'/coowner_rep/viewUnit/'+${unit.unitId}+'/0'+'/'+${currentPage2+1}}" class="page-link" href="#">Next</a></li>
+                        <li th:if="${currentPage2 != 0}" class="page-item"><a
+                                th:href="@{'/coowner_rep/viewUnit/'+${unit.unitId}+'/0'+'/'+${currentPage2-1}}"
+                                class="page-link" href="#">Previous</a></li>
+                        <li th:if="${totalPages2!=0}" th:classappend="${currentPage2==i-1?'active':''}"
+                            th:each="i : ${#numbers.sequence(1, totalPages2)}" class="page-item"><a
+                                th:href="@{'/coowner_rep/viewUnit/'+${unit.unitId}+'/0'+'/'+${i-1}}"
+                                class="page-link" href="#"><span th:text="${i}"></span></a></li>
+                        <li th:if="${currentPage2+1 != totalPages2&&totalPages2!=0}" class="page-item"><a
+                                th:href="@{'/coowner_rep/viewUnit/'+${unit.unitId}+'/0'+'/'+${currentPage2+1}}"
+                                class="page-link" href="#">Next</a></li>
                     </ul>
                 </nav>
                 <nav th:if="${startDate2!=null||endDate2!=null}" aria-label="Page navigation example">
                     <ul class="pagination">
-                        <li th:if="${currentPage2 != 0}" class="page-item"><a th:href="@{'/coowner_rep/viewUnit/'+${unit.unitId}+'/0'+'/'+${currentPage2-1}+'?startDate2='+${startDate2}+'&endDate2='+${endDate2}}" class="page-link" href="#">Previous</a></li>
-                        <li th:if="${totalPages2!=0}" th:classappend="${currentPage2==i-1?'active':''}" th:each="i : ${#numbers.sequence(1, totalPages2)}" class="page-item"><a
-                                th:href="@{'/coowner_rep/viewUnit/'+${unit.unitId}+'/0'+'/'+${i-1}+'?startDate2='+${startDate2}+'&endDate2='+${endDate2}}" class="page-link" href="#"><span th:text="${i}"></span></a></li>
-                        <li th:if="${currentPage2+1 != totalPages2&&totalPages2!=0}" class="page-item"><a th:href="@{'/coowner_rep/viewUnit/'+${unit.unitId}+'/0'+'/'+${currentPage2+1}+'?startDate2='+${startDate2}+'&endDate2='+${endDate2}}" class="page-link"
-                                                                                                          href="#">Next</a></li>
+                        <li th:if="${currentPage2 != 0}" class="page-item"><a
+                                th:href="@{'/coowner_rep/viewUnit/'+${unit.unitId}+'/0'+'/'+${currentPage2-1}+'?startDate2='+${startDate2}+'&endDate2='+${endDate2}}"
+                                class="page-link" href="#">Previous</a></li>
+                        <li th:if="${totalPages2!=0}" th:classappend="${currentPage2==i-1?'active':''}"
+                            th:each="i : ${#numbers.sequence(1, totalPages2)}" class="page-item"><a
+                                th:href="@{'/coowner_rep/viewUnit/'+${unit.unitId}+'/0'+'/'+${i-1}+'?startDate2='+${startDate2}+'&endDate2='+${endDate2}}"
+                                class="page-link" href="#"><span th:text="${i}"></span></a></li>
+                        <li th:if="${currentPage2+1 != totalPages2&&totalPages2!=0}" class="page-item"><a
+                                th:href="@{'/coowner_rep/viewUnit/'+${unit.unitId}+'/0'+'/'+${currentPage2+1}+'?startDate2='+${startDate2}+'&endDate2='+${endDate2}}"
+                                class="page-link"
+                                href="#">Next</a></li>
                     </ul>
                 </nav>
+                <br>
+                <br>
 
             </div>
         </div>
@@ -418,4 +529,5 @@ font-weight: bold;
     <br/>
 </div>
 </body>
+<br><br><br><br><br><br><br><br>
 </html>

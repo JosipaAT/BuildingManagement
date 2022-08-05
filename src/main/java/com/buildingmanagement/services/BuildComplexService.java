@@ -6,4 +6,5 @@ public interface BuildComplexService {
     BuildingComplex addBuildComplex(BuildingComplex buildComplex);
     BuildingComplex getBuildingByUsername(String username);
 
+    void update(Integer buildComplexId, BuildingComplex buildComplex);
 }

@@ -2,7 +2,9 @@ package com.buildingmanagement.entities;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table
@@ -43,6 +45,17 @@ public class BuildingComplex {
 
     @ManyToOne
     private Role role;
+
+    public Set<UtilitiesPrice> getUtilitiesPrices() {
+        return utilitiesPrices;
+    }
+
+    public void setUtilitiesPrices(Set<UtilitiesPrice> utilitiesPrices) {
+        this.utilitiesPrices = utilitiesPrices;
+    }
+
+    @OneToMany(mappedBy = "buildingComplex", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<UtilitiesPrice> utilitiesPrices = new HashSet<>();
 
     public Integer getBuildComplexId() {
         return buildComplexId;
@@ -170,5 +183,8 @@ public class BuildingComplex {
 
     public void setInfos(List<Info> infos) {
         this.infos = infos;
+    }
+
+    public void setcoOwnerUsername(String coOwnerUsername) {
     }
 }

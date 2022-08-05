@@ -68,7 +68,7 @@ thead{
 {
 float: right;
 color: white;
-font-size: 30px;
+font-size: 25px;
 font-weight: bold;
 }
 
@@ -130,11 +130,11 @@ font-weight: bold;
                             style="color:white;" class="fw-bold"
                             th:href="@{/coowner_rep/addUnitForm/}+${floor.floorId}+@{/}+${buildComplexId}">Add Unit</a>
                     </button>
-                    <button type="button" class="btn btn-primary" sec:authorize="hasAuthority('BUILDMANAGER')"><a
+                    <button type="button" class="btn btn-info" sec:authorize="hasAuthority('BUILDMANAGER')"><a
                             style="color:white;" class="fw-bold"
                             th:href="@{/manager/addEquipmentForm/}+${floor.floorId}+@{/}+${buildComplexId}">Add
                         Equipment</a></button>
-                    <button type="button" class="btn btn-primary" sec:authorize="hasAuthority('COOWNERREP')"><a
+                    <button type="button" class="btn btn-info" sec:authorize="hasAuthority('COOWNERREP')"><a
                             style="color:white;" class="fw-bold"
                             th:href="@{/coowner_rep/addEquipmentForm/}+${floor.floorId}+@{/}+${buildComplexId}">Add
                         Equipment</a></button>
@@ -150,26 +150,27 @@ font-weight: bold;
     <div class="table-container">
         <div sec:authorize="hasAuthority('BUILDMANAGER')">
                     <span style="float:left;">
-                          <p style="color:black; ">Search By</p>
+<!--                          <p style="color:black; ">Search By</p>-->
                     <form th:action="@{'/manager/viewFloor/'+${floor.floorId}+'/0'}" method="get">
-                        <input type="text" id="keyword" name="keyword" placeholder="CoOwner Name...">
-                        <br/>
-                        <button style="margin-top: 5%; "  class="btn btn-info col-offset-5" type="submit">Go</button>
+                        <input type="text" id="keyword" name="keyword" placeholder="Search by CoOwner Name">
+                        <br>
+                        <button style="margin-top: 5%; "  class="btn btn-primary col-offset-5" type="submit">Go</button>
                         <button style="margin-top: 5%; " class="btn btn-info col-offset-5" type="submit">Reset</button>
                     </form>
                     </span>
             <span style="display:inline-block; margin-left: 5%;">
-                        <p style="color:black; ">Filter By</p>
+<!--                        <p style="color:black; ">Filter By</p>-->
                     <form th:action="@{'/manager/viewFloor/'+${floor.floorId}+'/0'}" method="get">
                      <select class="form-control" id="unitTypeId" name="unitTypeId">
+                         <option>Search by Unit Type</option>
                         <option
                                 th:each="unitType: ${unitTypes}"
                                 th:text="${unitType.unitTypeName}"
                                 th:value="${unitType.unitTypeId}"
                                 th:name="${unitType.unitTypeId}">
-                         </option>
+                         </option> <br>
                      </select>
-                        <button class="btn btn-info col-offset-5" type="submit">Go</button>
+                        <button class="btn btn-primary col-offset-5" type="submit">Go</button>
                          <a style="color: white;" th:href="@{'/manager/viewFloor/'+${floor.floorId}+'/0'}">
                             <button class="btn btn-info col-offset-5" type="button">Reset</button>
                          </a>
@@ -178,26 +179,27 @@ font-weight: bold;
         </div>
         <div sec:authorize="hasAuthority('COOWNERREP')">
                     <span style="float:left;">
-                          <p style="color:black; ">Search By</p>
+<!--                          <p style="color:black; ">Search By</p>-->
                     <form th:action="@{'/coowner_rep/viewFloor/'+${floor.floorId}+'/0'}" method="get">
-                        <input type="text" name="keyword" placeholder="CoOwner Name...">
+                        <input type="text" name="keyword" placeholder="Search by CoOwner Name">
                         <br/>
-                        <button style="margin-top: 5%;" class="btn btn-info col-offset-5" type="submit">Go</button>
+                        <button style="margin-top: 5%;" class="btn btn-primary col-offset-5" type="submit">Go</button>
                         <button style="margin-top: 5%;" class="btn btn-info col-offset-5" type="submit">Reset</button>
                     </form>
                     </span>
             <span style="display:inline-block; margin-left: 5%;">
-                        <p style="color:black; ">Filter By</p>
+<!--                        <p style="color:black; ">Filter By</p>-->
                     <form th:action="@{'/coowner_rep/viewFloor/'+${floor.floorId}+'/0'}" method="get">
                      <select class="form-control" name="unitTypeId">
+                         <option>Search by Unit Type</option>
                         <option
                                 th:each="unitType: ${unitTypes}"
                                 th:text="${unitType.unitTypeName}"
                                 th:value="${unitType.unitTypeId}"
                                 th:name="${unitType.unitTypeId}">
                          </option>
-                     </select>
-                        <button class="btn btn-info col-offset-5" type="submit">Go</button>
+                     </select> <br>
+                        <button class="btn btn-primary col-offset-5" type="submit">Go</button>
                         <a style="color: white;" th:href="@{'/coowner_rep/viewFloor/'+${floor.floorId}+'/0'}">
                             <button class="btn btn-info col-offset-5" type="button">Reset</button>
                         </a>
@@ -224,10 +226,10 @@ font-weight: bold;
                 <td style="color:black;" th:text="${unit.noOfTenants}">No Of Tenants</td>
                 <td style="color:black;" th:text="${unit.unitType.unitTypeName}">Unit Type</td>
                 <td>
-                    <button type="button" class="btn btn-info col-offset-5" sec:authorize="hasAuthority('BUILDMANAGER')"><a
+                    <button type="button" class="btn btn-primary col-offset-5" sec:authorize="hasAuthority('BUILDMANAGER')"><a
                             style="color:white;" class="fw-bold"
                             th:href="@{/manager/viewUnit/}+${unit.unitId}+@{/0}+@{/0}">View</a></button>
-                    <button type="button" class="btn btn-info col-offset-5" sec:authorize="hasAuthority('COOWNERREP')"><a
+                    <button type="button" class="btn btn-primary col-offset-5" sec:authorize="hasAuthority('COOWNERREP')"><a
                             style="color:white;" class="fw-bold"
                             th:href="@{/coowner_rep/viewUnit/}+${unit.unitId}+@{/0}+@{/0}">View</a></button>
                     <button type="button" class="btn btn-info col-offset-5" sec:authorize="hasAuthority('BUILDMANAGER')"><a
@@ -360,15 +362,20 @@ font-weight: bold;
                 </td>
 
                 <td>
-                    <button type="button" class="btn btn-info col-offset-5" sec:authorize="hasAuthority('BUILDMANAGER')"><a
+                    <button type="button" class="btn btn-primary col-offset-5" sec:authorize="hasAuthority('BUILDMANAGER')"><a
                             style="color:white;" class="fw-bold"
                             th:href="@{/manager/updateEquipmentForm/}+${equipment.equipmentId}">Update</a></button>
-                    <button type="button" class="btn btn-info col-offset-5" sec:authorize="hasAuthority('COOWNERREP')"><a
+                    <button type="button" class="btn btn-primary col-offset-5" sec:authorize="hasAuthority('COOWNERREP')"><a
                             style="color:white;" class="fw-bold"
                             th:href="@{/coowner_rep/updateEquipmentForm/}+${equipment.equipmentId}">Update</a></button>
+
                     <form th:action="@{/manager/build-equipment-report/}+${buildComplexId}" method="post"><p
                             style="color:white; "></p>
-                        <button style="margin-bottom: 5% " class="btn btn-info col-offset-5" type="submit">Print Report</button>
+                        <button style="margin-bottom: 5% " class="btn btn-info col-offset-5" sec:authorize="hasAuthority('BUILDMANAGER')" type="submit">Print All Equipment Report</button>
+                    </form>
+                    <form th:action="@{/coowner_rep/build-equipment-report/}+${buildComplexId}" method="post"><p
+                            style="color:white; "></p>
+                        <button style="margin-bottom: 5% " class="btn btn-info col-offset-5" sec:authorize="hasAuthority('COOWNERREP')" type="submit">Print All Equipment Report</button>
                     </form>
                 </td>
             </tr>
@@ -376,6 +383,6 @@ font-weight: bold;
             </tbody>
         </table>
     </div>
-</div>
+</div> <br><br><br>
 </body>
 </html>

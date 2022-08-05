@@ -12,4 +12,6 @@ public interface CoOwnerRepo extends JpaRepository<CoOwner, Integer> {
     CoOwner findByUsername(String username);
 
     CoOwner findByCoOwnerId(Integer coOwnerId);
+
+//    CoOwner getById(Integer coOwnerId);
 }

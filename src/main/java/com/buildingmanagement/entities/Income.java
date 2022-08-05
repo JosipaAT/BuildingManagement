@@ -16,7 +16,7 @@ public class Income {
     private Date dateOfPayment;
 
     private String description;
-    private Integer amount;
+    private Float amount;
 
     @ManyToOne
     private Unit unit;
@@ -53,11 +53,11 @@ public class Income {
         this.description = description;
     }
 
-    public Integer getAmount() {
-        return amount;
+    public Float getAmount() {
+        return Float.valueOf(amount);
     }
 
-    public void setAmount(Integer amount) {
+    public void setAmount(Float amount) {
         this.amount = amount;
     }
 

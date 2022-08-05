@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.thymeleaf.org
+        http://www.thymeleaf.org/thymeleaf-extras-springsecurity5 ">
 <head>
     <meta charset="UTF-8">
-    <title>Registration Home</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <title>Add Info</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </head>
 <style>
 html {
@@ -15,7 +18,7 @@ body{
   margin:0;
   padding:0;
   font-family: sans-serif;
-  background: linear-gradient(#141e30, #243b55);
+  background: linear-gradient(#0275d8,#f7f7f7);
   height: 100%;
   background-repeat: no-repeat;
   background-attachment: fixed;
@@ -23,8 +26,25 @@ body{
 .navbar{
   margin:0;
   padding:0;
+  color:white;
+  font-weight: bold;
   font-family: sans-serif;
-  background: linear-gradient(#141e30, #243b55);
+  background: linear-gradient (#0275d8, #0275d8);
+}
+
+.navbar-brand{
+color: white;
+font-size: 30px;
+font-weight: bold;
+
+}
+
+.address
+{
+float: right;
+color: white;
+font-size: 25px;
+font-weight: bold;
 }
 
 </style>
@@ -48,65 +68,65 @@ body{
     <form style="text-align: center;" class="w-100" th:action="@{'/manager/addInfo/'+${buildingComplexId}}"
           method="post" th:object="${info}">
         <div class="form-group">
-            <label style="color:white;" class="control-label" for="serviceName">Service Name</label>
+<!--            <label style="color:white;" class="control-label" for="serviceName">Service Name</label>-->
             <input type="text" id="serviceName" style="width: 300px; margin: auto;" th:field="*{serviceName}"
                    th:name="serviceName" th:value="${serviceName}" required
-                   autofocus="autofocus" class="form-control">
+                   autofocus="autofocus" class="form-control" placeholder="Service Name">
         </div>
         <div class="form-group">
-            <label style="color:white;" class="control-label" for="serviceDescription">Service Description</label>
+<!--            <label style="color:white;" class="control-label" for="serviceDescription">Service Description</label>-->
             <input type="text" id="serviceDescription" style="width: 300px; margin: auto;"
                    th:field="*{serviceDescription}" th:name="serviceDescription" th:value="${serviceDescription}"
                    required
-                   autofocus="autofocus" class="form-control">
+                   autofocus="autofocus" class="form-control" placeholder="Service Description">
         </div>
         <div class="form-group">
-            <label style="color: white;" class="control-label" for="streetName"> Street Name</label>
+<!--            <label style="color: white;" class="control-label" for="streetName"> Street Name</label>-->
             <input type="text" id="streetName" class="form-control" style="width: 300px; margin: auto;"
                    th:field="*{streetName}" th:name="streetName" th:value="${streetName}" required
-                   autofocus="autofocus"/>
+                   autofocus="autofocus" placeholder="Street Name"/>
         </div>
 
         <div class="form-group">
-            <label style="color: white;" class="control-label" for="streetNumber"> Street Number</label>
+<!--            <label style="color: white;" class="control-label" for="streetNumber"> Street Number</label>-->
             <input type="number" id="streetNumber" class="form-control" style="width: 300px; margin: auto;"
                    th:field="*{streetNumber}" th:name="streetNumber" th:value="${streetNumber}" required
-                   autofocus="autofocus"/>
+                   autofocus="autofocus" placeholder="Street Number"/>
         </div>
         <div class="form-group">
-            <label style="color: white;" class="control-label" for="city">City</label>
+<!--            <label style="color: white;" class="control-label" for="city">City</label>-->
             <input type="text" id="city" class="form-control" th:field="*{city}" style="width: 300px; margin: auto;"
-                   th:name="city" th:value="${city}" required autofocus="autofocus"/>
+                   th:name="city" th:value="${city}" required autofocus="autofocus" placeholder="City"/>
         </div>
         <div class="form-group">
-            <label style="color: white;" class="control-label" for="postalCode">Postal-Code</label>
+<!--            <label style="color: white;" class="control-label" for="postalCode">Postal-Code</label>-->
             <input type="number" id="postalCode" class="form-control" style="width: 300px; margin: auto;"
                    th:field="*{postalCode}" th:name="postalCode" th:value="${postalCode}" required
-                   autofocus="autofocus"/>
+                   autofocus="autofocus" placeholder="Postal-Code"/>
         </div>
 
         <div class="form-group">
-            <label style="color: white;" class="control-label" for="contact">Contact </label>
+<!--            <label style="color: white;" class="control-label" for="contact">Contact </label>-->
             <input type="number" id="contact" class="form-control" style="width: 300px; margin: auto;"
-                   th:field="*{contact}" th:name="contact" th:value="${contact}" required autofocus="autofocus"/>
+                   th:field="*{contact}" th:name="contact" th:value="${contact}" required autofocus="autofocus" placeholder="Contact"/>
         </div>
 
         <div class="form-group">
-            <label style="color: white;" class="control-label" for="iban"> IBAN</label>
+<!--            <label style="color: white;" class="control-label" for="iban"> IBAN</label>-->
             <input type="text" id="iban" class="form-control" style="width: 300px; margin: auto;"
                    th:field="*{iban}" th:name="iban" th:value="${iban}" required
-                   autofocus="autofocus"/>
+                   autofocus="autofocus" placeholder="IBAN"/>
         </div>
 
         <div class="form-group">
-            <label style="color: white;" class="control-label" for="mail">Email</label>
+<!--            <label style="color: white;" class="control-label" for="mail">Email</label>-->
             <input type="email" id="mail" class="form-control" style="width: 300px; margin: auto;" th:field="*{mail}"
-                   th:name="mail" th:value="${mail}" required autofocus="autofocus"/>
+                   th:name="mail" th:value="${mail}" required autofocus="autofocus" placeholder="Email"/>
         </div>
 
         <div>
             <a style="color: white;" th:href="@{/}">
-                <button type="button" class="btn btn-info col-offset-5">Cancel</button>
+                <button type="button" class="btn btn-primary col-offset-5">Cancel</button>
             </a>
             <button type="submit" class="btn btn-info col-offset-5 ">Save</button>
         </div>

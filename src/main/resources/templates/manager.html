@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.thymeleaf.org
+        http://www.thymeleaf.org/thymeleaf-extras-springsecurity5 ">
     <head>
         <meta charset="UTF-8">
-        <title>Registration Home</title>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-              integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-        <script src="https://kit.fontawesome.com/e3521964a4.js" crossorigin="anonymous"></script>
+        <title>Building Manager Home</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+              integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     </head>
     <style>
 html {
@@ -16,7 +17,7 @@ body{
   margin:0;
   padding:0;
   font-family: sans-serif;
-  background: linear-gradient(#141e30, #243b55);
+  background: linear-gradient(#0275d8,#f7f7f7);
   height: 100%;
   background-repeat: no-repeat;
   background-attachment: fixed;
@@ -24,19 +25,50 @@ body{
 .navbar{
   margin:0;
   padding:0;
+  color:white;
+  font-weight: bold;
   font-family: sans-serif;
-  background: linear-gradient(#141e30, #243b55);
+  background: linear-gradient (#0275d8, #0275d8);
 }
 
-    tbody tr:nth-of-type(even) {
-   background-color: #34495e;
+.navbar-brand{
+color: white;
+font-size: 30px;
+font-weight: bold;
+
 }
-.hidetext { -webkit-text-security: disc; /* Default */ }
+
+tbody tr:nth-of-type(even) {
+   background: (#0275d8,#f7f7f7);
+   border: 2px solid;
+   border-right: 2px solid;
+   border-left: 2px solid;
+}
+
+tbody tr:nth-of-type(odd) {
+
+   border: 2px solid;
+   border-right: 2px solid;
+   border-left: 2px solid;
+}
 
 thead{
 
- background: #2e8b57;
+ background: #5bc0de;
+ border: 4px solid;
+ border-right: 2px solid;
+ border-left: 2px solid;
 }
+.hidetext { -webkit-text-security: disc; /* Default */ }
+
+.address
+{
+float: right;
+color: white;
+font-size: 25px;
+font-weight: bold;
+}
+
 </style>
 <body>
 <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -47,6 +79,7 @@ thead{
             <a class="navbar-brand" th:href="@{/changePass}">Change Password</a>
             <a class="navbar-brand" th:href="@{/logout}">Logout</a>
         </div>
+        <span class="address" th:text="${username}">  </span>
     </div>
 </nav>
 <br/>
@@ -54,45 +87,45 @@ thead{
 <div class="container">
     <br/>
     <br/>
-    <h2 class="text-center" style="color:white"> Buildings</h2>
+    <h1 class="text-center" style="color:white"> Buildings</h1>
     <br/>
     <span style="float:left;">
-        <p style="color:white; ">Search By</p>
+<!--        <p style="color:white; ">Search By</p>-->
                     <form th:action="@{/manager/0}" method="get">
-                        <input type="text" name="keyword" placeholder="CoOwnerRep Username..." >
-                        <br/>
-                        <button style="margin-bottom: 4%; " class="btn btn-info col-offset-5" type="submit">Go</button>
-                        <button style="margin-bottom: 4%; " class="btn btn-info col-offset-5" type="submit">Reset</button>
+                        <input type="text" name="keyword" placeholder="Search by Username" >
+                        <br><br>
+                        <button style="margin-bottom: 4%; " class="btn btn-primary col-offset-5" type="submit">Go</button>
+                        <button style="margin-bottom: 4%; " class="btn btn-info col-offset-5" type="submit">Reset</button> <br><br>
                     </form>
     </span>
     <div class="table-container" >
         <table class="table table-bordered">
             <thead>
             <tr class="text-center">
-                <td style="color:white;"scope="col py-2">#</td>
-                <td style="color:white;"scope="col py-2">CoOwnerRep Username</td>
-                <td style="color:white;"scope="col py-2">Password</td>
-                <td style="color:white;" scope="col">Street Name</th>
-                <td style="color:white;" scope="col">Street Number</th>
-                <td style="color:white;" scope="col">City</th>
-                <td style="color:white;" scope="col">Postal-Code</th>
-                <td style="color:white;" scope="col">Actions</td>
+                <td style="color:black;"scope="col py-2">#</td>
+                <td style="color:black;"scope="col py-2">CoOwnerRep Username</td>
+                <td style="color:black;"scope="col py-2">Password</td>
+                <td style="color:black;" scope="col">Street Name</th>
+                <td style="color:black;" scope="col">Street Number</th>
+                <td style="color:black;" scope="col">City</th>
+                <td style="color:black;" scope="col">Postal-Code</th>
+                <td style="color:black;" scope="col">Actions</td>
             </tr>
             </thead>
 
             <tbody>
 
             <tr class="text-center" th:each="buildComplex: ${buildComplexes}">
-                <td style="color:white;" scope="row" th:text="${buildComplex.buildComplexId}">1</td>
-                <td style="color:white;" scope="row" th:text="${buildComplex.username}">CoOwnerRep Username</td>
-                <td style="color:white;" scope="row" th:text="${buildComplex.password}" class="hidetext">Password</td>
-                <td style="color:white;" th:text="${buildComplex.streetName}">Street Name</td>
-                <td style="color:white;" th:text="${buildComplex.streetNumber}">Street Number</td>
-                <td style="color:white;" th:text="${buildComplex.city}">City</td>
-                <td style="color:white;" th:text="${buildComplex.postalCode}">Postal-Code</td>
+                <td style="color:black;" scope="row" th:text="${buildComplex.buildComplexId}">1</td>
+                <td style="color:black;" scope="row" th:text="${buildComplex.username}">CoOwnerRep Username</td>
+                <td style="color:black;" scope="row" th:text="${buildComplex.password}" class="hidetext">Password</td>
+                <td style="color:black;" th:text="${buildComplex.streetName}">Street Name</td>
+                <td style="color:black;" th:text="${buildComplex.streetNumber}">Street Number</td>
+                <td style="color:black;" th:text="${buildComplex.city}">City</td>
+                <td style="color:black;" th:text="${buildComplex.postalCode}">Postal-Code</td>
                 <td>
-                    <button type="button" class="btn btn-info col-offset-5"><a style="color:white;" th:href="@{/manager/viewBuilding/}+${buildComplex.buildComplexId}">View</a></button>
-                    <button type="button" class="btn btn-primary"><a style="color:white;" th:href="@{/manager/addInfoForm/}+${buildComplex.buildComplexId}">Add Info</a></button>
+                    <button type="button" class="btn btn-primary col-offset-5"><a style="color:white;" th:href="@{/manager/viewBuilding/}+${buildComplex.buildComplexId}">View</a></button>
+                    <button type="button" class="btn btn-info"><a style="color:white;" th:href="@{/manager/addInfoForm/}+${buildComplex.buildComplexId}">Add Info</a></button>
                 </td>
             </tr>
 
@@ -116,7 +149,7 @@ thead{
 
 </div>
 
-
+<br>
 </body>
 
 </html>

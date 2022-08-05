@@ -28,261 +28,281 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static java.awt.SystemColor.window;
+import static javax.swing.JOptionPane.showMessageDialog;
+
 @Controller
 public class UserController {
 
-	@Autowired
-	private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-	@Autowired
-	private BuildComplexService buildComplexService;
+    @Autowired
+    private BuildComplexService buildComplexService;
 
-	@Autowired
-	private BuildComplexRepo buildComplexRepo;
+    @Autowired
+    private BuildComplexRepo buildComplexRepo;
 
-	@Autowired
-	PDFGeneratorService pdfGeneratorService;
+    @Autowired
+    PDFGeneratorService pdfGeneratorService;
 
-	@Autowired
-	private FloorRepo floorRepo;
+    @Autowired
+    private FloorRepo floorRepo;
 
-	@Autowired
-	private UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-	@Autowired
-	private CoOwnerRepo coOwnerRepo;
+    @Autowired
+    private CoOwnerRepo coOwnerRepo;
 
-	@Autowired
-	private ExpenseRepo expenseRepo;
+    @Autowired
+    private ExpenseRepo expenseRepo;
 
-	@Autowired
-	private BuildingManagerRepo buildingManagerRepo;
+    @Autowired
+    private BuildingManagerRepo buildingManagerRepo;
 
-	@Autowired
-	private IncomeRepo incomeRepo;
+    @Autowired
+    private IncomeRepo incomeRepo;
 
-	@Autowired
-	private UnitRepo unitRepo;
+    @Autowired
+    private UnitRepo unitRepo;
 
-	@Autowired
-	private UserService userService;
+    @Autowired
+    private UserService userService;
 
-	@Autowired
-	private InfoRepo infoRepo;
+    @Autowired
+    private InfoRepo infoRepo;
 
-	@GetMapping("/login")
-	public String login() {
-		return "login";
-	}
-	@GetMapping("/")
-	public String home(Principal principal) {
-		String email = principal.getName();
-		UserDetails details = userService.loadUserByUsername(email);
-		if (details != null && details.getAuthorities()
-				.stream()
-				.anyMatch(a -> a.getAuthority()
-						.equals("ADMIN"))) {
-			return "redirect:/admin/0";
-
-		}
-		if (details != null && details.getAuthorities()
-				.stream()
-				.anyMatch(a -> a.getAuthority()
-						.equals("BUILDMANAGER"))) {
-			return "redirect:/manager/0";
-
-		}
-		if (details != null && details.getAuthorities()
-				.stream()
-				.anyMatch(a -> a.getAuthority()
-						.equals("COOWNERREP"))) {
-			return "redirect:/coowner_rep";
-
-		}
-
-		return "redirect:/coowner";
-	}
-
-	@GetMapping("/admin/{page}")
-	public String homeAdmin(@PathVariable Integer page, Model model, String keyword) {
-		Sort sort = Sort.by(Sort.Direction.ASC, "buildManagerName");
-		Pageable pageable = PageRequest.of(page,5, sort);
-		Page<BuildingManager> managers;
-		if(keyword==null) {
-			managers = this.buildingManagerRepo.findAll(pageable);
-		}
-		else{
-			managers = this.buildingManagerRepo.searchByKeyword(keyword, pageable);
-			model.addAttribute("keyword",keyword);
-		}
-		//managers.sort(Comparator.comparing(BuildingManager::getBuildManagerName));
-		model.addAttribute("managers",managers);
-		model.addAttribute("currentPage",page);
-		model.addAttribute("totalPages", managers.getTotalPages());
-		return "admin";
-	}
-
-	@GetMapping("/manager/{page}")
-	public String homeManager(@PathVariable Integer page, Model model, String keyword, Principal principal, Integer build) {
-		String username = principal.getName();
-		BuildingManager buildingManager = this.buildingManagerRepo.findByUsername(username);
-		Sort sort = Sort.by(Sort.Direction.ASC, "username");
-		Pageable pageable = PageRequest.of(page,5, sort);
-		Page<BuildingComplex> buildComplexes;
-		if(keyword==null) {
-			buildComplexes = this.buildComplexRepo.getAllBuildComplexOfManager(buildingManager.getBuildManagerId(), pageable);
-		}
-		else{
-			buildComplexes = this.buildComplexRepo.searchByKeyword(buildingManager.getBuildManagerId(), keyword, pageable);
-			model.addAttribute("keyword",keyword);
-		}
-		model.addAttribute("buildComplexes",buildComplexes);
-		model.addAttribute("currentPage",page);
-		model.addAttribute("totalPages", buildComplexes.getTotalPages());
-		return "manager";
-	}
-
-	@GetMapping("/coowner_rep")
-	public String homeCoOwnerRep(Model model, Principal principal, String keyword) {
-		String username = principal.getName();
-		BuildingComplex buildComplex = this.buildComplexRepo.findByUsername(username);
-		List<Floor> floors = this.floorRepo.getAllFloorOfBuild(buildComplex.getBuildComplexId());
-		model.addAttribute("buildComplex",buildComplex);
-		model.addAttribute("floors",floors);
-		model.addAttribute("bulletin", buildComplex.getBulletin());
-
-		List<Info> infos;
-		if(keyword==null) {
-			infos = this.infoRepo.getAllInfoOfBuild(buildComplex.getBuildComplexId());
-		}
-		else{
-			infos = this.infoRepo.searchInfoByKeyword(buildComplex.getBuildComplexId(), keyword);
-		}
-		model.addAttribute("infos", infos);
-		return "coowner_rep";
-	}
-
-	@GetMapping("/coowner")
-	public String homeCoOwner(Model model, Principal principal, String keyword) {
-		String username = principal.getName();
-		CoOwner coOwner = this.coOwnerRepo.findByUsername(username);
-		Integer buildComplexId = coOwner.getUnits().get(0).getBuildingComplex().getBuildComplexId();
-		List<Unit> units = this.unitRepo.getAllUnitOfCoOwner(coOwner.getCoOwnerId());
-		coOwner.setUnits(units);
-		model.addAttribute("units",units);
-		BuildingComplex buildingComplex = this.buildComplexRepo.findById(units.get(0).getFloor().getBuildingComplex().getBuildComplexId()).get();
-		model.addAttribute("bulletin", buildingComplex.getBulletin());
+    @Autowired
+//	private UtilitiesPrice utilitiesPriceRepo;
 
 
-		List<Info> infos;
-		if(keyword==null) {
-			infos = this.infoRepo.getAllInfoOfBuild(buildComplexId);
-		}
-		else{
-			infos = this.infoRepo.searchInfoByKeyword(buildComplexId, keyword);
-		}
-		model.addAttribute("infos", infos);
-		return "coowner";
-	}
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
 
-	@GetMapping("/coOwner/viewCoOwnerUnit/{unitId}")
-	public String homeCoOwner(Model model, Principal principal, @PathVariable Integer unitId) {
-		String username = principal.getName();
-		UserDetails details = userService.loadUserByUsername(username);
-		Unit unit = this.unitRepo.findById(unitId).get();
-		List<Expense> expenses = this.expenseRepo.getAllExpenseOfUnit(unitId);
-		List<Income> incomes = this.incomeRepo.getAllIncomeOfUnit(unitId);
-		model.addAttribute("expenses",expenses);
-		model.addAttribute("incomes",incomes);
-		model.addAttribute("unit",unit);
-		return "viewCoOwnerUnit";
-	}
+    @GetMapping("/")
+    public String home(Principal principal) {
+        String email = principal.getName();
+        UserDetails details = userService.loadUserByUsername(email);
+        if (details != null && details.getAuthorities()
+                .stream()
+                .anyMatch(a -> a.getAuthority()
+                        .equals("ADMIN"))) {
+            return "redirect:/admin/0";
 
-	@GetMapping("/changePass")
-	public String changePassForm(){
-		return "changePass";
-	}
+        }
+        if (details != null && details.getAuthorities()
+                .stream()
+                .anyMatch(a -> a.getAuthority()
+                        .equals("BUILDMANAGER"))) {
+            return "redirect:/manager/0";
 
-	@PostMapping("/changePass")
-	public String changePass(Principal principal, @RequestParam ("oldPass") String oldPass, @RequestParam ("newPass") String newPass ){
-		String username =principal.getName();
-		User curUser = this.userRepository.findByEmail(username);
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if(authentication.getAuthorities().stream()
-				.anyMatch(r -> r.getAuthority().equals("BUILDMANAGER"))){
-			if(this.bCryptPasswordEncoder.matches(oldPass,curUser.getPassword())){
-				curUser.setPassword(bCryptPasswordEncoder.encode(newPass));
-				this.userRepository.save(curUser);
-				BuildingManager buildingManager = this.buildingManagerRepo.findByUsername(curUser.getEmail());
-				buildingManager.setPassword(newPass);
-				this.buildingManagerRepo.save(buildingManager);
-				return "redirect:/";
+        }
+        if (details != null && details.getAuthorities()
+                .stream()
+                .anyMatch(a -> a.getAuthority()
+                        .equals("COOWNERREP"))) {
+            return "redirect:/coowner_rep";
 
-			}
-			else{
-				return "Passwords didn't match";
-			}
+        }
 
-		}
+        return "redirect:/coowner";
+    }
 
-		if(authentication.getAuthorities().stream()
-				.anyMatch(r -> r.getAuthority().equals("COOWNERREP"))){
-			if(this.bCryptPasswordEncoder.matches(oldPass,curUser.getPassword())){
-				curUser.setPassword(bCryptPasswordEncoder.encode(newPass));
-				this.userRepository.save(curUser);
-				BuildingComplex buildingComplex = this.buildComplexRepo.findByUsername(curUser.getEmail());
-				buildingComplex.setPassword(newPass);
-				this.buildComplexRepo.save(buildingComplex);
-				return "redirect:/";
+    @GetMapping("/admin/{page}")
+    public String homeAdmin(@PathVariable Integer page, Model model, String keyword) {
+        Sort sort = Sort.by(Sort.Direction.ASC, "buildManagerName");
+        Pageable pageable = PageRequest.of(page, 5, sort);
+        Page<BuildingManager> managers;
+        if (keyword == null) {
+            managers = this.buildingManagerRepo.findAll(pageable);
+        } else {
+            managers = this.buildingManagerRepo.searchByKeyword(keyword, pageable);
+            model.addAttribute("keyword", keyword);
+        }
+        //managers.sort(Comparator.comparing(BuildingManager::getBuildManagerName));
+        model.addAttribute("managers", managers);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", managers.getTotalPages());
+        return "admin";
+    }
 
-			}
-			else{
-				return "Passwords didn't match";
-			}
+    @GetMapping("/manager/{page}")
+    public String homeManager(@PathVariable Integer page, Model model, String keyword, Principal principal, Integer build) {
+        String username = principal.getName();
+        BuildingManager buildingManager = this.buildingManagerRepo.findByUsername(username);
+        Sort sort = Sort.by(Sort.Direction.ASC, "username");
+        Pageable pageable = PageRequest.of(page, 5, sort);
+        Page<BuildingComplex> buildComplexes;
+        if (keyword == null) {
+            buildComplexes = this.buildComplexRepo.getAllBuildComplexOfManager(buildingManager.getBuildManagerId(), pageable);
+        } else {
+            buildComplexes = this.buildComplexRepo.searchByKeyword(buildingManager.getBuildManagerId(), keyword, pageable);
+            model.addAttribute("keyword", keyword);
+        }
+        model.addAttribute("buildComplexes", buildComplexes);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", buildComplexes.getTotalPages());
+        model.addAttribute("username", "User logged in: " + username);
+        return "manager";
+    }
 
-		}
+    @GetMapping("/coowner_rep")
+    public String homeCoOwnerRep(Model model, Principal principal, String keyword) {
+        String username = principal.getName();
+        BuildingComplex buildComplex = this.buildComplexRepo.findByUsername(username);
+        List<Floor> floors = this.floorRepo.getAllFloorOfBuild(buildComplex.getBuildComplexId());
+        model.addAttribute("buildComplex", buildComplex);
+        model.addAttribute("floors", floors);
+        model.addAttribute("bulletin", buildComplex.getBulletin());
+        model.addAttribute("address", buildComplex.getRole().getRoleName() + " of " + buildComplex.getStreetName() + " " + buildComplex.getStreetNumber() + " " + buildComplex.getCity());
 
-		if(authentication.getAuthorities().stream()
-				.anyMatch(r -> r.getAuthority().equals("COOWNER"))){
-			if(this.bCryptPasswordEncoder.matches(oldPass,curUser.getPassword())){
-				curUser.setPassword(bCryptPasswordEncoder.encode(newPass));
-				this.userRepository.save(curUser);
-				CoOwner coOwner = this.coOwnerRepo.findByUsername(curUser.getEmail());
-				coOwner.setPassword(newPass);
-				this.coOwnerRepo.save(coOwner);
-				return "redirect:/";
+        List<Info> infos;
+        if (keyword == null) {
+            infos = this.infoRepo.getAllInfoOfBuild(buildComplex.getBuildComplexId());
+        } else {
+            infos = this.infoRepo.searchInfoByKeyword(buildComplex.getBuildComplexId(), keyword);
+        }
+        model.addAttribute("infos", infos);
+        return "coowner_rep";
 
-			}
-			else{
-				return "Passwords didn't match";
-			}
+//		List<UtilitiesPrice> utilitiesPrices;
+//		if(keyword==null) {
+//			utilitiesPrices = this.utilitiesPriceRepo.getAllUtilitiesPriceOfBuild(buildComplex.getBuildComplexId());
+//		}
+//		else{
+//			utilitiesPrices = this.utilitiesPriceRepo.searchUtilitiesPriceByKeyword(buildComplex.getBuildComplexId(), keyword);
+//		}
+//		model.addAttribute("utilitiesPrices", utilitiesPrices);
+//
+    }
 
-		}
+    @GetMapping("/coowner")
+    public String homeCoOwner(Model model, Principal principal, String keyword) {
+        String username = principal.getName();
+        CoOwner coOwner = this.coOwnerRepo.findByUsername(username);
+        Integer buildComplexId = coOwner.getUnits().get(0).getBuildingComplex().getBuildComplexId();
+        List<Unit> units = this.unitRepo.getAllUnitOfCoOwner(coOwner.getCoOwnerId());
+        coOwner.setUnits(units);
+        model.addAttribute("units", units);
+        BuildingComplex buildingComplex = this.buildComplexRepo.findById(units.get(0).getFloor().getBuildingComplex().getBuildComplexId()).get();
+        model.addAttribute("bulletin", buildingComplex.getBulletin());
+//		model.addAttribute("user","Welcome " + coOwner.getCoOwnerName() );
+        model.addAttribute("address", "Welcome " + coOwner.getCoOwnerName() + " - " + coOwner.getUnits().get(0).getBuildingComplex().getStreetName() + " " + coOwner.getUnits().get(0).getBuildingComplex().getStreetNumber() + ", " + coOwner.getUnits().get(0).getBuildingComplex().getCity());
 
-		return "redirect:/";
-	}
 
-	@GetMapping("/pdf/generate/{username}/{password}/{userType}")
-	public void generatePDF(HttpServletResponse response, @PathVariable String username,
-							@PathVariable String password, @PathVariable String userType) throws IOException {
-		response.setContentType("application/pdf");
-		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd:hh:mm:ss");
-		String currentDateTime = dateFormatter.format(new Date());
+        List<Info> infos;
+        if (keyword == null) {
+            infos = this.infoRepo.getAllInfoOfBuild(buildComplexId);
+        } else {
+            infos = this.infoRepo.searchInfoByKeyword(buildComplexId, keyword);
+        }
+        model.addAttribute("infos", infos);
+        return "coowner";
+    }
 
-		String headerKey = "Content-Disposition";
-		String headerValue = "attachment; filename=pdf_" + currentDateTime + ".pdf";
-		response.setHeader(headerKey, headerValue);
-		this.pdfGeneratorService.export(response, username, password, userType);
-	}
-	@ModelAttribute("expenses")
-	public List<Expense> expenses() {
-		return new ArrayList<>();
-	}
+    @GetMapping("/coOwner/viewCoOwnerUnit/{unitId}")
+    public String homeCoOwner(Model model, Principal principal, @PathVariable Integer unitId) {
+        String username = principal.getName();
+        UserDetails details = userService.loadUserByUsername(username);
+        Unit unit = this.unitRepo.findById(unitId).get();
+        List<Expense> expenses = this.expenseRepo.getAllExpenseOfUnit(unitId);
+        List<Income> incomes = this.incomeRepo.getAllIncomeOfUnit(unitId);
+        model.addAttribute("expenses", expenses);
+        model.addAttribute("incomes", incomes);
+        model.addAttribute("unit", unit);
+        model.addAttribute("user", "Welcome " + unit.getCoOwner().getCoOwnerName() + ", ");
+        model.addAttribute("address", " " + unit.getBuildingComplex().getStreetName() + " " + unit.getBuildingComplex().getStreetNumber() + ", " + unit.getBuildingComplex().getCity());
+        return "viewCoOwnerUnit";
+    }
 
-	@ModelAttribute("incomes")
-	public List<Income> incomes() {
-		return new ArrayList<>();
-	}
+    @GetMapping("/changePass")
+    public String changePassForm() {
+        return "changePass";
+    }
+
+    @PostMapping("/changePass")
+    public String changePass(Model model, Principal principal, @RequestParam("oldPass") String oldPass, @RequestParam("newPass") String newPass) {
+        String username = principal.getName();
+        User curUser = this.userRepository.findByEmail(username);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getAuthorities().stream().anyMatch(r -> r.getAuthority().equals("BUILDMANAGER"))) {
+            if (this.bCryptPasswordEncoder.matches(oldPass, curUser.getPassword())) {
+                curUser.setPassword(bCryptPasswordEncoder.encode(newPass));
+                this.userRepository.save(curUser);
+                BuildingManager buildingManager = this.buildingManagerRepo.findByUsername(curUser.getEmail());
+                buildingManager.setPassword(newPass);
+                this.buildingManagerRepo.save(buildingManager);
+                return "redirect:/";
+            } else {
+                model.addAttribute("error", "Wrong Password");
+                return "/changePass";
+            }
+
+        }
+
+
+
+        if (authentication.getAuthorities().stream()
+                .anyMatch(r -> r.getAuthority().equals("COOWNERREP"))) {
+            if (this.bCryptPasswordEncoder.matches(oldPass, curUser.getPassword())) {
+                curUser.setPassword(bCryptPasswordEncoder.encode(newPass));
+                this.userRepository.save(curUser);
+                BuildingComplex buildingComplex = this.buildComplexRepo.findByUsername(curUser.getEmail());
+                buildingComplex.setPassword(newPass);
+                this.buildComplexRepo.save(buildingComplex);
+                return "redirect:/";
+
+            } else {
+                return "/changePass";
+            }
+
+        }
+
+        if (authentication.getAuthorities().stream()
+                .anyMatch(r -> r.getAuthority().equals("COOWNER"))) {
+            if (this.bCryptPasswordEncoder.matches(oldPass, curUser.getPassword())) {
+                curUser.setPassword(bCryptPasswordEncoder.encode(newPass));
+                this.userRepository.save(curUser);
+                CoOwner coOwner = this.coOwnerRepo.findByUsername(curUser.getEmail());
+                coOwner.setPassword(newPass);
+                this.coOwnerRepo.save(coOwner);
+                return "redirect:/";
+
+            } else {
+                return "/changePass";
+
+            }
+
+        }
+
+        return "redirect:/";
+    }
+
+    @GetMapping("/pdf/generate/{username}/{password}/{userType}")
+    public void generatePDF(HttpServletResponse response, @PathVariable String username,
+                            @PathVariable String password, @PathVariable String userType) throws IOException {
+        response.setContentType("application/pdf");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd:hh:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=pdf_" + currentDateTime + ".pdf";
+        response.setHeader(headerKey, headerValue);
+        this.pdfGeneratorService.export(response, username, password, userType);
+    }
+
+    @ModelAttribute("expenses")
+    public List<Expense> expenses() {
+        return new ArrayList<>();
+    }
+
+    @ModelAttribute("incomes")
+    public List<Income> incomes() {
+        return new ArrayList<>();
+    }
 
 	/*@PostMapping("/manager/unitReport/{unitId}")
 	public void unitReport(HttpServletResponse response, @PathVariable Integer unitId) throws IOException {
@@ -299,145 +319,206 @@ public class UserController {
 		this.pdfGeneratorService.exportReportForUnit(response,expenses, incomes, unitId);
 	}*/
 
-	@PostMapping("/manager/unitReport/{unitId}")
-	public void getExpenseReport(HttpServletResponse response, @PathVariable("unitId") Integer unitId,
-		@DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
-						  @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate, Integer expenseTypeId) throws IOException {
+    @PostMapping("/manager/unitReport/{unitId}")
+    public void getExpenseReport(HttpServletResponse response, @PathVariable("unitId") Integer unitId,
+                                 @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
+                                 @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate, Integer expenseTypeId) throws IOException {
 
-		Unit unit = unitRepo.findById(unitId).get();
+        Unit unit = unitRepo.findById(unitId).get();
 
-		List<Expense> filteredExpenses = new ArrayList<>();
-		for(Expense expense : unit.getExpenses()){
-			if(expenseTypeId == null || expense.getExpenseType().getExpenseTypeId().equals(expenseTypeId)){
-				if(startDate != null && expense.getDateOfReceipt().after(startDate)){
-					if(endDate != null && expense.getDateOfReceipt().before(endDate)){
-						filteredExpenses.add(expense);
-					}else{
-						filteredExpenses.add(expense);
-					}
+        List<Expense> filteredExpenses = new ArrayList<>();
+        for (Expense expense : unit.getExpenses()) {
+            if (expenseTypeId == null || expense.getExpenseType().getExpenseTypeId().equals(expenseTypeId)) {
+                if (startDate != null && expense.getDateOfReceipt().after(startDate)) {
+                    if (endDate != null && expense.getDateOfReceipt().before(endDate)) {
+                        filteredExpenses.add(expense);
+                    } else {
+                        filteredExpenses.add(expense);
+                    }
 
-				}else{
-					filteredExpenses.add(expense);
-				}
-			}
-		}
+                } else {
+                    filteredExpenses.add(expense);
+                }
+            }
+        }
 
-		List<Income> filteredIncomes = new ArrayList<>();
-		for(Income income : unit.getIncomes()){
-			if(expenseTypeId == null || income.getExpenseType().getExpenseTypeId().equals(expenseTypeId)){
-				if(startDate != null && income.getDateOfPayment().after(startDate)){
-					if(endDate != null && income.getDateOfPayment().before(endDate)){
-						filteredIncomes.add(income);
-					}else{
-						filteredIncomes.add(income);
-					}
+        List<Income> filteredIncomes = new ArrayList<>();
+        for (Income income : unit.getIncomes()) {
+            if (expenseTypeId == null || income.getExpenseType().getExpenseTypeId().equals(expenseTypeId)) {
+                if (startDate != null && income.getDateOfPayment().after(startDate)) {
+                    if (endDate != null && income.getDateOfPayment().before(endDate)) {
+                        filteredIncomes.add(income);
+                    } else {
+                        filteredIncomes.add(income);
+                    }
 
-				}else{
-					filteredIncomes.add(income);
-				}
-			}
-		}
+                } else {
+                    filteredIncomes.add(income);
+                }
+            }
+        }
 
-		response.setContentType("application/pdf");
-		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd:hh:mm:ss");
-		String currentDateTime = dateFormatter.format(new Date());
+        response.setContentType("application/pdf");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd:hh:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
 
-		String headerKey = "Content-Disposition";
-		String headerValue = "attachment; filename=pdf_" + currentDateTime + ".pdf";
-		response.setHeader(headerKey, headerValue);
-		pdfGeneratorService.exportReportForExpenses(response, unit, filteredExpenses, filteredIncomes, startDate, endDate);
-	}
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=pdf_" + currentDateTime + ".pdf";
+        response.setHeader(headerKey, headerValue);
+        pdfGeneratorService.exportReportForExpenses(response, unit, filteredExpenses, startDate, endDate);
+    }
 
-	@PostMapping("/manager/buildReport/{buildComplexId}")
-	public void buildReport(HttpServletResponse response, @PathVariable Integer buildComplexId) throws IOException {
-		response.setContentType("application/pdf");
-		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd:hh:mm:ss");
-		String currentDateTime = dateFormatter.format(new Date());
+    @PostMapping("/coowner_rep/unitReport/{unitId}")
+    public void getExpenseReport2(HttpServletResponse response, @PathVariable("unitId") Integer unitId,
+                                  @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
+                                  @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate, Integer expenseTypeId) throws IOException {
 
-		String headerKey = "Content-Disposition";
-		String headerValue = "attachment; filename=pdf_" + currentDateTime + ".pdf";
-		response.setHeader(headerKey, headerValue);
+        Unit unit = unitRepo.findById(unitId).get();
 
-		BuildingComplex buildingComplex = this.buildComplexRepo.findById(buildComplexId).get();
+        List<Expense> filteredExpenses = new ArrayList<>();
+        for (Expense expense : unit.getExpenses()) {
+            if (expenseTypeId == null || expense.getExpenseType().getExpenseTypeId().equals(expenseTypeId)) {
+                if (startDate != null && expense.getDateOfReceipt().after(startDate)) {
+                    if (endDate != null && expense.getDateOfReceipt().before(endDate)) {
+                        filteredExpenses.add(expense);
+                    } else {
+                        filteredExpenses.add(expense);
+                    }
 
-		int totalExpense = 0;
-		int totalIncome = 0;
+                } else {
+                    filteredExpenses.add(expense);
+                }
+            }
+        }
 
-		for(int i=0; i<buildingComplex.getUnits().size(); i++){
-			for(int j=0; j<buildingComplex.getUnits().get(i).getExpenses().size(); j++ ) {
-				totalExpense += buildingComplex.getUnits().get(i).getExpenses().get(j).getAmount();
-			}
-		}
+        List<Income> filteredIncomes = new ArrayList<>();
+        for (Income income : unit.getIncomes()) {
+            if (expenseTypeId == null || income.getExpenseType().getExpenseTypeId().equals(expenseTypeId)) {
+                if (startDate != null && income.getDateOfPayment().after(startDate)) {
+                    if (endDate != null && income.getDateOfPayment().before(endDate)) {
+                        filteredIncomes.add(income);
+                    } else {
+                        filteredIncomes.add(income);
+                    }
 
-		for(int i=0; i<buildingComplex.getUnits().size(); i++){
-			for(int j=0; j<buildingComplex.getUnits().get(i).getIncomes().size(); j++ ) {
-				totalIncome += buildingComplex.getUnits().get(i).getIncomes().get(j).getAmount();
-			}
-		}
+                } else {
+                    filteredIncomes.add(income);
+                }
+            }
+        }
 
-		this.pdfGeneratorService.exportReportForBuilding(response,totalExpense, totalIncome, buildComplexId);
-	}
+        response.setContentType("application/pdf");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd:hh:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
 
-	@PostMapping("/manager/build-equipment-report/{buildComplexId}")
-	public void buildReportEquipment(HttpServletResponse response, @PathVariable Integer buildComplexId) throws IOException {
-		response.setContentType("application/pdf");
-		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd:hh:mm:ss");
-		String currentDateTime = dateFormatter.format(new Date());
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=pdf_" + currentDateTime + ".pdf";
+        response.setHeader(headerKey, headerValue);
+        pdfGeneratorService.exportReportForExpenses(response, unit, filteredExpenses, startDate, endDate);
+    }
 
-		String headerKey = "Content-Disposition";
-		String headerValue = "attachment; filename=pdf_" + currentDateTime + ".pdf";
-		response.setHeader(headerKey, headerValue);
+    @PostMapping("/manager/buildReport/{buildComplexId}")
+    public void buildReport(HttpServletResponse response, @PathVariable Integer buildComplexId) throws IOException {
+        response.setContentType("application/pdf");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd:hh:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
 
-		BuildingComplex buildingComplex = this.buildComplexRepo.findById(buildComplexId).get();
-		this.pdfGeneratorService.exportReportForEquipment(response, buildingComplex);
-	}
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=pdf_" + currentDateTime + ".pdf";
+        response.setHeader(headerKey, headerValue);
 
-	@PostMapping("/coowner_rep/unitReport/{unitId}")
-	public void unitReportCoownerRep(HttpServletResponse response, @PathVariable Integer unitId) throws IOException {
-		response.setContentType("application/pdf");
-		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd:hh:mm:ss");
-		String currentDateTime = dateFormatter.format(new Date());
+        BuildingComplex buildingComplex = this.buildComplexRepo.findById(buildComplexId).get();
 
-		String headerKey = "Content-Disposition";
-		String headerValue = "attachment; filename=pdf_" + currentDateTime + ".pdf";
-		response.setHeader(headerKey, headerValue);
+        int totalExpense = 0;
+        int totalIncome = 0;
 
-		List<Expense> expenses = this.expenseRepo.getAllExpenseOfUnit(unitId);
-		List<Income> incomes = this.incomeRepo.getAllIncomeOfUnit(unitId);
-		this.pdfGeneratorService.exportReportForUnit(response,expenses, incomes, unitId);
-	}
+        for (int i = 0; i < buildingComplex.getUnits().size(); i++) {
+            for (int j = 0; j < buildingComplex.getUnits().get(i).getExpenses().size(); j++) {
+                totalExpense += buildingComplex.getUnits().get(i).getExpenses().get(j).getAmount();
+            }
+        }
 
-	@PostMapping("/coowner_rep/buildReport/{buildComplexId}")
-	public void buildReportCoownerRep(HttpServletResponse response, @PathVariable Integer buildComplexId) throws IOException {
-		response.setContentType("application/pdf");
-		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd:hh:mm:ss");
-		String currentDateTime = dateFormatter.format(new Date());
+        for (int i = 0; i < buildingComplex.getUnits().size(); i++) {
+            for (int j = 0; j < buildingComplex.getUnits().get(i).getIncomes().size(); j++) {
+                totalIncome += buildingComplex.getUnits().get(i).getIncomes().get(j).getAmount();
+            }
+        }
 
-		String headerKey = "Content-Disposition";
-		String headerValue = "attachment; filename=pdf_" + currentDateTime + ".pdf";
-		response.setHeader(headerKey, headerValue);
+        this.pdfGeneratorService.exportReportForBuilding(response, totalExpense, totalIncome, buildComplexId);
+    }
 
-		BuildingComplex buildingComplex = this.buildComplexRepo.findById(buildComplexId).get();
+    @PostMapping("/manager/build-equipment-report/{buildComplexId}")
+    public void buildReportEquipment(HttpServletResponse response, @PathVariable Integer buildComplexId) throws IOException {
+        response.setContentType("application/pdf");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd:hh:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
 
-		int totalExpense = 0;
-		int totalIncome = 0;
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=pdf_" + currentDateTime + ".pdf";
+        response.setHeader(headerKey, headerValue);
 
-		for(int i=0; i<buildingComplex.getUnits().size(); i++){
-			for(int j=0; j<buildingComplex.getUnits().get(i).getExpenses().size(); j++ ) {
-				totalExpense += buildingComplex.getUnits().get(i).getExpenses().get(j).getAmount();
-			}
-		}
+        BuildingComplex buildingComplex = this.buildComplexRepo.findById(buildComplexId).get();
+        this.pdfGeneratorService.exportReportForEquipment(response, buildingComplex);
+    }
 
-		for(int i=0; i<buildingComplex.getUnits().size(); i++){
-			for(int j=0; j<buildingComplex.getUnits().get(i).getIncomes().size(); j++ ) {
-				totalIncome += buildingComplex.getUnits().get(i).getIncomes().get(j).getAmount();
-			}
-		}
+    @PostMapping("/coowner_rep/build-equipment-report/{buildComplexId}")
+    public void buildReportEquipmentForm(HttpServletResponse response, @PathVariable Integer buildComplexId) throws IOException {
+        response.setContentType("application/pdf");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd:hh:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
 
-		this.pdfGeneratorService.exportReportForBuilding(response,totalExpense, totalIncome, buildComplexId);
-	}
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=pdf_" + currentDateTime + ".pdf";
+        response.setHeader(headerKey, headerValue);
 
+        BuildingComplex buildingComplex = this.buildComplexRepo.findById(buildComplexId).get();
+        this.pdfGeneratorService.exportReportForEquipment(response, buildingComplex);
+    }
 
+//	@PostMapping("/coowner_rep/unitReport/{unitId}")
+//	public void unitReportCoownerRep(HttpServletResponse response, @PathVariable Integer unitId) throws IOException {
+//		response.setContentType("application/pdf");
+//		DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd:hh:mm:ss");
+//		String currentDateTime = dateFormatter.format(new Date());
+//
+//		String headerKey = "Content-Disposition";
+//		String headerValue = "attachment; filename=pdf_" + currentDateTime + ".pdf";
+//		response.setHeader(headerKey, headerValue);
+//
+//		List<Expense> expenses = this.expenseRepo.getAllExpenseOfUnit(unitId);
+//		List<Income> incomes = this.incomeRepo.getAllIncomeOfUnit(unitId);
+//		this.pdfGeneratorService.exportReportForUnit(response,expenses, incomes, unitId);
+//	}
+
+    @PostMapping("/coowner_rep/buildReport/{buildComplexId}")
+    public void buildReportCoownerRep(HttpServletResponse response, @PathVariable Integer buildComplexId) throws IOException {
+        response.setContentType("application/pdf");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd:hh:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=pdf_" + currentDateTime + ".pdf";
+        response.setHeader(headerKey, headerValue);
+
+        BuildingComplex buildingComplex = this.buildComplexRepo.findById(buildComplexId).get();
+
+        int totalExpense = 0;
+        int totalIncome = 0;
+
+        for (int i = 0; i < buildingComplex.getUnits().size(); i++) {
+            for (int j = 0; j < buildingComplex.getUnits().get(i).getExpenses().size(); j++) {
+                totalExpense += buildingComplex.getUnits().get(i).getExpenses().get(j).getAmount();
+            }
+        }
+
+        for (int i = 0; i < buildingComplex.getUnits().size(); i++) {
+            for (int j = 0; j < buildingComplex.getUnits().get(i).getIncomes().size(); j++) {
+                totalIncome += buildingComplex.getUnits().get(i).getIncomes().get(j).getAmount();
+            }
+        }
+
+        this.pdfGeneratorService.exportReportForBuilding(response, totalExpense, totalIncome, buildComplexId);
+    }
 
 
 }
