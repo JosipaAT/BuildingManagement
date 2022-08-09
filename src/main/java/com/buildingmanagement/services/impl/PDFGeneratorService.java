@@ -604,7 +604,7 @@ public class PDFGeneratorService {
 
         Double previousTotal = previousIncomeSum - previousExpenseSum;
 
-        Paragraph paragraph7 = new Paragraph("Saldo: :" + previousTotal, fontBold);
+        Paragraph paragraph7 = new Paragraph("Saldo: " + previousTotal, fontBold);
         paragraph7.setAlignment(Paragraph.ALIGN_LEFT);
         document.add(paragraph7);
 
@@ -620,7 +620,7 @@ public class PDFGeneratorService {
         Double incomeSum = incomesPeriod.stream().mapToDouble(Income::getAmount).sum();
 
 
-        Paragraph expenseTypeParagraph = new Paragraph("Expenses: ");
+        Paragraph expenseTypeParagraph = new Paragraph("Expenses in the data range: ");
         expenseTypeParagraph.setAlignment(Paragraph.ALIGN_LEFT);
         document.add(expenseTypeParagraph);
 
@@ -703,16 +703,22 @@ public class PDFGeneratorService {
         tableIncome.setSpacingAfter(15);
 
 
-        PdfPCell userHeader = new PdfPCell(new Phrase("User", fontBold));
+        Paragraph incomeParagraph = new Paragraph("Incomes in the data range: ");
+        incomeParagraph.setAlignment(Paragraph.ALIGN_LEFT);
+        document.add(incomeParagraph);
+
+
+        PdfPCell userHeader = new PdfPCell(new Phrase("Payed By", fontBold));
         userHeader.setPadding(10);
         tableExpenses.addCell(userHeader);
 
         tableIncome.addCell(numberCellHeader);
+        tableIncome.addCell(userHeader);
         tableIncome.addCell(descriptionHeader);
         tableIncome.addCell(expenseTypeHeader);
         tableIncome.addCell(dateCreatedHeader);
         tableIncome.addCell(amountHeader);
-        tableIncome.addCell(userHeader);
+
 
 
         tableIncome.completeRow();
@@ -721,11 +727,19 @@ public class PDFGeneratorService {
         Float totalAmountIncome = Float.valueOf(0);
 
 
+//        Double saldoEnd = Double.valueOf(0);
+
+
+
         for (Income income : incomesPeriod) {
 
             PdfPCell numberCell = new PdfPCell(new Phrase(numberIncome + "."));
             numberCell.setPadding(10);
             tableIncome.addCell(numberCell);
+
+            PdfPCell user = new PdfPCell(new Phrase(income.getUnit().getCoOwner().getCoOwnerName()));
+            user.setPadding(10);
+            tableIncome.addCell(user);
 
             PdfPCell description = new PdfPCell(new Phrase(income.getDescription()));
             description.setPadding(10);
@@ -743,14 +757,13 @@ public class PDFGeneratorService {
             amount.setPadding(10);
             tableIncome.addCell(amount);
 
-            PdfPCell user = new PdfPCell(new Phrase(income.getUnit().getCoOwner().getCoOwnerName()));
-            user.setPadding(10);
-            tableIncome.addCell(user);
-
             tableIncome.completeRow();
             numberIncome++;
 
             totalAmountIncome += income.getAmount();
+
+//            saldoEnd = previousTotal + totalAmountIncome - totalAmount;
+
         }
         document.add(tableIncome);
 
@@ -763,6 +776,12 @@ public class PDFGeneratorService {
         Paragraph totalAmountIncomeP = new Paragraph("Total Amount Income: " + totalAmountIncome + " KN", fontBold);
         totalAmountIncomeP.setAlignment(Paragraph.ALIGN_LEFT);
         document.add(totalAmountIncomeP);
+
+
+
+//        Paragraph saldoEnd = new Paragraph("Saldo at the end of date range: " + saldoEnd + " KN", fontBold);
+//        saldoEnd.setAlignment(Paragraph.ALIGN_LEFT);
+//        document.add(totalAmountIncomeP);
 
         document.close();
     }

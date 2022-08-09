@@ -76,9 +76,9 @@ font-weight: bold;
             <input type="number" id="noOfTenants" style="width: 300px; margin: auto;" th:name="noOfTenants" th:value="${noOfTenants}" autofocus="autofocus" class="form-control">
         </div>
         <div class="form-group">
-            <label style="color:white;" class="control-label" for="unitTypeId">Unit Type</label>
+<!--            <label style="color:white;" class="control-label" for="unitTypeId">Unit Type</label>-->
             <select style="width: 300px; margin: auto;" class="form-control" id="unitTypeId" name="unitTypeId">
-                <option>Select Unit Type</option>
+                <option value="0">Select Unit Type</option>
                 <option
                         th:each="unitType: ${unitTypes}"
                         th:text="${unitType.unitTypeName}"
@@ -88,9 +88,9 @@ font-weight: bold;
             </select>
         </div>
         <div class="form-group">
-            <label style="color:white;" class="control-label" for="coOwnerId">CoOwner</label>
-            <select style="width: 300px; margin: auto;" class="form-control" id="coOwnerId" name="unitTypeId">
-                <option>Select Already Registered CoOwner</option>
+<!--            <label style="color:white;" class="control-label" for="coOwnerId">CoOwner</label>-->
+            <select style="width: 300px; margin: auto;" class="form-control" id="coOwnerId" name="coOwnerId">
+                <option value="0">  Select Already Registered CoOwner</option>
                 <option
                         th:each="coOwner: ${coOwners}"
                         th:text="${coOwner.coOwnerName}"
@@ -128,8 +128,8 @@ font-weight: bold;
         </div>
         <div class="form-group">
             <label style="color:white;" class="control-label" for="coOwnerId">CoOwner</label>
-            <select style="width: 300px; margin: auto;" class="form-control" id="coOwnerId2" name="unitTypeId">
-                <option>Select Already Registered CoOwner</option>
+            <select style="width: 300px; margin: auto;" class="form-control" id="coOwnerId2" name="coOwnerId">
+                <option value="0"> Select Already Registered CoOwner</option>
                 <option
                         th:each="coOwner: ${coOwners}"
                         th:text="${coOwner.coOwnerName}"

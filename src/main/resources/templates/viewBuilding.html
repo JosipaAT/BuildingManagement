@@ -86,6 +86,7 @@ font-weight: bold;
 
 
 
+
 </style>
 
 <body>
@@ -110,25 +111,12 @@ font-weight: bold;
     <h2 class="text-center" style="color:black"> Building Details</h2>
     <span style="float:left;">
                <form th:action="@{/manager/buildReport/}+${buildComplex.buildComplexId}" method="post">
-                   <p>
                    <button style="margin-bottom: 5% " class="btn btn-primary col-offset-5"
                            type="submit">Print Basic Info Report</button>
                 <br>
-                   </p>
                </form>
-                <a th:href="@{/manager/addBuildingExpenseForm/}+${buildComplex.buildComplexId}">
-                   <p>
-                   <button style="margin-bottom: 5% " class="btn btn-info col-offset-5" type="submit">Add Building Expense</button>
-                <br>
-                   </p>
-               </a>
-                 <a th:href="@{/manager/listBuildingExpense/}+${buildComplex.buildComplexId}">
-                   <p>
-                   <button style="margin-bottom: 5% " class="btn btn-info col-offset-5" type="submit">Building Expense List</button>
-                <br>
-                   </p>
-               </a>
     </span>
+
     <span style="float:right;">
                <form th:action="@{/manager/buildingExpenseReport/}+${buildComplex.buildComplexId}" method="post">
                    <label style="color:black;">Select Time Period for Building Expenses Report:</label> <br>
@@ -156,6 +144,7 @@ font-weight: bold;
                 </th>
                 <td style="color:black;" scope="col">No Of Floors</td>
                 <td style="color:black;" scope="col">Actions</td>
+                <td style="color:black;" scope="col">Expenses</td>
             </tr>
             </thead>
 
@@ -172,10 +161,19 @@ font-weight: bold;
                 <td style="color:black;" th:text="${buildComplex.floors.size()}">No Of Floors</td>
                 <td>
 
-                    <button type="button" class="btn btn-info col-offset-5"><a style="color:white;" class="fw-bold"
+                    <button type="button" class="btn btn-primary col-offset-5"><a style="color:white;" class="fw-bold"
                                                                                th:href="@{/manager/updateBuilding/}+${buildComplexId}">Update</a>
                     </button>
-
+                </td>
+                <td>
+                    <a th:href="@{/manager/addBuildingExpenseForm/}+${buildComplex.buildComplexId}">
+                        <button style="margin-bottom: 5% " class="btn btn-primary col-offset-5" type="submit">Add Building Expense</button>
+                        <br>
+                    </a>
+                    <a th:href="@{/manager/listBuildingExpense/}+${buildComplex.buildComplexId}">
+                        <button style="margin-bottom: 5% " class="btn btn-info col-offset-5" type="submit">See Building Expense List</button>
+                        <br>
+                    </a>
                 </td>
             </tr>
 
@@ -262,7 +260,7 @@ font-weight: bold;
                 <td style="color:black;" scope="col py-2">Unit Type</td>
                 <td style="color:black;" scope="col">Measuring Unit</td>
                 </th>
-                <td style="color:black;" scope="col">Price
+                <td style="color:black;" scope="col">Price in KN
                 </th>
                 <td style="color:black;" scope="col">Actions</td>
             </tr>
@@ -276,7 +274,7 @@ font-weight: bold;
                 </td>
                 <td style="color:black;" scope="row" th:text="${utilitiesPrice.unitType.unitTypeName}">Unit Type</td>
                 <td style="color:black;" scope="row" th:text="${utilitiesPrice.unitOfMeasurement}">Measuring Unit</td>
-                <td style="color:black;" scope="row" th:text="${utilitiesPrice.price}">Price</td>
+                <td style="color:black;" scope="row" th:text="${utilitiesPrice.price}">Price in KN</td>
 
                 <td>
                     <button type="button" class="btn btn-primary"><a style="color:white;" class="fw-bold"
@@ -309,7 +307,6 @@ font-weight: bold;
             </thead>
 
             <tbody>
-
             <tr class="text-center" th:each="floor: ${floors}">
                 <td style="color:black;" scope="row" th:text="${floor.floorId}">1</td>
                 <td style="color:black;" th:text="${floor.floorName}">The name</td>

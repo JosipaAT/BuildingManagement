@@ -72,6 +72,7 @@ public class BuildComplexController {
 
     @Autowired
     private PDFGeneratorService pdfGeneratorService;
+    private Integer coOwnerId;
 
 
     @ModelAttribute("buildComplex")
@@ -290,11 +291,13 @@ public class BuildComplexController {
     private String updateEquipmentForm(Model model, @PathVariable Integer equipmentId) {
         model.addAttribute("equipmentId");
         Equipment equipment = this.equipmentRepo.findById(equipmentId).get();
-        model.addAttribute("equipmentName", equipment.getEquipmentName());
+//        model.addAttribute("equipmentName", equipment.getEquipmentName());
         Integer floorId = equipment.getFloor().getFloorId();
-        model.addAttribute("floorId", floorId);
+//        model.addAttribute("floorId", floorId);
 
-        model.addAttribute("address", equipment.getFloor().getFloorName() + " - " + equipment.getBuildingComplex().getStreetName() + " " + equipment.getBuildingComplex().getStreetNumber() + ", " + equipment.getBuildingComplex().getCity());
+        model.addAttribute("floorId", this.equipmentRepo.findById(equipmentId).get().getFloor().getFloorId());
+        model.addAttribute("equipmentName", this.equipmentRepo.findById(equipmentId).get().getEquipmentName());
+        model.addAttribute("address", equipmentRepo.getById(equipmentId).getFloor().getFloorName() + " - " + equipmentRepo.getById(equipmentId).getBuildingComplex().getStreetName() + " " + equipmentRepo.getById(equipmentId).getBuildingComplex().getStreetNumber() + ", " + equipmentRepo.getById(equipmentId).getBuildingComplex().getCity());
         return "updateEquipment";
     }
 
@@ -440,18 +443,22 @@ public class BuildComplexController {
         return "updateUnit";
     }
 
+
+
     @PostMapping("/manager/updateUnit/{unitId}")
-    public String updateUnit(@PathVariable Integer unitId, @RequestParam("noOfTenants") Integer noOfTenants, Model model) {
+    public String updateUnit(@PathVariable Integer unitId, @RequestParam("noOfTenants") Integer noOfTenants, Integer coOwnerId, Integer unitTypeId, Model model) {
         Unit unit = this.unitRepo.findById(unitId).get();
 //        CoOwner coOwner = coOwnerRepo.findByCoOwnerId(coOwnerId);
 //        UnitType unitType = unitTypeRepo.getById(unitId);
         unit.setNoOfTenants(noOfTenants);
-        unit.setCoOwner(unit.getCoOwner());
-        unit.setUnitType(unit.getUnitType());
-        this.unitRepo.save(unit);
+        unit.setCoOwner(coOwnerRepo.getById(coOwnerId));
+        unit.setUnitType(unitTypeRepo.getById(unitTypeId));
         Integer floorId = unit.getFloor().getFloorId();
+        this.unitRepo.save(unit);
         model.addAttribute("address", buildComplex().getStreetName() + " " + buildComplex().getStreetNumber() + ", " + buildComplex().getCity());
         return "redirect:/manager/viewFloor/" + floorId + "/" + 0;
+
+
     }
 
     @ModelAttribute("info")
@@ -600,14 +607,14 @@ public class BuildComplexController {
         model.addAttribute("expenseTypes", expenseTypes);
         model.addAttribute("unitTypes", this.unitTypeRepo.findAll());
 
-        model.addAttribute("address", buildComplex().getStreetName() + " " + buildComplex().getStreetNumber() + ", " + buildComplex().getCity());
+        model.addAttribute("address", utiliesPriceRepo.getById(utilitiesPriceId).getBuildingComplex().getStreetName() + " " + utiliesPriceRepo.getById(utilitiesPriceId).getBuildingComplex().getStreetNumber() + ", " + utiliesPriceRepo.getById(utilitiesPriceId).getBuildingComplex().getCity());
         return "updateUtilitiesPriceForm";
     }
 
     @PostMapping("/manager/updateUtilitiesPrice/{utilitiesPriceId}")
     public String updateUtilitiesPrice(@PathVariable Integer utilitiesPriceId,
                                        @RequestParam(required = false) Integer expenseTypeId,
-                                       @RequestParam(required = false) String unitOfMeasurement, @RequestParam(required = false) Integer buildComplexId, Model model, Float price, Integer unitTypeId
+                                       @RequestParam(required = false) String unitOfMeasurement, Model model, Float price, Integer unitTypeId
     ) {
         UtilitiesPrice utilitiesPrice;
         utilitiesPrice = this.utiliesPriceRepo.findById(utilitiesPriceId).get();

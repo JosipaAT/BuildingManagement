@@ -32,7 +32,7 @@ public class BuildingManagementApplication  implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 //		UserRegistration userRegistration = new UserRegistration();
-//        userRegistration.setEmail("admin@bm.com");
+//        userRegistration.setEmail("admin");
 //	    userRegistration.setPassword("admin");
 //		this.userServiceImpl.save(userRegistration);
 

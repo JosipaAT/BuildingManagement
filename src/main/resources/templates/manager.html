@@ -115,8 +115,10 @@ font-weight: bold;
 
             <tbody>
 
-            <tr class="text-center" th:each="buildComplex: ${buildComplexes}">
-                <td style="color:black;" scope="row" th:text="${buildComplex.buildComplexId}">1</td>
+
+            <tr class="text-center" th:each="buildComplex, iterStat: ${buildComplexes}">
+<!--                <td style="color:black;" scope="row" th:text="${buildComplex.buildComplexId}">1</td>-->
+                <td style="color:black;" scope="row"  th:text="${iterStat.count}"></td>
                 <td style="color:black;" scope="row" th:text="${buildComplex.username}">CoOwnerRep Username</td>
                 <td style="color:black;" scope="row" th:text="${buildComplex.password}" class="hidetext">Password</td>
                 <td style="color:black;" th:text="${buildComplex.streetName}">Street Name</td>

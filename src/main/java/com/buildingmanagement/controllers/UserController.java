@@ -256,6 +256,7 @@ public class UserController {
                 return "redirect:/";
 
             } else {
+                model.addAttribute("error", "Wrong Password");
                 return "/changePass";
             }
 
@@ -272,6 +273,7 @@ public class UserController {
                 return "redirect:/";
 
             } else {
+                model.addAttribute("error", "Wrong Password");
                 return "/changePass";
 
             }
