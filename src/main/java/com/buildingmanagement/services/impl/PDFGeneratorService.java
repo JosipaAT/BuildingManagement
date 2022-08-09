@@ -18,10 +18,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.Date;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -564,10 +562,16 @@ public class PDFGeneratorService {
         Font fontTitle = FontFactory.getFont(FontFactory.TIMES_ROMAN, BaseFont.CP1250, 16);
         fontTitle.setSize(18);
 
-        Paragraph paragraph = new Paragraph("Report for building "
+        Paragraph paragraph = new Paragraph("Report for building " + buildComplexRepo.getById(buildComplexId).getStreetName() + " " +
+                buildComplexRepo.getById(buildComplexId).getStreetNumber() + ", " + buildComplexRepo.getById(buildComplexId).getCity()
                 , fontTitle);
         paragraph.setAlignment(Paragraph.ALIGN_CENTER);
         document.add(paragraph);
+
+        SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
+        Paragraph paragraph22 = new Paragraph("for period: " + formatter.format(startDate) + " - " + formatter.format(endDate)   , fontTitle);
+        paragraph.setAlignment(Paragraph.ALIGN_CENTER);
+        document.add(paragraph22);
 
         Font fontNormal = FontFactory.getFont(FontFactory.TIMES_ROMAN, BaseFont.CP1250, 12);
         fontNormal.setSize(12);
@@ -588,7 +592,7 @@ public class PDFGeneratorService {
         document.add(paragraph5);
         document.add(paragraph6);
 
-        SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
+        SimpleDateFormat formatter2 = new SimpleDateFormat("dd.MM.yyyy");
 
 
         LocalDate startOfTheYear = LocalDate.of(LocalDate.now().getYear(), 1, 1);
@@ -676,11 +680,11 @@ public class PDFGeneratorService {
             expenseType.setPadding(10);
             tableExpenses.addCell(expenseType);
 
-            PdfPCell dateOfReceipt = new PdfPCell(new Phrase(formatter.format(expense.getDateOfReceipt())));
+            PdfPCell dateOfReceipt = new PdfPCell(new Phrase(formatter2.format(expense.getDateOfReceipt())));
             dateOfReceipt.setPadding(10);
             tableExpenses.addCell(dateOfReceipt);
 
-            PdfPCell dueDate = new PdfPCell(new Phrase(formatter.format(expense.getDueDate())));
+            PdfPCell dueDate = new PdfPCell(new Phrase(formatter2.format(expense.getDueDate())));
             dueDate.setPadding(10);
             tableExpenses.addCell(dueDate);
 
@@ -749,7 +753,7 @@ public class PDFGeneratorService {
             expenseType.setPadding(10);
             tableIncome.addCell(expenseType);
 
-            PdfPCell dateOfReceipt = new PdfPCell(new Phrase(formatter.format(income.getDateOfPayment())));
+            PdfPCell dateOfReceipt = new PdfPCell(new Phrase(formatter2.format(income.getDateOfPayment())));
             dateOfReceipt.setPadding(10);
             tableIncome.addCell(dateOfReceipt);
 

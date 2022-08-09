@@ -187,6 +187,7 @@ public class BuildComplexController {
                             @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate2) throws ParseException {
         Unit unit = this.unitRepo.findById(unitId).get();
         model.addAttribute("unit", unit);
+
         String pattern = "yyyy-MM-dd";
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         Sort sort1 = Sort.by(Sort.Direction.ASC, "dateOfReceipt");
@@ -213,7 +214,9 @@ public class BuildComplexController {
                 model.addAttribute("endDate1", simpleDateFormat.format(endDate1));
             }
         }
-        List<ExpenseType> expenseTypes = this.expenseTypeRepo.findAll();
+//        List<ExpenseType> expenseTypes = this.expenseTypeRepo.findAll();
+        List<ExpenseType> expenseTypes = this.expenseTypeRepo.findByExpenseTypeNameNotIn(Arrays.asList("Maintenance", "EquipmentService"));
+
         model.addAttribute("expenseTypes", expenseTypes);
         model.addAttribute("currentPage1", page1);
         model.addAttribute("currentPage2", page2);
