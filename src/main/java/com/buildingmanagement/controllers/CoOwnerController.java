@@ -293,6 +293,8 @@ public class CoOwnerController {
         model.addAttribute("coOwners", coOwnerRepo.findAll());
         model.addAttribute("noOfTenants", unitRepo.findById(unitId).get().getNoOfTenants());
 
+//        model.addAttribute("noOfTenants", unit.getNoOfTenants());
+
         model.addAttribute("floorId", unitRepo.findById(unitId).get().getFloor().getFloorId());
 //        model.addAttribute("vlasnik", unitRepo.getById(unitId).getCoOwner().getCoOwnerName());
 //        model.addAttribute("kat", unitRepo.getById(unitId).getFloor().getFloorName());
@@ -307,11 +309,13 @@ public class CoOwnerController {
     }
 
     @PostMapping("/coowner_rep/updateUnit/{unitId}")
-    public String updateUnit(@PathVariable Integer unitId, @RequestParam("noOfTenants") Integer noOfTenants) {
+    public String updateUnit(@PathVariable Integer unitId, @RequestParam("noOfTenants") Integer noOfTenants, Integer coOwnerId, Integer unitTypeId, Model model) {
         Unit unit = this.unitRepo.findById(unitId).get();
         unit.setNoOfTenants(noOfTenants);
-        unit.setCoOwner(unit.getCoOwner());
-        unit.setUnitType(unit.getUnitType());
+        unit.setCoOwner(coOwnerRepo.getById(coOwnerId));
+        unit.setUnitType(unitTypeRepo.getById(unitTypeId));
+
+//        Integer floorId = unit.getFloor().getFloorId();
         this.unitRepo.save(unit);
         return "redirect:/coowner_rep/viewFloor/" + unit.getFloor().getFloorId() + "/" + 0;
     }

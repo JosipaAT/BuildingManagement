@@ -14,6 +14,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.security.Principal;
@@ -91,12 +93,22 @@ public class BuildComplexController {
 
 
     @PostMapping("/manager/addBuildComplex/{buildManagerId}")
-    public String registerUserAccount(@ModelAttribute("buildComplex") BuildingComplex buildComplex, @PathVariable Integer buildManagerId) {
+    public String registerUserAccount(@ModelAttribute("buildComplex") BuildingComplex buildComplex, @PathVariable Integer buildManagerId,
+                                      Model model) {
         buildComplex.setBuildManager(this.buildingManagerRepo.findById(buildManagerId).get());
         this.buildComplexService.addBuildComplex(buildComplex);
         String username = buildComplex.getUsername();
         String password = buildComplex.getPassword();
         String userType = "CoOwner Representative";
+
+//        Optional<BuildingComplex> buildingComplex = Optional.ofNullable(this.buildComplexRepo.findByUsername(username));
+//        if (buildingComplex.isPresent()) {
+//// ako je if uvjet zadovoljen. znači da postoji building complex s istim usernamom u bazi
+//            model.addAttribute("error", "Username already exists");
+//        } else
+//        {
+//            return "redirect:/pdf/generate/" + username + "/" + password + "/" + userType;
+//        }
         return "redirect:/pdf/generate/" + username + "/" + password + "/" + userType;
     }
 
@@ -447,7 +459,6 @@ public class BuildComplexController {
     }
 
 
-
     @PostMapping("/manager/updateUnit/{unitId}")
     public String updateUnit(@PathVariable Integer unitId, @RequestParam("noOfTenants") Integer noOfTenants, Integer coOwnerId, Integer unitTypeId, Model model) {
         Unit unit = this.unitRepo.findById(unitId).get();
@@ -638,8 +649,8 @@ public class BuildComplexController {
     //print report za upkeep - servis bla bla
     @PostMapping("/manager/buildingExpenseReport/{buildComplexId}")
     public void buildingExpenseReport(HttpServletResponse response, @PathVariable Integer buildComplexId,
-                                        @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
-                                        @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate) throws IOException {
+                                      @DateTimeFormat(pattern = "yyyy-MM-dd") Date startDate,
+                                      @DateTimeFormat(pattern = "yyyy-MM-dd") Date endDate) throws IOException {
         response.setContentType("application/pdf");
         DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd:hh:mm:ss");
         String currentDateTime = dateFormatter.format(new Date());

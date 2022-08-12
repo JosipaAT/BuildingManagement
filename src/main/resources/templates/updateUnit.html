@@ -117,7 +117,7 @@ font-weight: bold;
         <div class="form-group">
             <label style="color:white;" class="control-label" for="unitTypeId">Unit Type</label>
             <select style="width: 300px; margin: auto;" class="form-control" id="unitTypeId2" name="unitTypeId">
-                <option>Select Unit Type</option>
+                <option value = "0">Select Unit Type</option>
                 <option
                         th:each="unitType: ${unitTypes}"
                         th:text="${unitType.unitTypeName}"

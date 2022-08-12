@@ -213,8 +213,8 @@ public class UserController {
         model.addAttribute("expenses", expenses);
         model.addAttribute("incomes", incomes);
         model.addAttribute("unit", unit);
-        model.addAttribute("user", "Welcome " + unit.getCoOwner().getCoOwnerName() + ", ");
-        model.addAttribute("address", " " + unit.getBuildingComplex().getStreetName() + " " + unit.getBuildingComplex().getStreetNumber() + ", " + unit.getBuildingComplex().getCity());
+        model.addAttribute("user", "Welcome " + unit.getCoOwner().getCoOwnerName());
+        model.addAttribute("address", ", " + unit.getBuildingComplex().getStreetName() + " " + unit.getBuildingComplex().getStreetNumber() + ", " + unit.getBuildingComplex().getCity());
         return "viewCoOwnerUnit";
     }
 
