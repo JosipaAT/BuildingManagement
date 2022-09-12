@@ -83,7 +83,9 @@ font-weight: bold;
         <div class="navbar-header">
             <a class="navbar-brand" th:href="@{/admin/0}">Home </a>
             <a class="navbar-brand" th:href="@{/admin/addBuildManagerForm}">Add Manager </a>
+            <a class="navbar-brand" th:href="@{/admin/addNewCityForm}">Add New City</a>
             <a class="navbar-brand" th:href="@{/logout}">Logout</a>
+
         </div>
         <a class="address"> User logged in: ADMIN </a>
     </div>
@@ -128,7 +130,7 @@ font-weight: bold;
                 <td style="color:black;" scope="row" th:text="${manager.username}">Username</td>
                 <td style="color:black;" th:text="${manager.streetName}">Street Name</td>
                 <td style="color:black;" th:text="${manager.streetNumber}">Street Number</td>
-                <td style="color:black;" th:text="${manager.city}">City</td>
+                <td style="color:black;" th:text="${manager.cityList.cityName}">City</td>
                 <td style="color:black;" th:text="${manager.postalCode}">Postal-Code</td>
                 <td style="color:black;" th:text="${manager.contact}">Contact</td>
                 <td>

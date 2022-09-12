@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.thymeleaf.org
+        http://www.thymeleaf.org/thymeleaf-extras-springsecurity5 ">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Add City</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<style>
+html {
+  height: 100%;
+}
+body{
+  margin:0;
+  padding:0;
+  font-family: sans-serif;
+  background: linear-gradient(#0275d8,#f7f7f7);
+  height: 100%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+.navbar{
+  margin:0;
+  padding:0;
+  color:white;
+  font-weight: bold;
+  font-family: sans-serif;
+  background: linear-gradient (#0275d8, #0275d8);
+}
+
+.row {
+  color: black;
+  padding: 10px;
+  font-family: Sans-Serif;
+  font-weight: bold;
+  border: 2px solid;
+}
+
+tbody tr:nth-of-type(even) {
+   background: (#0275d8,#f7f7f7);
+   border: 2px solid;
+   border-right: 2px solid;
+   border-left: 2px solid;
+}
+
+tbody tr:nth-of-type(odd) {
+
+   border: 2px solid;
+   border-right: 2px solid;
+   border-left: 2px solid;
+}
+
+thead{
+
+ background: #5bc0de;
+ border: 4px solid;
+ border-right: 2px solid;
+ border-left: 2px solid;
+}
+
+.address
+{
+float: right;
+color: white;
+font-size: 25px;
+font-weight: bold;
+}
+
+.navbar-brand{
+color: white;
+font-size: 30px;
+font-weight: bold;
+
+}
+</style>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" th:href="@{/admin/0}">Home </a>
+            <a class="navbar-brand" th:href="@{/admin/addBuildManagerForm}">Add Manager </a>
+            <a class="navbar-brand" th:href="@{/logout}">Logout</a>
+        </div>
+        <a class="address"> User logged in: ADMIN </a>
+    </div>
+</nav>
+<br>
+<br>
+<div class="container">
+    <br/>
+    <br/>
+    <div class="container">
+        <form style="text-align: center;" class="w-100" th:action="@{/admin/addNewCity}" method="post" >
+
+            <div class="form-group">
+                <input type="text" id="cityName" style="width: 300px; margin: auto;" th:name="cityName" th:value="${cityName}" required
+                       autofocus="autofocus" class="form-control" placeholder="City Name">
+            </div>
+
+            <div>
+                <a style="color: white;"  th:href="@{/admin/addNewCity}">
+                    <button type="button" class="btn btn-primary col-offset-5">Cancel</button>
+                </a>
+                <button type="submit" class="btn btn-info">Confirm Add</button>
+            </div>
+        </form>
+<br>
+
+            <h1 class="text-center" style="color:black"> List of Cities in Database</h1>
+            <br/>
+            <span style="float:left;">
+                            <form th:action="@{/admin/searchCity}" method="get">
+                                <input type="text" name="keyword"  placeholder="Search by City Name" >
+                                <br> <br>
+                                <button style="margin-bottom: 4%; " class="btn btn-primary col-offset-5" type="submit">Go</button>
+                                <button style="margin-bottom: 4%; " class="btn btn-info col-offset-5" type="submit">Reset</button>
+                            </form> <br> <br>
+            </span>
+            <div class="table-container" >
+                <table class="table table-bordered">
+                    <thead>
+                    <tr class="text-center">
+                        <td style="color:black;"scope="col py-2">#</td>
+                        <td style="color:black;" scope="col">City Name</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+
+                    <tr class="text-center" th:each="cityList, iterStat: ${cityLists}" >
+                        <td style="color:black;" scope="row" th:text="${iterStat.count}"></td>
+                        <td style="color:black;" scope="row" th:text="${cityList.cityName}">City Name</td>
+                    </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+</div>
+</body>
+
+</html>

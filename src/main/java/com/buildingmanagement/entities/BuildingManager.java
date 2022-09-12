@@ -17,7 +17,6 @@ public class BuildingManager {
     private String city;
     private Integer postalCode;
     private Integer contact;
-
     private String username;
     private String password;
 
@@ -26,6 +25,22 @@ public class BuildingManager {
 
     @ManyToOne
     private Role role;
+
+    public CityList getCityList() {
+        return cityList;
+    }
+
+    public void setCityList(CityList cityList) {
+        this.cityList = cityList;
+    }
+
+    @ManyToOne
+    private CityList cityList;
+
+    public BuildingManager() {
+    }
+
+
 
     public Integer getBuildManagerId() {
         return buildManagerId;

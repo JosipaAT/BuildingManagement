@@ -184,7 +184,7 @@ public class PDFGeneratorService {
                 .get()
                 .getStreetNumber() + " " + this.buildComplexRepo.findById(buildComplexId)
                 .get()
-                .getCity() + " " + this.buildComplexRepo.findById(buildComplexId)
+                .getCityList().getCityName() + " " + this.buildComplexRepo.findById(buildComplexId)
                 .get()
                 .getPostalCode(), fontParagraph);
         Paragraph paragraph9 = new Paragraph("No Of Floors", fontParagraph2);
@@ -271,7 +271,7 @@ public class PDFGeneratorService {
         Paragraph paragraph6 = new Paragraph(unit.getBuildingComplex()
                 .getStreetName() + " " + unit.getBuildingComplex()
                 .getStreetNumber() + " " + unit.getBuildingComplex()
-                .getCity() + " " + unit.getBuildingComplex()
+                .getCityList().getCityName() + " " + unit.getBuildingComplex()
                 .getPostalCode(), fontNormal);
 
         paragraph5.setAlignment(Paragraph.ALIGN_LEFT);
@@ -466,7 +466,7 @@ public class PDFGeneratorService {
         Paragraph paragraph3 = new Paragraph("Building Username", fontBold);
         Paragraph paragraph4 = new Paragraph(buildingComplex.getUsername(), fontNormal);
         Paragraph paragraph5 = new Paragraph("Building Address", fontBold);
-        Paragraph paragraph6 = new Paragraph(buildingComplex.getStreetName() + " " + buildingComplex.getStreetNumber() + " " + buildingComplex.getCity() + " " + buildingComplex.getPostalCode(), fontNormal);
+        Paragraph paragraph6 = new Paragraph(buildingComplex.getStreetName() + " " + buildingComplex.getStreetNumber() + " " + buildingComplex.getCityList().getCityName() + " " + buildingComplex.getPostalCode(), fontNormal);
         Paragraph paragraph7 = new Paragraph("No. Of Floors: " + buildingComplex.getFloors()
                 .size(), fontBold);
 
@@ -563,7 +563,7 @@ public class PDFGeneratorService {
         fontTitle.setSize(18);
 
         Paragraph paragraph = new Paragraph("Report for building " + buildComplexRepo.getById(buildComplexId).getStreetName() + " " +
-                buildComplexRepo.getById(buildComplexId).getStreetNumber() + ", " + buildComplexRepo.getById(buildComplexId).getCity()
+                buildComplexRepo.getById(buildComplexId).getStreetNumber() + ", " + buildComplexRepo.getById(buildComplexId).getCityList().getCityName()
                 , fontTitle);
         paragraph.setAlignment(Paragraph.ALIGN_CENTER);
         document.add(paragraph);
@@ -583,7 +583,7 @@ public class PDFGeneratorService {
         Paragraph paragraph6 = new Paragraph(buildingComplex
                 .getStreetName() + " " + buildingComplex
                 .getStreetNumber() + " " + buildingComplex
-                .getCity() + " " + buildingComplex
+                .getCityList().getCityName() + " " + buildingComplex
                 .getPostalCode(), fontNormal);
 
         paragraph5.setAlignment(Paragraph.ALIGN_LEFT);
@@ -766,8 +766,6 @@ public class PDFGeneratorService {
 
             totalAmountIncome += income.getAmount();
 
-//            saldoEnd = previousTotal + totalAmountIncome - totalAmount;
-
         }
         document.add(tableIncome);
 
@@ -786,6 +784,11 @@ public class PDFGeneratorService {
 //        Paragraph saldoEnd = new Paragraph("Saldo at the end of date range: " + saldoEnd + " KN", fontBold);
 //        saldoEnd.setAlignment(Paragraph.ALIGN_LEFT);
 //        document.add(totalAmountIncomeP);
+
+
+        Paragraph saldoEnd = new Paragraph("Saldo at the end of date range: " + (previousTotal + totalAmountIncome - totalAmount) + " KN", fontBold);
+        saldoEnd.setAlignment(Paragraph.ALIGN_LEFT);
+        document.add(saldoEnd);
 
         document.close();
     }

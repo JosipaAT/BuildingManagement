@@ -1,5 +1,4 @@
 package com.buildingmanagement.services;
-
 import com.buildingmanagement.entities.BuildingManager;
 import org.springframework.stereotype.Service;
 

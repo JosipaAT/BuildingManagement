@@ -1,21 +1,18 @@
 package com.buildingmanagement.controllers;
 
-import com.buildingmanagement.entities.BuildingManager;
+import com.buildingmanagement.entities.*;
 import com.buildingmanagement.repositories.BuildingManagerRepo;
+import com.buildingmanagement.repositories.CityListRepo;
 import com.buildingmanagement.services.BuildingManagerService;
+import com.buildingmanagement.services.CityListService;
 import com.buildingmanagement.services.UserService;
 import com.buildingmanagement.services.impl.PDFGeneratorService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.security.Principal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Controller
@@ -33,8 +30,12 @@ public class BuildManagerController {
     @Autowired
     private BuildingManagerService buildingManagerService;
 
+    @Autowired
+    private CityListRepo cityListRepo;
+
     @GetMapping("/admin/addBuildManagerForm")
-    private String addBuildManagerForm(){
+    private String addBuildManagerForm(Model model){
+        model.addAttribute("cityLists",this.cityListRepo.findAll());
         return "addBuildManager";
     }
 
@@ -44,11 +45,13 @@ public class BuildManagerController {
     }
 
     @PostMapping("/admin/addBuildManager")
-    public String registerUserAccount(@ModelAttribute("buildingManager")  BuildingManager buildingManager, Model model) {
+    public String registerUserAccount(@ModelAttribute("buildingManager")  BuildingManager buildingManager, Model model,
+                                    @RequestParam(required = false) Integer cityId) {
         this.buildingManagerService.addBuildManager(buildingManager);
         String username = buildingManager.getUsername();
         String password =  buildingManager.getPassword();
         String userType = "Building Manager";
+        buildingManager.setCityList(cityListRepo.getById(cityId));
         return "redirect:/pdf/generate/"+ username +"/"+ password +"/"+ userType;
     }
 
@@ -61,7 +64,7 @@ public class BuildManagerController {
         model.addAttribute("buildManagerName",this.buildingManagerRepo.findById(buildManagerId).get().getBuildManagerName());
         model.addAttribute("streetName",this.buildingManagerRepo.findById(buildManagerId).get().getStreetName());
         model.addAttribute("streetNumber",this.buildingManagerRepo.findById(buildManagerId).get().getStreetNumber());
-        model.addAttribute("city",this.buildingManagerRepo.findById(buildManagerId).get().getCity());
+        model.addAttribute("cityLists",this.cityListRepo.findAll());
         model.addAttribute("postalCode",this.buildingManagerRepo.findById(buildManagerId).get().getPostalCode());
         model.addAttribute("contact",this.buildingManagerRepo.findById(buildManagerId).get().getContact());
         return "updateBuildManager";
@@ -70,19 +73,18 @@ public class BuildManagerController {
     @PostMapping("/admin/updateBuildManager/{buildManagerId}")
     public String updateBuildManager(@PathVariable Integer buildManagerId, @RequestParam(required = false) String buildManagerName,
                                      @RequestParam(required = false) Integer contact, @RequestParam(required = false) String streetName,
-                                     @RequestParam(required = false) Integer streetNumber, @RequestParam(required = false) String city,
+                                     @RequestParam(required = false) Integer streetNumber, @RequestParam(required = false) Integer cityId,
                                      @RequestParam(required = false) Integer postalCode, @RequestParam(required = false) String username) {
      BuildingManager buildingManager = this.buildingManagerRepo.findById(buildManagerId).get();
      buildingManager.setBuildManagerName(buildManagerName);
      buildingManager.setUsername(username);
      buildingManager.setStreetName(streetName);
      buildingManager.setStreetNumber(streetNumber);
-     buildingManager.setCity(city);
+     buildingManager.setCityList(cityListRepo.getById(cityId));
      buildingManager.setPostalCode(postalCode);
      buildingManager.setContact(contact);
      this.buildingManagerService.update(buildManagerId, buildingManager);
      return "redirect:/";
     }
-
 
 }

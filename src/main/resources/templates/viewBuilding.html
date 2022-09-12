@@ -156,7 +156,7 @@ font-weight: bold;
                 <td style="color:black;" scope="row" th:text="${buildComplex.password}" class="hidetext">Password</td>
                 <td style="color:black;" th:text="${buildComplex.streetName}">Street Name</td>
                 <td style="color:black;" th:text="${buildComplex.streetNumber}">Street Number</td>
-                <td style="color:black;" th:text="${buildComplex.city}">City</td>
+                <td style="color:black;" th:text="${buildComplex.cityList.cityName}">City</td>
                 <td style="color:black;" th:text="${buildComplex.postalCode}">Postal-Code</td>
                 <td style="color:black;" th:text="${buildComplex.floors.size()}">No Of Floors</td>
                 <td>
@@ -226,7 +226,7 @@ font-weight: bold;
                 <td style="color:black;" scope="row" th:text="${info.serviceDescription}">Service Description</td>
                 <td style="color:black;" th:text="${info.streetName}">Street Name</td>
                 <td style="color:black;" th:text="${info.streetNumber}">Street Number</td>
-                <td style="color:black;" th:text="${info.city}">City</td>
+                <td style="color:black;" th:text="${info.cityList.cityName}">City</td>
                 <td style="color:black;" th:text="${info.postalCode}">Postal Code</td>
                 <td style="color:black;" th:text="${info.contact}">Contact</td>
                 <td style="color:black;" th:text="${info.iban}">IBAN</td>

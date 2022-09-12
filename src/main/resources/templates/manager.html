@@ -123,7 +123,7 @@ font-weight: bold;
                 <td style="color:black;" scope="row" th:text="${buildComplex.password}" class="hidetext">Password</td>
                 <td style="color:black;" th:text="${buildComplex.streetName}">Street Name</td>
                 <td style="color:black;" th:text="${buildComplex.streetNumber}">Street Number</td>
-                <td style="color:black;" th:text="${buildComplex.city}">City</td>
+                <td style="color:black;" th:text="${buildComplex.cityList.cityName}">City</td>
                 <td style="color:black;" th:text="${buildComplex.postalCode}">Postal-Code</td>
                 <td>
                     <button type="button" class="btn btn-primary col-offset-5"><a style="color:white;" th:href="@{/manager/viewBuilding/}+${buildComplex.buildComplexId}">View</a></button>

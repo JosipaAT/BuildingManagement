@@ -76,6 +76,8 @@ public class BuildComplexController {
     private PDFGeneratorService pdfGeneratorService;
     private Integer coOwnerId;
 
+    @Autowired
+    private CityListRepo cityListRepo;
 
     @ModelAttribute("buildComplex")
     public BuildingComplex buildComplex() {
@@ -86,6 +88,7 @@ public class BuildComplexController {
     private String addBuildComplexForm(Model model, Principal principal) {
         String username = principal.getName();
         BuildingManager buildingManager = this.buildingManagerRepo.findByUsername(username);
+        model.addAttribute("cityLists",cityListRepo.findAll());
         model.addAttribute("buildManagerId", buildingManager.getBuildManagerId());
         model.addAttribute("username", "User logged in: " + username);
         return "addBuildComplex";
@@ -94,8 +97,9 @@ public class BuildComplexController {
 
     @PostMapping("/manager/addBuildComplex/{buildManagerId}")
     public String registerUserAccount(@ModelAttribute("buildComplex") BuildingComplex buildComplex, @PathVariable Integer buildManagerId,
-                                      Model model) {
+                                      Model model, @RequestParam Integer cityId) {
         buildComplex.setBuildManager(this.buildingManagerRepo.findById(buildManagerId).get());
+        buildComplex.setCityList(cityListRepo.getById(cityId));
         this.buildComplexService.addBuildComplex(buildComplex);
         String username = buildComplex.getUsername();
         String password = buildComplex.getPassword();
@@ -116,7 +120,7 @@ public class BuildComplexController {
     private String addFloorForm(Model model, Principal principal, @PathVariable Integer buildComplexId) {
         model.addAttribute("buildComplexId");
         BuildingComplex buildComplex = this.buildComplexRepo.findById(buildComplexId).get();
-        model.addAttribute("address", buildComplex.getStreetName() + " " + buildComplex.getStreetNumber() + ", " + buildComplex.getCity());
+        model.addAttribute("address", buildComplex.getStreetName() + " " + buildComplex.getStreetNumber() + ", " + buildComplex.getCityList().getCityName());
         return "addFloor";
     }
 
@@ -127,7 +131,7 @@ public class BuildComplexController {
         floor.setBuildingComplex(buildingComplex);
         floor.setFloorName(floorName);
         this.floorRepo.save(floor);
-        model.addAttribute("address", floor.getBuildingComplex().getStreetName() + " " + floor.getBuildingComplex().getStreetNumber() + ", " + floor.getBuildingComplex().getCity());
+        model.addAttribute("address", floor.getBuildingComplex().getStreetName() + " " + floor.getBuildingComplex().getStreetNumber() + ", " + floor.getBuildingComplex().getCityList().getCityName());
         return "redirect:/manager/viewBuilding/" + buildComplexId;
     }
 
@@ -146,7 +150,7 @@ public class BuildComplexController {
         model.addAttribute("infos", infos);
 
         model.addAttribute("utilitiesPrices", buildComplex.getUtilitiesPrices());
-        model.addAttribute("address", buildComplex.getStreetName() + " " + buildComplex.getStreetNumber() + ", " + buildComplex.getCity());
+        model.addAttribute("address", buildComplex.getStreetName() + " " + buildComplex.getStreetNumber() + ", " + buildComplex.getCityList().getCityName());
 
         return "viewBuilding";
     }
@@ -186,7 +190,7 @@ public class BuildComplexController {
         model.addAttribute("totalPages", units.getTotalPages());
 
         // za povuc adresu
-        model.addAttribute("address", floor.getBuildingComplex().getStreetName() + " " + floor.getBuildingComplex().getStreetNumber() + ", " + floor.getBuildingComplex().getCity());
+        model.addAttribute("address", floor.getBuildingComplex().getStreetName() + " " + floor.getBuildingComplex().getStreetNumber() + ", " + floor.getBuildingComplex().getCityList().getCityName());
 
         return "viewFloor";
     }
@@ -245,7 +249,7 @@ public class BuildComplexController {
 
         model.addAttribute("kat", floor.getFloorName());
         // metoda prima coowner_repID za prikaz podatke koje zgrade pregledajemo
-        model.addAttribute("address", floor.getFloorName() + " - " + floor.getBuildingComplex().getStreetName() + " " + floor.getBuildingComplex().getStreetNumber() + ", " + floor.getBuildingComplex().getCity());
+        model.addAttribute("address", floor.getFloorName() + " - " + floor.getBuildingComplex().getStreetName() + " " + floor.getBuildingComplex().getStreetNumber() + ", " + floor.getBuildingComplex().getCityList().getCityName());
 
         return "viewUnit";
     }
@@ -258,7 +262,7 @@ public class BuildComplexController {
         model.addAttribute("unitTypes", unitTypes);
         Floor floor = floorRepo.getById(floorId);
         BuildingComplex kat = this.buildComplexRepo.findById(buildComplexId).get();
-        model.addAttribute("address", floor.getFloorName() + " - " + kat.getStreetName() + " " + kat.getStreetNumber() + ", " + kat.getCity());
+        model.addAttribute("address", floor.getFloorName() + " - " + kat.getStreetName() + " " + kat.getStreetNumber() + ", " + kat.getCityList().getCityName());
         return "addUnit";
     }
 
@@ -274,7 +278,7 @@ public class BuildComplexController {
         unit.setUnitType(unitType);
         unit.setBuildingComplex(buildingComplex);
         this.unitRepo.save(unit);
-        model.addAttribute("address", buildComplex().getStreetName() + " " + buildComplex().getStreetNumber() + ", " + buildComplex().getCity());
+        model.addAttribute("address", buildComplex().getStreetName() + " " + buildComplex().getStreetNumber() + ", " + buildComplex().getCityList().getCityName());
         return "redirect:/manager/viewFloor/" + floorId + "/" + 0;
     }
 
@@ -282,7 +286,7 @@ public class BuildComplexController {
     private String addEquipmentForm(Model model, @PathVariable Integer floorId, @PathVariable Integer buildComplexId) {
         model.addAttribute("floorId");
         model.addAttribute("buildComplexId");
-        model.addAttribute("address", floorRepo.getById(floorId).getFloorName() + " - " + buildComplexRepo.getById(buildComplexId).getStreetName() + " " + buildComplexRepo.getById(buildComplexId).getStreetNumber() + ", " + buildComplexRepo.getById(buildComplexId).getCity());
+        model.addAttribute("address", floorRepo.getById(floorId).getFloorName() + " - " + buildComplexRepo.getById(buildComplexId).getStreetName() + " " + buildComplexRepo.getById(buildComplexId).getStreetNumber() + ", " + buildComplexRepo.getById(buildComplexId).getCityList().getCityName());
         return "addEquipment";
     }
 
@@ -297,7 +301,7 @@ public class BuildComplexController {
         equipment.setNextServiceDate(nextServiceDate);
         equipment.setBuildingComplex(buildingComplex);
         this.equipmentRepo.save(equipment);
-        model.addAttribute("address", buildComplex().getStreetName() + " " + buildComplex().getStreetNumber() + ", " + buildComplex().getCity());
+        model.addAttribute("address", buildComplex().getStreetName() + " " + buildComplex().getStreetNumber() + ", " + buildComplex().getCityList().getCityName());
         return "redirect:/manager/viewFloor/" + floorId + "/" + 0;
     }
 
@@ -312,7 +316,7 @@ public class BuildComplexController {
 
         model.addAttribute("floorId", this.equipmentRepo.findById(equipmentId).get().getFloor().getFloorId());
         model.addAttribute("equipmentName", this.equipmentRepo.findById(equipmentId).get().getEquipmentName());
-        model.addAttribute("address", equipmentRepo.getById(equipmentId).getFloor().getFloorName() + " - " + equipmentRepo.getById(equipmentId).getBuildingComplex().getStreetName() + " " + equipmentRepo.getById(equipmentId).getBuildingComplex().getStreetNumber() + ", " + equipmentRepo.getById(equipmentId).getBuildingComplex().getCity());
+        model.addAttribute("address", equipmentRepo.getById(equipmentId).getFloor().getFloorName() + " - " + equipmentRepo.getById(equipmentId).getBuildingComplex().getStreetName() + " " + equipmentRepo.getById(equipmentId).getBuildingComplex().getStreetNumber() + ", " + equipmentRepo.getById(equipmentId).getBuildingComplex().getCityList().getCityName());
         return "updateEquipment";
     }
 
@@ -324,7 +328,7 @@ public class BuildComplexController {
         equipment.setNextServiceDate(nextServiceDate);
         Integer floorId = equipment.getFloor().getFloorId();
         this.equipmentRepo.save(equipment);
-        model.addAttribute("address", buildComplex().getStreetName() + " " + buildComplex().getStreetNumber() + ", " + buildComplex().getCity());
+        model.addAttribute("address", buildComplex().getStreetName() + " " + buildComplex().getStreetNumber() + ", " + buildComplex().getCityList().getCityName());
         return "redirect:/manager/viewFloor/" + floorId + "/" + 0;
     }
 
@@ -336,7 +340,7 @@ public class BuildComplexController {
         model.addAttribute("utilitiesPrices", utiliesPriceRepo.findAll());
         model.addAttribute("areaSqrMeter", this.unitRepo.findById(unitId).get().getAreaSqrMeter());
 
-        model.addAttribute("address", unitRepo.getById(unitId).getUnitType().getUnitTypeName() + " - " + unitRepo.getById(unitId).getCoOwner().getCoOwnerName() + ", " + buildComplexRepo.findById(buildComplexId).get().getStreetName() + " " + buildComplexRepo.findById(buildComplexId).get().getStreetNumber() + ", " + buildComplexRepo.findById(buildComplexId).get().getCity());
+        model.addAttribute("address", unitRepo.getById(unitId).getUnitType().getUnitTypeName() + " - " + unitRepo.getById(unitId).getCoOwner().getCoOwnerName() + ", " + buildComplexRepo.findById(buildComplexId).get().getStreetName() + " " + buildComplexRepo.findById(buildComplexId).get().getStreetNumber() + ", " + buildComplexRepo.findById(buildComplexId).get().getCityList().getCityName());
         return "addExpense";
     }
 
@@ -381,7 +385,7 @@ public class BuildComplexController {
 //    expenseTypeRepo.findByExpenseTypeNameIn(Arrays.asList("EquipmentService","Maintenance"));
         model.addAttribute("expenseTypes", expenseTypes);
 
-        model.addAttribute("address", buildComplexRepo.findById(buildComplexId).get().getStreetName() + " " + buildComplexRepo.findById(buildComplexId).get().getStreetNumber() + ", " + buildComplexRepo.findById(buildComplexId).get().getCity());
+        model.addAttribute("address", buildComplexRepo.findById(buildComplexId).get().getStreetName() + " " + buildComplexRepo.findById(buildComplexId).get().getStreetNumber() + ", " + buildComplexRepo.findById(buildComplexId).get().getCityList().getCityName());
         return "addBuildingExpense";
     }
 
@@ -415,7 +419,7 @@ public class BuildComplexController {
         model.addAttribute("unitId");
         model.addAttribute("buildComplexId");
         model.addAttribute("expenseTypes", expenseTypeRepo.findAll());
-        model.addAttribute("address", unitRepo.getById(unitId).getCoOwner().getCoOwnerName() + ", " + buildComplexRepo.findById(buildComplexId).get().getStreetName() + " " + buildComplexRepo.findById(buildComplexId).get().getStreetNumber() + ", " + buildComplexRepo.findById(buildComplexId).get().getCity());
+        model.addAttribute("address", unitRepo.getById(unitId).getCoOwner().getCoOwnerName() + ", " + buildComplexRepo.findById(buildComplexId).get().getStreetName() + " " + buildComplexRepo.findById(buildComplexId).get().getStreetNumber() + ", " + buildComplexRepo.findById(buildComplexId).get().getCityList().getCityName());
         return "addIncome";
     }
 
@@ -434,7 +438,7 @@ public class BuildComplexController {
         income.setAmount(amount);
         income.setExpenseType(expenseType);
         this.incomeRepo.save(income);
-        model.addAttribute("address", unit.getCoOwner().getCoOwnerName() + ", " + unit.getBuildingComplex().getStreetName() + " " + unit.getBuildingComplex().getStreetNumber() + ", " + unit.getBuildingComplex().getCity());
+        model.addAttribute("address", unit.getCoOwner().getCoOwnerName() + ", " + unit.getBuildingComplex().getStreetName() + " " + unit.getBuildingComplex().getStreetNumber() + ", " + unit.getBuildingComplex().getCityList().getCityName());
         return "redirect:/manager/viewUnit/" + unitId + "/" + 0 + "/" + 0;
     }
 
@@ -450,9 +454,9 @@ public class BuildComplexController {
 //        model.addAttribute("vlasnik", unit.getCoOwner().getCoOwnerName());
 //        model.addAttribute("kat", unit.getFloor().getFloorName());
         if (unitRepo.getById(unitId).getCoOwner() != null) {
-            model.addAttribute("address", unitRepo.getById(unitId).getCoOwner().getCoOwnerName() + ", " + unitRepo.getById(unitId).getFloor().getFloorName() + " - " + unitRepo.getById(unitId).getBuildingComplex().getStreetName() + " " + unitRepo.getById(unitId).getBuildingComplex().getStreetNumber() + ", " + unitRepo.getById(unitId).getBuildingComplex().getCity());
+            model.addAttribute("address", unitRepo.getById(unitId).getCoOwner().getCoOwnerName() + ", " + unitRepo.getById(unitId).getFloor().getFloorName() + " - " + unitRepo.getById(unitId).getBuildingComplex().getStreetName() + " " + unitRepo.getById(unitId).getBuildingComplex().getStreetNumber() + ", " + unitRepo.getById(unitId).getBuildingComplex().getCityList().getCityName());
         } else {
-            model.addAttribute("address", unitRepo.getById(unitId).getFloor().getFloorName() + " - " + unitRepo.getById(unitId).getBuildingComplex().getStreetName() + " " + unitRepo.getById(unitId).getBuildingComplex().getStreetNumber() + ", " + unitRepo.getById(unitId).getBuildingComplex().getCity());
+            model.addAttribute("address", unitRepo.getById(unitId).getFloor().getFloorName() + " - " + unitRepo.getById(unitId).getBuildingComplex().getStreetName() + " " + unitRepo.getById(unitId).getBuildingComplex().getStreetNumber() + ", " + unitRepo.getById(unitId).getBuildingComplex().getCityList().getCityName());
         }
 
         return "updateUnit";
@@ -469,7 +473,7 @@ public class BuildComplexController {
         unit.setUnitType(unitTypeRepo.getById(unitTypeId));
         Integer floorId = unit.getFloor().getFloorId();
         this.unitRepo.save(unit);
-        model.addAttribute("address", buildComplex().getStreetName() + " " + buildComplex().getStreetNumber() + ", " + buildComplex().getCity());
+        model.addAttribute("address", buildComplex().getStreetName() + " " + buildComplex().getStreetNumber() + ", " + buildComplex().getCityList().getCityName());
         return "redirect:/manager/viewFloor/" + floorId + "/" + 0;
 
 
@@ -483,17 +487,19 @@ public class BuildComplexController {
     @GetMapping("/manager/addInfoForm/{buildingComplexId}")
     public String addInfoForm(Model model, @PathVariable Integer buildingComplexId) {
         model.addAttribute("buildingComplexId", buildingComplexId);
+        model.addAttribute("cityLists",cityListRepo.findAll());
         BuildingComplex buildComplex = this.buildComplexRepo.findById(buildingComplexId).get();
-        model.addAttribute("address", buildComplex.getStreetName() + " " + buildComplex.getStreetNumber() + ", " + buildComplex.getCity());
+        model.addAttribute("address", buildComplex.getStreetName() + " " + buildComplex.getStreetNumber() + ", " + buildComplex.getCityList().getCityName());
         return "addInfoForm";
     }
 
     @PostMapping("/manager/addInfo/{buildingComplexId}")
-    public String addInfo(@ModelAttribute("info") Info info, @PathVariable Integer buildingComplexId, Model model) {
+    public String addInfo(@ModelAttribute("info") Info info, @PathVariable Integer buildingComplexId, Model model, @RequestParam Integer cityId) {
         BuildingComplex buildComplex = this.buildComplexRepo.findById(buildingComplexId).get();
         info.setBuildingComplex(buildComplex);
+        info.setCityList(cityListRepo.getById(cityId));
         this.infoRepo.save(info);
-        model.addAttribute("address", buildComplex.getStreetName() + " " + buildComplex.getStreetNumber() + ", " + buildComplex.getCity());
+        model.addAttribute("address", buildComplex.getStreetName() + " " + buildComplex.getStreetNumber() + ", " + buildComplex.getCityList().getCityName());
 //        return "redirect:/manager" + "/" + 0;
         return "redirect:/manager" + "/viewBuilding/" + buildingComplexId;
 
@@ -508,12 +514,12 @@ public class BuildComplexController {
         model.addAttribute("serviceDescription", info.getServiceDescription());
         model.addAttribute("streetName", info.getStreetName());
         model.addAttribute("streetNumber", info.getStreetNumber());
-        model.addAttribute("city", info.getCity());
+        model.addAttribute("cityLists",cityListRepo.findAll());
         model.addAttribute("postalCode", info.getPostalCode());
         model.addAttribute("contact", info.getContact());
         model.addAttribute("iban", info.getIban());
         model.addAttribute("mail", info.getMail());
-        model.addAttribute("address", info.getBuildingComplex().getStreetName() + " " + info.getBuildingComplex().getStreetNumber() + ", " + info.getBuildingComplex().getCity());
+        model.addAttribute("address", info.getBuildingComplex().getStreetName() + " " + info.getBuildingComplex().getStreetNumber() + ", " + info.getBuildingComplex().getCityList().getCityName());
         return "updateInfoForm";
     }
 
@@ -521,7 +527,7 @@ public class BuildComplexController {
     public String updateInfo(@PathVariable Integer infoId,
                              @RequestParam String serviceName, @RequestParam String serviceDescription,
                              @RequestParam String streetName, @RequestParam Integer streetNumber,
-                             @RequestParam String city, @RequestParam Integer postalCode,
+                             @RequestParam Integer cityId, @RequestParam Integer postalCode,
                              @RequestParam Integer contact, @RequestParam String mail, @RequestParam String iban, Model model
     ) {
         Info info = this.infoRepo.findById(infoId).get();
@@ -530,12 +536,12 @@ public class BuildComplexController {
         info.setStreetName(streetName);
         info.setStreetNumber(streetNumber);
         info.setPostalCode(postalCode);
-        info.setCity(city);
+        info.setCityList(cityListRepo.getById(cityId));
         info.setIban(iban);
         info.setContact(contact);
         info.setMail(mail);
         this.infoRepo.save(info);
-        model.addAttribute("address", buildComplex().getStreetName() + " " + buildComplex().getStreetNumber() + ", " + buildComplex().getCity());
+        model.addAttribute("address", buildComplex().getStreetName() + " " + buildComplex().getStreetNumber() + ", " + buildComplex().getCityList().getCityName());
         Integer buildingComplexId = info.getBuildingComplex().getBuildComplexId();
         return "redirect:/manager" + "/viewBuilding/" + buildingComplexId;
     }
@@ -549,22 +555,22 @@ public class BuildComplexController {
         model.addAttribute("userType", "Building Complex");
         model.addAttribute("streetName", updatebuild.getStreetName());
         model.addAttribute("streetNumber", updatebuild.getStreetNumber());
-        model.addAttribute("city", updatebuild.getCity());
+        model.addAttribute("cityLists",cityListRepo.findAll());
         model.addAttribute("postalCode", updatebuild.getPostalCode());
-        model.addAttribute("address", updatebuild.getStreetName() + " " + updatebuild.getStreetNumber() + "," + updatebuild.getCity());
+        model.addAttribute("address", updatebuild.getStreetName() + " " + updatebuild.getStreetNumber() + "," + updatebuild.getCityList().getCityName());
         return "updateBuilding";
     }
 
     @PostMapping("/manager/updateBuilding/{buildComplexId}")
     public String updateBuilding(@PathVariable Integer buildComplexId,
                                  @RequestParam(required = false) String streetName,
-                                 @RequestParam(required = false) Integer streetNumber, @RequestParam(required = false) String city,
+                                 @RequestParam(required = false) Integer streetNumber, @RequestParam(required = false) Integer cityId,
                                  @RequestParam(required = false) Integer postalCode, @RequestParam(required = false) String coOwnerUsername) {
         BuildingComplex buildComplex = this.buildComplexRepo.findById(buildComplexId).get();
         buildComplex.setcoOwnerUsername(coOwnerUsername);
         buildComplex.setStreetName(streetName);
         buildComplex.setStreetNumber(streetNumber);
-        buildComplex.setCity(city);
+        buildComplex.setCityList(cityListRepo.getById(cityId));
         buildComplex.setPostalCode(postalCode);
         this.buildComplexService.update(buildComplexId, buildComplex);
         this.buildComplexRepo.save(buildComplex);
@@ -587,7 +593,7 @@ public class BuildComplexController {
         List<UnitType> unitTypes = this.unitTypeRepo.findAll();
         model.addAttribute("unitTypes", unitTypes);
         BuildingComplex buildComplex = this.buildComplexRepo.findById(buildingComplexId).get();
-        model.addAttribute("address", buildComplex.getStreetName() + " " + buildComplex.getStreetNumber() + ", " + buildComplex.getCity());
+        model.addAttribute("address", buildComplex.getStreetName() + " " + buildComplex.getStreetNumber() + ", " + buildComplex.getCityList().getCityName());
         return "addUtilitiesPriceForm";
     }
 
@@ -606,7 +612,7 @@ public class BuildComplexController {
 
         this.utiliesPriceRepo.save(utilitiesPrice);
 
-        model.addAttribute("address", buildComplex.getStreetName() + " " + buildComplex.getStreetNumber() + ", " + buildComplex.getCity());
+        model.addAttribute("address", buildComplex.getStreetName() + " " + buildComplex.getStreetNumber() + ", " + buildComplex.getCityList().getCityName());
         return "redirect:/manager/viewBuilding/" + buildingComplexId;
     }
 
@@ -621,7 +627,7 @@ public class BuildComplexController {
         model.addAttribute("expenseTypes", expenseTypes);
         model.addAttribute("unitTypes", this.unitTypeRepo.findAll());
 
-        model.addAttribute("address", utiliesPriceRepo.getById(utilitiesPriceId).getBuildingComplex().getStreetName() + " " + utiliesPriceRepo.getById(utilitiesPriceId).getBuildingComplex().getStreetNumber() + ", " + utiliesPriceRepo.getById(utilitiesPriceId).getBuildingComplex().getCity());
+        model.addAttribute("address", utiliesPriceRepo.getById(utilitiesPriceId).getBuildingComplex().getStreetName() + " " + utiliesPriceRepo.getById(utilitiesPriceId).getBuildingComplex().getStreetNumber() + ", " + utiliesPriceRepo.getById(utilitiesPriceId).getBuildingComplex().getCityList().getCityName());
         return "updateUtilitiesPriceForm";
     }
 
@@ -639,7 +645,7 @@ public class BuildComplexController {
         utilitiesPrice.setExpenseType(expenseTypeRepo.getById(expenseTypeId));
         ExpenseType expenseType = this.expenseTypeRepo.findById(expenseTypeId).get();
 
-        model.addAttribute("address", buildComplex().getStreetName() + " " + buildComplex().getStreetNumber() + ", " + buildComplex().getCity());
+        model.addAttribute("address", buildComplex().getStreetName() + " " + buildComplex().getStreetNumber() + ", " + buildComplex().getCityList().getCityName());
         Integer buildingComplexId = utilitiesPrice.getBuildingComplex().getBuildComplexId();
         this.utiliesPriceRepo.save(utilitiesPrice);
         return "redirect:/manager" + "/viewBuilding/" + buildingComplexId;

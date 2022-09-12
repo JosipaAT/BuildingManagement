@@ -157,7 +157,7 @@ public class UserController {
         model.addAttribute("buildComplex", buildComplex);
         model.addAttribute("floors", floors);
         model.addAttribute("bulletin", buildComplex.getBulletin());
-        model.addAttribute("address", buildComplex.getRole().getRoleName() + " of " + buildComplex.getStreetName() + " " + buildComplex.getStreetNumber() + " " + buildComplex.getCity());
+        model.addAttribute("address", buildComplex.getRole().getRoleName() + " of " + buildComplex.getStreetName() + " " + buildComplex.getStreetNumber() + ", " + buildComplex.getCityList().getCityName());
 
         List<Info> infos;
         if (keyword == null) {
@@ -190,7 +190,7 @@ public class UserController {
         BuildingComplex buildingComplex = this.buildComplexRepo.findById(units.get(0).getFloor().getBuildingComplex().getBuildComplexId()).get();
         model.addAttribute("bulletin", buildingComplex.getBulletin());
 //		model.addAttribute("user","Welcome " + coOwner.getCoOwnerName() );
-        model.addAttribute("address", "Welcome " + coOwner.getCoOwnerName() + " - " + coOwner.getUnits().get(0).getBuildingComplex().getStreetName() + " " + coOwner.getUnits().get(0).getBuildingComplex().getStreetNumber() + ", " + coOwner.getUnits().get(0).getBuildingComplex().getCity());
+        model.addAttribute("address", "Welcome " + coOwner.getCoOwnerName() + " - " + coOwner.getUnits().get(0).getBuildingComplex().getStreetName() + " " + coOwner.getUnits().get(0).getBuildingComplex().getStreetNumber() + ", " + coOwner.getUnits().get(0).getBuildingComplex().getCityList().getCityName());
 
 
         List<Info> infos;
@@ -214,7 +214,7 @@ public class UserController {
         model.addAttribute("incomes", incomes);
         model.addAttribute("unit", unit);
         model.addAttribute("user", "Welcome " + unit.getCoOwner().getCoOwnerName());
-        model.addAttribute("address", ", " + unit.getBuildingComplex().getStreetName() + " " + unit.getBuildingComplex().getStreetNumber() + ", " + unit.getBuildingComplex().getCity());
+        model.addAttribute("address", ", " + unit.getBuildingComplex().getStreetName() + " " + unit.getBuildingComplex().getStreetNumber() + ", " + unit.getBuildingComplex().getCityList().getCityName());
         return "viewCoOwnerUnit";
     }
 

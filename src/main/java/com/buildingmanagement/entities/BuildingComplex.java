@@ -46,6 +46,9 @@ public class BuildingComplex {
     @ManyToOne
     private Role role;
 
+    @ManyToOne
+    private CityList cityList;
+
     public Set<UtilitiesPrice> getUtilitiesPrices() {
         return utilitiesPrices;
     }
@@ -56,6 +59,14 @@ public class BuildingComplex {
 
     @OneToMany(mappedBy = "buildingComplex", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<UtilitiesPrice> utilitiesPrices = new HashSet<>();
+
+    public CityList getCityList() {
+        return cityList;
+    }
+
+    public void setCityList(CityList cityList) {
+        this.cityList = cityList;
+    }
 
     public Integer getBuildComplexId() {
         return buildComplexId;

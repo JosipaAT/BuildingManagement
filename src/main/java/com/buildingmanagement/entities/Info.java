@@ -22,6 +22,17 @@ public class Info {
     @ManyToOne
     private BuildingComplex buildingComplex;
 
+    @ManyToOne
+    private CityList cityList;
+
+    public CityList getCityList() {
+        return cityList;
+    }
+
+    public void setCityList(CityList cityList) {
+        this.cityList = cityList;
+    }
+
     public Integer getInfoId() {
         return infoId;
     }
